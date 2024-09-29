@@ -13,7 +13,8 @@ import { auth, db } from './firebaseConfig';
 import { doc, setDoc, getDoc, collection, query, where } from 'firebase/firestore';
 
 function Shop() {
-    const MAX_ITEMS_IN_CART = 20;
+    const MAX_TOTAL_ITEMS = 20;
+    const MAX_ITEMS_PER_PRODUCT = 5;
     const [cartItems, setCartItems] = useState([]);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -143,40 +144,70 @@ function Shop() {
 
         setCartItems((prevItems) => {
             const totalQuantity = prevItems.reduce((acc, item) => acc + item.quantity, 0);
+            const existingItem = prevItems.find((item) => item.id === product.id);
 
-            if (totalQuantity >= MAX_ITEMS_IN_CART) {
+            // Kiểm tra nếu tổng số lượng sản phẩm đã đạt giới hạn
+            if (totalQuantity >= MAX_TOTAL_ITEMS) {
                 alert('Bạn chỉ có thể thêm tối đa 20 sản phẩm vào giỏ hàng.');
                 return prevItems;
             }
 
-            const existingItem = prevItems.find((item) => item.id === product.id);
+            // if (existingItem && totalQuantity + 1 > 20) {
+            //     alert('Số lượng sản phẩm trong giỏ đã đạt tối đa.');
+            //     return prevItems;
+            // }
 
-            if (existingItem && totalQuantity + 1 > MAX_ITEMS_IN_CART) {
-                alert('Số lượng sản phẩm trong giỏ đã đạt tối đa.');
-                return prevItems;
-            }
-
+            // Kiểm tra nếu sản phẩm đã tồn tại trong giỏ hàng
             if (existingItem) {
-                // Tăng số lượng sản phẩm nếu đã tồn tại
+                // Kiểm tra xem số lượng sản phẩm có vượt quá 5 hay không
+                if (existingItem.quantity >= MAX_ITEMS_PER_PRODUCT) {
+                    alert('Số lượng sản phẩm này đã đạt tối đa (5).');
+                    return prevItems;
+                }
+
+                // Tăng số lượng sản phẩm nếu chưa đạt tối đa
                 const updatedItems = prevItems.map((item) =>
                     item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
                 );
 
-                // Cập nhật Firestore
+                // Cập nhật Firestore với giỏ hàng đã cập nhật
                 const cartDocRef = doc(db, "carts", userEmail);
                 setDoc(cartDocRef, { items: updatedItems }, { merge: true }); // Cập nhật Firestore
 
                 return updatedItems; // Trả về giỏ hàng đã cập nhật
             } else {
+                // Thêm sản phẩm mới vào giỏ hàng
                 const newItem = { ...product, quantity: 1, userEmail };
                 const updatedItems = [...prevItems, newItem];
 
-                // Cập nhật Firestore
+                // Cập nhật Firestore với giỏ hàng đã cập nhật
                 const cartDocRef = doc(db, "carts", userEmail);
                 setDoc(cartDocRef, { items: updatedItems }, { merge: true }); // Cập nhật Firestore
 
                 return updatedItems; // Trả về giỏ hàng đã cập nhật
             }
+
+            // if (existingItem) {
+            //     const updatedItems = prevItems.map((item) =>
+            //         item.quantity === MAX_ITEMS_PER_PRODUCT ?
+            //             alert('Số lượng sản phẩm trong giỏ đã đạt tối đa.') :
+            //             item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+            //     );
+
+            //     const cartDocRef = doc(db, "carts", userEmail);
+            //     setDoc(cartDocRef, { items: updatedItems }, { merge: true });
+
+            //     return updatedItems; 
+            // } else {
+            //     const newItem = { ...product, quantity: 1, userEmail };
+            //     const updatedItems = [...prevItems, newItem];
+
+
+            //     const cartDocRef = doc(db, "carts", userEmail);
+            //     setDoc(cartDocRef, { items: updatedItems }, { merge: true });
+
+            //     return updatedItems;
+            // }
         });
     };
 
@@ -187,7 +218,7 @@ function Shop() {
 
             const userEmail = localStorage.getItem('savedEmail');
             const cartDocRef = doc(db, "carts", userEmail);
-            setDoc(cartDocRef, { items: updatedItems }, { merge: true }); // Cập nhật Firestore
+            setDoc(cartDocRef, { items: updatedItems }, { merge: true });
 
             return updatedItems;
         });
@@ -197,7 +228,7 @@ function Shop() {
         const userEmail = localStorage.getItem('savedEmail');
         if (newQuantity < 1) {
             removeFromCart(productId); // Gọi hàm xóa
-        } else if (newQuantity > MAX_ITEMS_IN_CART) {
+        } else if (newQuantity > MAX_ITEMS_PER_PRODUCT) {
             alert("Số lượng sản phẩm không được vượt quá 20.");
         } else {
             setCartItems((prevItems) => {
@@ -367,7 +398,9 @@ function Shop() {
                                     {paginatedProducts.length > 0 ? (
                                         productList
                                     ) : (
-                                        <p>No products available</p>
+                                        <div style={styles.centerContent}>
+                                            No products available
+                                        </div>
                                     )}
                                     <div className="container">
                                         <CartIcon
@@ -461,162 +494,13 @@ function Shop() {
             </div>
             <Footer />
         </div>
-        // <div>
-        //     <NavBar></NavBar>
-
-        //     <div>
-        //         <section className="banner_area">
-        //             <div className="container">
-        //                 <div className="banner_text">
-        //                     <h3>Shop</h3>
-        //                     <ul>
-        //                         <li>
-        //                             <Link to="/home">Home</Link>
-        //                         </li>
-        //                         <li>
-        //                             <Link to="/shop">Shop</Link>
-        //                         </li>
-        //                     </ul>
-        //                 </div>
-        //             </div>
-        //         </section>
-
-        //         {/*  */}
-
-        //         <section className="product_area p_100">
-        //             <div className="container">
-        //                 <div className="row product_inner_row">
-        //                     <div className="col-lg-9">
-        //                         <div className="row m0 product_task_bar">
-        //                             <div className="product_task_inner">
-        //                                 <div className="float-left">
-        //                                     <span>Showing 1 - 10 of 55 results</span>
-        //                                 </div>
-        //                                 <div className="float-right">
-        //                                     <h4>Sort by :</h4>
-        //                                     <select className="short">
-        //                                         <option data-display="Default">A to Z</option>
-        //                                         <option value={1}>Default</option>
-        //                                         <option value={2}>Default</option>
-        //                                         <option value={4}>Default</option>
-        //                                     </select>
-        //                                 </div>
-        //                             </div>
-        //                         </div>
-        //                         <div className="row product_item_inner">
-        //                             {productList}
-        //                             <div className="container">
-
-        //                                 <CartIcon
-        //                                     itemCount={cartItems.reduce((acc, item) => acc + item.quantity, 0)}
-        //                                     onClick={toggleSidebar}
-        //                                     recentItems={cartItems} />
-
-        //                                 <CartSidebar
-        //                                     cartItems={cartItems}
-        //                                     isOpen={isSidebarOpen}
-        //                                     onClose={toggleSidebar}
-        //                                     onRemove={removeFromCart}
-        //                                     onQuantityChange={handleQuantityChange} />
-
-        //                             </div>
-        //                         </div>
-        //                         <div className="product_pagination">
-        //                             <div className="left_btn">
-        //                                 <a href="#">
-        //                                     <i className="lnr lnr-arrow-left" /> New posts
-        //                                 </a>
-        //                             </div>
-        //                             <div className="middle_list">
-        //                                 <nav aria-label="Page navigation example">
-        //                                     <ul className="pagination">
-        //                                         <li className="page-item active">
-        //                                             <a className="page-link" href="#">
-        //                                                 1
-        //                                             </a>
-        //                                         </li>
-        //                                         <li className="page-item">
-        //                                             <a className="page-link" href="#">
-        //                                                 2
-        //                                             </a>
-        //                                         </li>
-        //                                         <li className="page-item">
-        //                                             <a className="page-link" href="#">
-        //                                                 3
-        //                                             </a>
-        //                                         </li>
-        //                                         <li className="page-item">
-        //                                             <a className="page-link" href="#">
-        //                                                 ...
-        //                                             </a>
-        //                                         </li>
-        //                                         <li className="page-item">
-        //                                             <a className="page-link" href="#">
-        //                                                 12
-        //                                             </a>
-        //                                         </li>
-        //                                     </ul>
-        //                                 </nav>
-        //                             </div>
-        //                             <div className="right_btn">
-        //                                 <a href="#">
-        //                                     Older posts <i className="lnr lnr-arrow-right" />
-        //                                 </a>
-        //                             </div>
-        //                         </div>
-        //                     </div>
-        //                     <div className="col-lg-3">
-        //                         <div className="product_left_sidebar">
-        //                             <aside className="left_sidebar search_widget">
-        //                                 <div className="input-group">
-        //                                     <input
-        //                                         type="text"
-        //                                         className="form-control"
-        //                                         placeholder="Enter Search Keywords"
-        //                                     />
-        //                                     <div className="input-group-append">
-        //                                         <button className="btn" type="button">
-        //                                             <i className="icon icon-Search" />
-        //                                         </button>
-        //                                     </div>
-        //                                 </div>
-        //                             </aside>
-        //                             <aside className="left_sidebar p_catgories_widget">
-        //                                 <div className="p_w_title">
-        //                                     <h3>Product Categories</h3>
-        //                                 </div>
-        //                                 <ul className="list_style">
-        //                                     <li>
-        //                                         <a href="#">Cupcake (17)</a>
-        //                                     </li>
-        //                                     <li>
-        //                                         <a href="#">Chocolate (15)</a>
-        //                                     </li>
-        //                                     <li>
-        //                                         <a href="#">Celebration (14)</a>
-        //                                     </li>
-        //                                     <li>
-        //                                         <a href="#">Wedding Cake (8)</a>
-        //                                     </li>
-        //                                     <li>
-        //                                         <a href="#">Desserts (11)</a>
-        //                                     </li>
-        //                                 </ul>
-        //                             </aside>
-
-        //                         </div>
-        //                     </div>
-        //                 </div>
-        //             </div>
-        //         </section>
-
-        //         {/*  */}
-
-        //         <Newsletter></Newsletter>
-        //     </div>
-        //     <Footer></Footer>
-        // </div>
     );
+}
+
+const styles = {
+    centerContent: {
+        marginLeft: '45%',
+    }
 }
 
 export default Shop

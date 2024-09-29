@@ -4,43 +4,104 @@ import NavBar from "../components/navbar";
 import { Link } from "react-router-dom";
 import Footer from "../components/footer";
 import Newsletter from "../components/newsletter";
+import { auth, db } from './firebaseConfig';
+import { doc, setDoc, getDoc, collection, query, where } from 'firebase/firestore';
 
 
 const CartPage = () => {
     const [cartItems, setCartItems] = useState([]);
-    const [email, setEmail] = useState("");
+    const [loading, setLoading] = useState(true); // Thêm state loading
+    const [delayPassed, setDelayPassed] = useState(false);
 
-    useEffect(() => {
-        // Retrieve the cart data from local storage
-        const storedCartData = localStorage.getItem('cartData');
-        if (storedCartData) {
-            const { email: storedEmail, cartItems } = JSON.parse(storedCartData);
-            setEmail(storedEmail);
-            setCartItems(cartItems);
+    // const [email, setEmail] = useState("");
+
+    // Hàm để lấy dữ liệu từ Firestore
+    const fetchCartItems = async () => {
+        const userEmail = localStorage.getItem('savedEmail');
+        if (userEmail) {
+            const cartDocRef = doc(db, "carts", userEmail);
+            const cartSnapshot = await getDoc(cartDocRef);
+            if (cartSnapshot.exists()) {
+                const data = cartSnapshot.data();
+                const items = data.items || [];
+                setCartItems(items); // Cập nhật giỏ hàng từ Firestore
+                localStorage.setItem('cartItems', JSON.stringify(items)); // Lưu vào localStorage
+            } else {
+                // Nếu tài liệu không tồn tại, có thể tạo một tài liệu mới
+                await setDoc(cartDocRef, { items: [] }); // Tạo tài liệu giỏ hàng rỗng
+                console.log("No cart found for this user. Created a new cart.");
+                setCartItems([]); // Cập nhật giỏ hàng là rỗng
+                localStorage.setItem('cartItems', JSON.stringify([])); // Lưu vào localStorage
+            }
         }
+        setLoading(false);
+    };
+    // Gọi fetchCartItems khi component mount
+    useEffect(() => {
+        // Gọi fetchCartItems để lấy dữ liệu
+        fetchCartItems();
+
+        // Đặt thời gian delay 2 giây trước khi cho phép hiển thị nội dung
+        const delayTimer = setTimeout(() => {
+            setDelayPassed(true); // Sau 2 giây, cho phép hiển thị
+        }, 2000);
+
+        return () => clearTimeout(delayTimer); // Dọn dẹp timer khi component bị unmount
     }, []);
 
     // Function to save cart items and email to local storage
     const saveCartToLocalStorage = (cartItems) => {
-        const cartData = { email, cartItems };
-        localStorage.setItem('cartData', JSON.stringify(cartData));
+        const cartData = { cartItems };
+        localStorage.setItem('cartItems', JSON.stringify(cartData));
     };
 
-    const handleQuantityChange = (id, newQuantity) => {
-        const updatedCartItems = cartItems.map(item =>
-            item.id === id ? { ...item, quantity: parseInt(newQuantity) } : item
-        );
-        setCartItems(updatedCartItems);
-        saveCartToLocalStorage(updatedCartItems); // Save to local storage
+    const handleQuantityChange = async (productId, newQuantity) => {
+        const userEmail = localStorage.getItem('savedEmail');
+        if (newQuantity < 1) {
+            removeFromCart(productId); // Gọi hàm xóa
+        } else if (newQuantity > 20) {
+            alert("Số lượng sản phẩm không được vượt quá 20.");
+        } else {
+            setCartItems((prevItems) => {
+                const updatedItems = prevItems.map((item) =>
+                    item.id === productId ? { ...item, quantity: newQuantity } : item
+                );
+
+                // Cập nhật giỏ hàng vào Firestore
+                const cartDocRef = doc(db, "carts", userEmail);
+                setDoc(cartDocRef, { items: updatedItems }, { merge: true }); // Cập nhật Firestore
+
+                return updatedItems; // Trả về giỏ hàng đã cập nhật
+            });
+        }
     };
 
-    const handleRemove = (id) => {
-        const updatedCartItems = cartItems.filter(item => item.id !== id);
-        setCartItems(updatedCartItems);
-        saveCartToLocalStorage(updatedCartItems); // Save to local storage
+    const removeFromCart = async (id) => {
+        setCartItems((prevItems) => {
+            const updatedItems = prevItems.filter((item) => item.id !== id);
+
+            const userEmail = localStorage.getItem('savedEmail');
+            const cartDocRef = doc(db, "carts", userEmail);
+            setDoc(cartDocRef, { items: updatedItems }, { merge: true }); // Cập nhật Firestore
+
+            return updatedItems;
+        });
     };
 
     const total = cartItems.reduce((acc, product) => acc + parseFloat(product.price) * product.quantity, 0);
+
+    if (loading || !delayPassed) {
+        // Hiển thị màn hình loading nếu đang trong quá trình fetch hoặc thời gian delay chưa kết thúc
+        return (
+            <div>
+                <NavBar />
+                <section className="loading_screen" style={{ textAlign: "center", paddingTop: "200px", paddingBottom: "100px" }}>
+                    <h2>Loading your cart...</h2>
+                </section>
+                <Footer />
+            </div>
+        );
+    }
 
     return (
 
@@ -84,7 +145,7 @@ const CartPage = () => {
                                         price={product.price}
                                         quantity={product.quantity}
                                         onQuantityChange={(e) => handleQuantityChange(product.id, e.target.value)}
-                                        onRemove={() => handleRemove(product.id)}
+                                        onRemove={() => removeFromCart(product.id)}
                                     />
                                 ))}
                                 {cartItems.length !== 0 ? (
