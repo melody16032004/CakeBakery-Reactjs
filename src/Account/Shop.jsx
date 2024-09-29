@@ -63,7 +63,11 @@ function Shop() {
 
 
     const removeFromCart = (id) => {
-        setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+        setCartItems((prevItems) => {
+            const updatedItems = prevItems.filter((item) => item.id !== id);
+            localStorage.setItem('cartItems', JSON.stringify(updatedItems)); // Cập nhật localStorage
+            return updatedItems;
+        });
     };
 
     const handleQuantityChange = (productId, newQuantity) => {
@@ -148,12 +152,6 @@ function Shop() {
                                 <div className="row m0 product_task_bar">
                                     <div className="product_task_inner">
                                         <div className="float-left">
-                                            {/* <a className="active" href="#">
-                                                <i className="fa fa-th-large" aria-hidden="true" />
-                                            </a>
-                                            <a href="#">
-                                                <i className="fa fa-th-list" aria-hidden="true" />
-                                            </a> */}
                                             <span>Showing 1 - 10 of 55 results</span>
                                         </div>
                                         <div className="float-right">
@@ -168,9 +166,6 @@ function Shop() {
                                     </div>
                                 </div>
                                 <div className="row product_item_inner">
-                                    {/* {productList} */}
-                                    {/* <ProductList addToCart={addToCart} /> */}
-                                    {/* <Card addToCart={addToCart} /> */}
                                     {productList}
                                     <div className="container">
 
@@ -188,9 +183,6 @@ function Shop() {
                                             onRemove={removeFromCart}
                                             onQuantityChange={handleQuantityChange}
                                         />
-
-                                        {/* <ProductList addToCart={addToCart} /> */}
-                                        {/* <Card addToCart={addToCart} /> */}
 
                                     </div>
                                 </div>

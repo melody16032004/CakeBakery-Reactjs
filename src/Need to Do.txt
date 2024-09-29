@@ -2,3 +2,4 @@
 - log out tài khoản
 - navbar selected
 - hiển thị cart tương ứng với người dùng khi lưu ở localStorage
+- ở trạng thái quên mật khẩu thêm chức năng quay lại trạng thái login

@@ -8,31 +8,36 @@ import Newsletter from "../components/newsletter";
 
 const CartPage = () => {
     const [cartItems, setCartItems] = useState([]);
+    const [email, setEmail] = useState("");
 
     useEffect(() => {
-        const storedCartItems = localStorage.getItem('cartItems');
-        if (storedCartItems) {
-            setCartItems(JSON.parse(storedCartItems));
+        // Retrieve the cart data from local storage
+        const storedCartData = localStorage.getItem('cartData');
+        if (storedCartData) {
+            const { email: storedEmail, cartItems } = JSON.parse(storedCartData);
+            setEmail(storedEmail);
+            setCartItems(cartItems);
         }
     }, []);
 
-    // const products = [
-    //     { id: 1, name: "Wheel Axel", price: "$25.00", image: "img/product/cart-img.jpg", quantity: 1 },
-    //     { id: 2, name: "Brake Pad", price: "$15.00", image: "img/product/cart-img-2.jpg", quantity: 1 },
-    // ];
+    // Function to save cart items and email to local storage
+    const saveCartToLocalStorage = (cartItems) => {
+        const cartData = { email, cartItems };
+        localStorage.setItem('cartData', JSON.stringify(cartData));
+    };
 
     const handleQuantityChange = (id, newQuantity) => {
         const updatedCartItems = cartItems.map(item =>
             item.id === id ? { ...item, quantity: parseInt(newQuantity) } : item
         );
         setCartItems(updatedCartItems);
-        localStorage.setItem('cartItems', JSON.stringify(updatedCartItems)); // Cập nhật localStorage
+        saveCartToLocalStorage(updatedCartItems); // Save to local storage
     };
 
     const handleRemove = (id) => {
         const updatedCartItems = cartItems.filter(item => item.id !== id);
         setCartItems(updatedCartItems);
-        localStorage.setItem('cartItems', JSON.stringify(updatedCartItems)); // Cập nhật localStorage
+        saveCartToLocalStorage(updatedCartItems); // Save to local storage
     };
 
     const total = cartItems.reduce((acc, product) => acc + parseFloat(product.price) * product.quantity, 0);

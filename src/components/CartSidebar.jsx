@@ -109,7 +109,9 @@ const CartSidebar = ({ cartItems, onClose, isOpen, onRemove, onQuantityChange })
                                             </div>
                                             <div className='subline'>
                                                 <span className='pricePro' style={styles.price}>Price: ${item.price * item.quantity}</span>
-                                                <button className="remove-btn" onClick={() => onRemove(item.id)}>
+                                                <button
+                                                    className="remove-btn"
+                                                    onClick={() => onRemove(item.id)}>
                                                     <i className="fas fa-trash"></i> {/* Icon remove */}
                                                 </button>
                                             </div>
@@ -122,7 +124,6 @@ const CartSidebar = ({ cartItems, onClose, isOpen, onRemove, onQuantityChange })
                         </>
                     )
                 }
-                {/* Hiển thị icon mũi tên xuống nếu danh sách có thể cuộn và chưa cuộn đến cuối */}
                 {isScrollable && !isScrolledToBottom && (
                     <div style={styles.scrollArrow}>
                         <i className="fas fa-arrow-down"></i>
@@ -133,7 +134,6 @@ const CartSidebar = ({ cartItems, onClose, isOpen, onRemove, onQuantityChange })
                 <div style={styles.checkoutButtonContainer}>
 
                     <div style={styles.totalContainer}>
-                        {/* <h3>Total: ${totalPrice.toFixed(2)}</h3> */}
                         <button className='pest_btn' style={styles.checkoutButton} onClick={handleClick}>
                             {/* <Link to="/cart">Move to Cart Page</Link> */}
                             Move to Cart Page

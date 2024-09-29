@@ -2,14 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { auth } from './firebaseConfig';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import ForgetPassword from './ForgetPassword';
 
-const Login = ({ setShowLogin, setShowForget }) => {
+const Login = ({ setShowLogin, setShowForget, setCartItems }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
-    // Lấy tài khoản từ localStorage khi component được render lần đầu
     useEffect(() => {
         const storedEmail = localStorage.getItem('savedEmail');
         if (storedEmail) {
@@ -17,16 +15,34 @@ const Login = ({ setShowLogin, setShowForget }) => {
         }
     }, []);
 
+    // Function to load cart based on user email after successful login
+    // const loadUserCart = (userEmail) => {
+    //     const storedCartData = localStorage.getItem('cartData');
+    //     if (storedCartData) {
+    //         const cartDataArray = JSON.parse(storedCartData);
+    //         const userCartData = cartDataArray.find(cart => cart.email === userEmail);
+    //         if (userCartData) {
+    //             setCartItems(userCartData.cartItems); 
+    //         } else {
+    //             setCartItems([]);
+    //         }
+    //     } else {
+    //         setCartItems([]);
+    //     }
+    // };
+
     const handleLogin = async (e) => {
         e.preventDefault();
-        // Xử lý đăng nhập tại đây  
         try {
             await signInWithEmailAndPassword(auth, email, password);
+
             localStorage.setItem("isAuthenticated", true);
             localStorage.setItem("savedEmail", email);
+
+            // loadUserCart(email);
+
             alert('Đăng nhập thành công!');
             navigate('/home');
-            // Bạn có thể chuyển hướng tới trang khác ở đây
         } catch (error) {
             if (error.message === "Firebase: Error (auth/invalid-credential).")
                 alert("Tài khoản hoặc mật khẩu không đúng");
