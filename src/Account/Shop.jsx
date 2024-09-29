@@ -19,6 +19,8 @@ function Shop() {
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 9; // Số lượng sản phẩm hiển thị mỗi trang
+    const [sortOption, setSortOption] = useState('default');
+    const [filterCategory, setFilterCategory] = useState('all');
     const products = [
         { id: 0, name: "Cupcake of Vanela", price: "20", image: "img/cake-feature/c-feature-1.jpg", image_L: "img/product/product-details-1.jpg" },
         { id: 1, name: "Cupcake of Matcha", price: "25.5", image: "img/cake-feature/c-feature-2.jpg", image_L: "img/product/product-details-2.jpg" },
@@ -229,20 +231,12 @@ function Shop() {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
 
-    const paginatedProducts = products.slice(startIndex, endIndex);
+    // const paginatedProducts = products.slice(startIndex, endIndex);
 
 
 
-    const productList = paginatedProducts.map(product => (
-        <Card
-            id={product.id}
-            image={product.image}
-            name={product.name}
-            price={product.price}
-            image_L={product.image_L}
-            addToCart={addToCart}
-        />
-    ));
+
+
 
     const totalPages = Math.ceil(products.length / itemsPerPage); // Tổng số trang
 
@@ -282,6 +276,50 @@ function Shop() {
         return pages;
     };
 
+    // Sort & Filter
+    const handleSortChange = (e) => {
+        setSortOption(e.target.value);
+        setCurrentPage(1); // Đặt lại trang về 1 khi thay đổi sắp xếp
+    };
+
+    const handleFilterChange = (e) => {
+        setFilterCategory(e.target.value);
+        setCurrentPage(1); // Đặt lại trang về 1 khi thay đổi lọc
+    };
+    // Lọc và sắp xếp sản phẩm
+    const filteredProducts = products.filter(product =>
+        filterCategory === 'all' || product.category === filterCategory
+    );
+    const sortedProducts = filteredProducts.sort((a, b) => {
+        if (sortOption === 'priceAsc') {
+            return a.price - b.price;  // Sắp xếp theo giá tăng dần
+        } else if (sortOption === 'priceDesc') {
+            return b.price - a.price;  // Sắp xếp theo giá giảm dần
+        } else if (sortOption === 'nameAsc') {
+            return a.name.localeCompare(b.name);  // Sắp xếp theo tên A-Z
+        } else if (sortOption === 'nameDesc') {
+            return b.name.localeCompare(a.name);  // Sắp xếp theo tên Z-A
+        }
+        return 0;  // Giữ nguyên thứ tự mặc định
+    });
+    const paginatedProducts = sortedProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    console.log('Filtered Products:', filteredProducts);
+    console.log('Sorted Products:', sortedProducts);
+    console.log('Paginated Products:', paginatedProducts);
+    console.log('Current Page:', currentPage);
+    console.log('Total Pages:', totalPages);
+    const productList = paginatedProducts.map(product => (
+        <Card
+            id={product.id}
+            image={product.image}
+            name={product.name}
+            price={product.price}
+            image_L={product.image_L}
+            addToCart={addToCart}
+        />
+    ));
+    // 
+
     return (
         <div>
             <NavBar />
@@ -305,6 +343,7 @@ function Shop() {
                 <section className="product_area p_100">
                     <div className="container">
                         <div className="row product_inner_row">
+
                             <div className="col-lg-9">
                                 <div className="row m0 product_task_bar">
                                     <div className="product_task_inner">
@@ -313,17 +352,23 @@ function Shop() {
                                         </div>
                                         <div className="float-right">
                                             <h4>Sort by :</h4>
-                                            <select className="short">
-                                                <option data-display="Default">A to Z</option>
-                                                <option value={1}>Default</option>
-                                                <option value={2}>Default</option>
-                                                <option value={4}>Default</option>
+                                            <select className="short" onChange={handleSortChange} value={sortOption}>
+                                                <option value="default">Default</option>
+                                                <option value="priceAsc">Price: Low to High</option>
+                                                <option value="priceDesc">Price: High to Low</option>
+                                                <option value="nameAsc">Name: A to Z</option>
+                                                <option value="nameDesc">Name: Z to A</option>
                                             </select>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="row product_item_inner">
-                                    {productList}
+
+                                    {paginatedProducts.length > 0 ? (
+                                        productList
+                                    ) : (
+                                        <p>No products available</p>
+                                    )}
                                     <div className="container">
                                         <CartIcon
                                             itemCount={cartItems.reduce((acc, item) => acc + item.quantity, 0)}
@@ -341,15 +386,6 @@ function Shop() {
                                 </div>
                                 {/* ------------------------------------------- */}
                                 <div className="product_pagination">
-                                    {/* {totalPages > 1 ? (
-                                        <div className="left_btn">
-                                            <a href="#" onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}>
-                                                <i className="lnr lnr-arrow-left" /> New posts
-                                            </a>
-                                        </div>
-                                    ) : (
-                                        <div className="left_btn"></div>
-                                    )} */}
                                     {/* Ẩn nút New posts nếu đang ở trang đầu */}
                                     {currentPage > 1 ? (
                                         <div className="left_btn">
@@ -388,13 +424,6 @@ function Shop() {
                                     ) : (
                                         <div className="right_btn"></div>
                                     )}
-                                    {/* {totalPages > 1 && (
-                                        <div className="right_btn">
-                                            <a href="#" onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))}>
-                                                Older posts <i className="lnr lnr-arrow-right" />
-                                            </a>
-                                        </div>
-                                    )} */}
                                     {/* --------------------------------------- */}
                                 </div>
                             </div>
