@@ -1,0 +1,50 @@
+// Hàm xóa sản phẩm khỏi giỏ hàng
+const removeFromCart = (id) => {
+    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+};
+
+const updateQuantity = (id, quantity) => {
+    if (quantity <= 0) return;
+    setCartItems((prevItems) =>
+        prevItems.map((item) =>
+            item.id === id ? { ...item, quantity } : item
+        )
+    );
+};
+const toggleCartVisibility = () => {
+    setCartVisible(!isCartVisible); // Đảo ngược trạng thái hiển thị giỏ hàng
+};
+
+position: 'absolute',
+        // with: '30px',
+        // height: '30px',
+        // display: 'flex',
+        // justifyContent: 'center',
+        // alignItems: 'center',
+        bottom: '60px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        backgroundColor: '#fff',
+        borderRadius: '50%',
+        padding: '5px',
+        boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.5)',
+        cursor: 'pointer',
+        zIndex: 1001,
+
+
+const addToCart = (product) => {
+        setCartItems((prevItems) => {
+            const existingItem = prevItems.find((item) => item.id === product.id);
+            if (existingItem) {
+                return prevItems.map((item) =>
+                    item.id === product.id
+                        ? { ...item, quantity: item.quantity + 1 }
+                        : item
+                );
+            } else {
+                return [...prevItems, { ...product, quantity: 1 }];
+            }
+        });
+    };
+
+color: #f195b2

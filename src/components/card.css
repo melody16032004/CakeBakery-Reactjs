@@ -1,0 +1,23 @@
+.view-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+    width: 100px;
+    transition: background-color ease 1s;
+  }
+  
+  .cake_img:hover .view-btn {
+    opacity: 1;
+    z-index: 10;
+    background-color: #f195b2;
+  }
