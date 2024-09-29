@@ -5,7 +5,7 @@ const CartItem = ({ key, image, productName, price, quantity, onQuantityChange, 
     return (
         <tr>
             <td>
-                <img src={image} alt={productName} />
+                <img style={styles.customImg} src={image} alt={productName} />
             </td>
             <td>{productName}</td>
             <td>${parseFloat(price).toFixed(2)}</td>
@@ -27,5 +27,12 @@ const CartItem = ({ key, image, productName, price, quantity, onQuantityChange, 
         </tr>
     );
 };
+
+const styles = {
+    customImg: {
+        scale: '0.7',
+        borderRadius: '20px',
+    }
+}
 
 export default CartItem;

@@ -30,37 +30,6 @@ function Home() {
         }
     }, [cartItems]);
 
-
-
-    const addToCart = (product) => {
-        setCartItems((prevItems) => {
-            const totalQuantity = prevItems.reduce((acc, item) => acc + item.quantity, 0);
-
-            // Kiểm tra nếu tổng số lượng sản phẩm đã đạt đến giới hạn
-            if (totalQuantity >= MAX_ITEMS_IN_CART) {
-                alert('Bạn chỉ có thể thêm tối đa 20 sản phẩm vào giỏ hàng.');
-                return prevItems;  // Không thêm sản phẩm mới
-            }
-
-            const existingItem = prevItems.find((item) => item.id === product.id);
-
-            // Kiểm tra nếu số lượng thêm vào sẽ vượt quá giới hạn
-            if (existingItem && totalQuantity + 1 > MAX_ITEMS_IN_CART) {
-                alert('Số lượng sản phẩm trong giỏ đã đạt tối đa.');
-                return prevItems;
-            }
-
-            if (existingItem) {
-                return prevItems.map((item) =>
-                    item.id === product.id
-                        ? { ...item, quantity: item.quantity + 1 }
-                        : item
-                );
-            } else {
-                return [...prevItems, { ...product, quantity: 1 }];
-            }
-        });
-    };
     const removeFromCart = (id) => {
         setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
     };
@@ -90,14 +59,10 @@ function Home() {
         <div>
             <NavBar />
             <div className="container">
-                <h1>Shopping Cart</h1>
-
-
                 <CartIcon
                     itemCount={cartItems.reduce((acc, item) => acc + item.quantity, 0)}
                     onClick={toggleSidebar}
-                    recentItems={cartItems}
-                />
+                    recentItems={cartItems} />
 
                 <CartSidebar
                     cartItems={cartItems}
@@ -105,10 +70,7 @@ function Home() {
                     onClose={toggleSidebar}
                     onRemove={removeFromCart}
                     onQuantityChange={handleQuantityChange}
-                    onCheckout={handleCheckout}
-                />
-
-                <ProductList addToCart={addToCart} />
+                    onCheckout={handleCheckout} />
             </div>
 
             <Footer />

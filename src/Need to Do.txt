@@ -1,4 +1,4 @@
 - giới hạn sản phẩm thêm vào
 - log out tài khoản
 - navbar selected
-- 
+- hiển thị cart tương ứng với người dùng khi lưu ở localStorage

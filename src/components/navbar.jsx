@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
+import '../index.css';
 // import ProductList from './ProductList';
 // import Cart from './cart';
 
 function NavBar() {
     const [isSticky, setSticky] = useState(false);
+    const [showSearch, setShowSearch] = useState(false);
+
+    const toggleSearch = () => {
+        setShowSearch(!showSearch);
+    };
 
     const handleScroll = () => {
         if (window.scrollY > 50) { // Khoảng cách cuộn để bắt đầu dính
@@ -26,11 +32,12 @@ function NavBar() {
                 <div className="container">
                     <div className="float-left">
                         <a href="tell:+18004567890">
-                            <i className="fa fa-phone" aria-hidden="true" /> + (1800) 456 7890
+                            <i className="fa fa-phone" aria-hidden="true" />  035 898 3714
                         </a>
                         <a href="mainto:info@cakebakery.com">
                             <i className="fa fa-envelope-o" aria-hidden="true" />
-                            info@cakebakery.com
+                            {/* info@cakebakery.com */}
+                            hoangdoan103@gmail.com
                         </a>
                     </div>
                     <div className="float-right">
@@ -40,37 +47,55 @@ function NavBar() {
                                     <i className="fa fa-facebook" />
                                 </a>
                             </li>
-                            <li>
+                            {/* <li>
                                 <a href="#">
                                     <i className="fa fa-twitter" />
                                 </a>
-                            </li>
-                            <li>
+                            </li> */}
+                            {/* <li>
                                 <a href="#">
                                     <i className="fa fa-google-plus" />
                                 </a>
-                            </li>
-                            <li>
+                            </li> */}
+                            {/* <li>
                                 <a href="#">
                                     <i className="fa fa-linkedin" />
                                 </a>
-                            </li>
+                            </li> */}
                         </ul>
                         <ul className="h_search list_style">
-                            <li className="shop_cart">
+                            {/* <li className="shop_cart">
                                 <a href="#">
                                     <i className="lnr lnr-cart" />
                                 </a>
-                            </li>
-                            {/* <CartIcon
-                                itemCount={Home.cartItems.reduce((acc, item) => acc + item.quantity, 0)}
-                                onClick={Home.toggleCartVisibility} // Gọi hàm để ẩn/hiện giỏ hàng
-                            /> */}
+                            </li> */}
                             <li>
-                                <a className="popup-with-zoom-anim" href="#test-search">
+                                {showSearch && (
+                                    <input
+                                        type="text"
+                                        placeholder="Search..."
+                                        className="search-input"
+                                    />
+                                )}
+                            </li>
+                            <li className='social-icons'>
+                                <a className="popup-with-zoom-anim search-icon"
+                                    href="#test-search"
+                                    onClick={toggleSearch}>
                                     <i className="fa fa-search" />
                                 </a>
                             </li>
+                            <li>
+                                <a href="#"><i class="fa fa-sign-out" aria-hidden="true" /></a>
+
+                            </li>
+                            <li>
+                                <a href="#"><i class="fa fa-user-circle-o" aria-hidden="true" /></a>
+                            </li>
+                            <li>
+                                <a>hoangdoan103</a>
+                            </li>
+
                         </ul>
                     </div>
                 </div>

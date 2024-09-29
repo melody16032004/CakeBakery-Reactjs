@@ -232,3 +232,21 @@ input[type="number"] {
 .remove-btn i {
   font-size: 18px;
 }
+
+.social-icons {
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+}
+
+.search-input {
+  margin-left: 10px;
+  padding-left: 20px;
+  height: 15px;
+}

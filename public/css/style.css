@@ -2054,7 +2054,7 @@ i:before {
 }
 
 .cake_feature_item .cake_text h4 {
-  width: 70px;
+  width: 90px;
   height: 70px;
   border-radius: 50%;
   color: #343434;
@@ -4642,9 +4642,9 @@ i:before {
   -webkit-box-shadow: none;
   box-shadow: none;
   border-bottom: 2px solid #fff;
-  color: #666;
+  color: #fff;
   font-family: "Playfair Display", serif;
-  font-size: 14px;
+  font-size: 17px;
   letter-spacing: .28px;
   width: 100%;
 }
