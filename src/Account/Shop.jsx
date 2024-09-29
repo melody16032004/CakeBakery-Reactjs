@@ -9,6 +9,8 @@ import CartIcon from '../components/CartIcon';
 import CartSidebar from '../components/CartSidebar';
 import "../index.css";
 import ProductList from './ProductList';
+import { auth, db } from './firebaseConfig';
+import { doc, setDoc, getDoc, collection, query, where } from 'firebase/firestore';
 
 function Shop() {
     const MAX_ITEMS_IN_CART = 20;
@@ -16,75 +18,185 @@ function Shop() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        const storedCart = localStorage.getItem('cartItems');
-        console.log('Cart from localStorage:', storedCart);  // Kiểm tra nội dung lấy ra từ localStorage
-        if (storedCart) {
-            setCartItems(JSON.parse(storedCart));
-        }
-    }, []);
+    // useEffect(() => {
+    //     const storedCart = localStorage.getItem('cartItems');
+    //     const userEmail = localStorage.getItem('savedEmail'); // Get the current user's email
+
+    //     console.log('Cart from localStorage:', storedCart);  // Check the contents retrieved from localStorage
+    //     if (storedCart) {
+    //         const parsedCart = JSON.parse(storedCart);
+    //         // Filter the cart items based on the user's email
+    //         const filteredCartItems = parsedCart.filter(item => item.userEmail === userEmail);
+    //         setCartItems(filteredCartItems); // Set the filtered cart items
+    //     }
+    // }, []);
 
 
-    useEffect(() => {
-        if (cartItems.length > 0) {
-            localStorage.setItem('cartItems', JSON.stringify(cartItems)); // Lưu trữ giỏ hàng dưới dạng chuỗi JSON
+    // useEffect(() => {
+    //     if (cartItems.length > 0) {
+    //         localStorage.setItem('cartItems', JSON.stringify(cartItems)); // Lưu trữ giỏ hàng dưới dạng chuỗi JSON
+    //     }
+    // }, [cartItems]);
+
+
+    const fetchCartItems = async () => {
+        const userEmail = localStorage.getItem('savedEmail');
+        if (userEmail) {
+            const cartDocRef = doc(db, "carts", userEmail);
+            const cartSnapshot = await getDoc(cartDocRef);
+            if (cartSnapshot.exists()) {
+                const data = cartSnapshot.data();
+                const items = data.items || [];
+                setCartItems(items); // Cập nhật giỏ hàng từ Firestore
+                localStorage.setItem('cartItems', JSON.stringify(items)); // Lưu vào localStorage
+            } else {
+                // Nếu tài liệu không tồn tại, có thể tạo một tài liệu mới
+                await setDoc(cartDocRef, { items: [] }); // Tạo tài liệu giỏ hàng rỗng
+                console.log("No cart found for this user. Created a new cart.");
+                setCartItems([]); // Cập nhật giỏ hàng là rỗng
+                localStorage.setItem('cartItems', JSON.stringify([])); // Lưu vào localStorage
+            }
         }
+    };
+    useEffect(() => {
+        localStorage.setItem('cartItems', JSON.stringify(cartItems)); // Cập nhật localStorage
     }, [cartItems]);
 
-    const addToCart = (product) => {
+    useEffect(() => {
+
+        fetchCartItems();
+        // const loadCartItems = async () => {
+        //     const userEmail = localStorage.getItem('savedEmail');
+        //     if (userEmail) {
+        //         const cartRef = collection(db, "carts");
+        //         const q = query(cartRef, where("userEmail", "==", userEmail));
+        //         const querySnapshot = await getDoc(q);
+
+        //         let cartItems = [];
+        //         querySnapshot.forEach((doc) => {
+        //             const data = doc.data();
+        //             cartItems = [...cartItems, ...data.items]; // Thêm sản phẩm vào mảng cartItems
+        //         });
+
+        //         setCartItems(cartItems); // Cập nhật giỏ hàng
+        //     } else {
+        //         console.log('No user email found.');
+        //     }
+        // };
+
+        // loadCartItems();
+    }, []);
+
+    // useEffect(() => {
+    //     const userEmail = localStorage.getItem('savedEmail');
+    //     if (userEmail) {
+    //         const cartDocRef = doc(db, "carts", userEmail);
+    //         setDoc(cartDocRef, { items: cartItems }, { merge: true }); // Cập nhật Firestore mỗi khi cartItems thay đổi
+    //     }
+    // }, [cartItems]);
+
+    const addToCart = async (product) => {
+        // setCartItems((prevItems) => {
+        //     const existingItem = prevItems.find((item) => item.id === product.id);
+        //     if (existingItem) {
+        //         return prevItems.map((item) =>
+        //             item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+        //         );
+        //     } else {
+        //         return [...prevItems, { ...product, quantity: 1 }];
+        //     }
+        // });
+        const userEmail = localStorage.getItem('savedEmail');
+
         setCartItems((prevItems) => {
             const totalQuantity = prevItems.reduce((acc, item) => acc + item.quantity, 0);
 
-            // Kiểm tra nếu tổng số lượng sản phẩm đã đạt đến giới hạn
             if (totalQuantity >= MAX_ITEMS_IN_CART) {
                 alert('Bạn chỉ có thể thêm tối đa 20 sản phẩm vào giỏ hàng.');
-                return prevItems;  // Không thêm sản phẩm mới
+                return prevItems;
             }
 
+            // const existingItem = prevItems.find((item) => item.id === product.id && item.userEmail === userEmail);
             const existingItem = prevItems.find((item) => item.id === product.id);
 
-            // Kiểm tra nếu số lượng thêm vào sẽ vượt quá giới hạn
             if (existingItem && totalQuantity + 1 > MAX_ITEMS_IN_CART) {
                 alert('Số lượng sản phẩm trong giỏ đã đạt tối đa.');
                 return prevItems;
             }
 
             if (existingItem) {
-                return prevItems.map((item) =>
-                    item.id === product.id
-                        ? { ...item, quantity: item.quantity + 1 }
-                        : item
+                // Tăng số lượng sản phẩm nếu đã tồn tại
+                const updatedItems = prevItems.map((item) =>
+                    item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
                 );
+
+                // Cập nhật Firestore
+                const cartDocRef = doc(db, "carts", userEmail);
+                setDoc(cartDocRef, { items: updatedItems }, { merge: true }); // Cập nhật Firestore
+
+                return updatedItems; // Trả về giỏ hàng đã cập nhật
             } else {
-                return [...prevItems, { ...product, quantity: 1 }];
+                const newItem = { ...product, quantity: 1, userEmail };
+                const updatedItems = [...prevItems, newItem];
+
+                // Cập nhật Firestore
+                const cartDocRef = doc(db, "carts", userEmail);
+                setDoc(cartDocRef, { items: updatedItems }, { merge: true }); // Cập nhật Firestore
+
+                return updatedItems; // Trả về giỏ hàng đã cập nhật
             }
         });
     };
 
 
-    const removeFromCart = (id) => {
+    // const removeFromCart = (id) => {
+    //     setCartItems((prevItems) => {
+    //         const updatedItems = prevItems.filter((item) => item.id !== id);
+    //         localStorage.setItem('cartItems', JSON.stringify(updatedItems)); // Cập nhật localStorage
+    //         return updatedItems;
+    //     });
+    // };
+    const removeFromCart = async (id) => {
         setCartItems((prevItems) => {
             const updatedItems = prevItems.filter((item) => item.id !== id);
-            localStorage.setItem('cartItems', JSON.stringify(updatedItems)); // Cập nhật localStorage
+
+            const userEmail = localStorage.getItem('savedEmail');
+            const cartDocRef = doc(db, "carts", userEmail);
+            setDoc(cartDocRef, { items: updatedItems }, { merge: true }); // Cập nhật Firestore
+
             return updatedItems;
         });
+        // setCartItems((prevItems) => {
+        //     const updatedItems = prevItems.filter((item) => item.id !== id);
+        //     return updatedItems; // Cập nhật giỏ hàng
+        // });
     };
 
-    const handleQuantityChange = (productId, newQuantity) => {
+    const handleQuantityChange = async (productId, newQuantity) => {
+        const userEmail = localStorage.getItem('savedEmail');
         if (newQuantity < 1) {
-            removeFromCart(productId);
-        } else if (newQuantity > 20) {
-            // Nếu số lượng mới lớn hơn 10, không thực hiện thay đổi
+            removeFromCart(productId); // Gọi hàm xóa
+        } else if (newQuantity > MAX_ITEMS_IN_CART) {
             alert("Số lượng sản phẩm không được vượt quá 20.");
+        } else {
+            setCartItems((prevItems) => {
+                const updatedItems = prevItems.map((item) =>
+                    item.id === productId ? { ...item, quantity: newQuantity } : item
+                );
 
-        } else
-            setCartItems((prevItems) =>
-                prevItems.map((item) =>
-                    item.id === productId
-                        ? { ...item, quantity: newQuantity }
-                        : item
-                )
-            );
+                // Cập nhật giỏ hàng vào Firestore
+                const cartDocRef = doc(db, "carts", userEmail);
+                setDoc(cartDocRef, { items: updatedItems }, { merge: true }); // Cập nhật Firestore
+
+                return updatedItems; // Trả về giỏ hàng đã cập nhật
+            });
+            // setCartItems((prevItems) => {
+            //     const updatedItems = prevItems.map((item) =>
+            //         item.id === productId ? { ...item, quantity: newQuantity } : item
+            //     );
+            //     return updatedItems; // Cập nhật giỏ hàng
+            // });
+        }
     };
     const handleCheckout = () => {
         setLoading(true);  // Kích hoạt trạng thái loading
