@@ -14,6 +14,7 @@ function Shop() {
     const MAX_ITEMS_IN_CART = 20;
     const [cartItems, setCartItems] = useState([]);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const storedCart = localStorage.getItem('cartItems');
@@ -82,7 +83,11 @@ function Shop() {
             );
     };
     const handleCheckout = () => {
-        alert('Proceeding to checkout');
+        setLoading(true);  // Kích hoạt trạng thái loading
+        setTimeout(() => {
+            setLoading(false);  // Tắt trạng thái loading sau 3 giây
+            alert('Proceeding to checkout');
+        }, 3000);
     };
 
     const toggleSidebar = () => {
@@ -182,7 +187,6 @@ function Shop() {
                                             onClose={toggleSidebar}
                                             onRemove={removeFromCart}
                                             onQuantityChange={handleQuantityChange}
-                                            onCheckout={handleCheckout}
                                         />
 
                                         {/* <ProductList addToCart={addToCart} /> */}

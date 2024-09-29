@@ -7,38 +7,46 @@ import { useNavigate } from 'react-router-dom';
 import './Account/Register.css';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import ForgetPassword from "./Account/ForgetPassword";
 
 
 
 const App = () => {
   const [showLogin, setShowLogin] = useState(true);
+  const [showForget, setShowForget] = useState(false);
+
+  const [currentView, setCurrentView] = useState('login');
   const [animating, setAnimating] = useState(false);
   const navigate = useNavigate();
 
-  const handleToggle = () => {
-    // Thêm độ trễ cho hiệu ứng
+  const handleToggle = (view) => {
     setAnimating(true);
     setTimeout(() => {
-      setShowLogin(!showLogin);
+      setCurrentView(view);
       setAnimating(false);
     }, 500); // Thời gian hiệu ứng (0.5 giây)
   };
 
   return (
-
-
     <div className="App">
       <div className="form-container">
-        <div className={`login-container ${showLogin ? 'active' : animating ? 'exit' : ''}`}>
-          <Login setShowLogin={handleToggle} navigate={navigate} />
-        </div>
-        <div className={`register-container ${!showLogin ? 'active' : animating ? 'exit' : ''}`}>
-          <Register setShowLogin={handleToggle} navigate={navigate} />
-        </div>
+        {currentView === 'forget' && (
+          <div className={`forget-container ${animating ? 'exit' : 'active'}`}>
+            <ForgetPassword setShowForget={() => handleToggle('login')} navigate={navigate} />
+          </div>
+        )}
+        {currentView === 'login' && (
+          <div className={`login-container ${animating ? 'exit' : 'active'}`}>
+            <Login setShowLogin={() => handleToggle('register')} navigate={navigate} setShowForget={() => handleToggle('forget')} />
+          </div>
+        )}
+        {currentView === 'register' && (
+          <div className={`register-container ${animating ? 'exit' : 'active'}`}>
+            <Register setShowLogin={() => handleToggle('login')} navigate={navigate} />
+          </div>
+        )}
       </div>
     </div>
-
-
   );
 };
 

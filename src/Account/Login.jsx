@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { auth } from './firebaseConfig';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
+import ForgetPassword from './ForgetPassword';
 
-const Login = ({ setShowLogin }) => {
+const Login = ({ setShowLogin, setShowForget }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
@@ -32,6 +33,7 @@ const Login = ({ setShowLogin }) => {
         }
     };
 
+
     return (
         <div>
             <form onSubmit={handleLogin}>
@@ -52,11 +54,21 @@ const Login = ({ setShowLogin }) => {
                 />
                 <button type="submit">Đăng nhập</button>
 
-                <p onClick={setShowLogin}>Chưa có tài khoản? Đăng ký</p>
-            </form>
+                <div className='subLogin' style={styles.subLogin}>
+                    <p onClick={setShowLogin}>Chưa có tài khoản? Đăng ký</p>
+                    <p onClick={setShowForget}>Quên mật khẩu?</p>
+                </div>
 
+            </form>
         </div>
     );
 };
+
+const styles = {
+    subLogin: {
+        display: 'flex',
+        justifyContent: 'space-between',
+    }
+}
 
 export default Login;

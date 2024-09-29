@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import '../index.css';
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-const CartSidebar = ({ cartItems, onClose, isOpen, onRemove, onQuantityChange, onCheckout }) => {
+const CartSidebar = ({ cartItems, onClose, isOpen, onRemove, onQuantityChange }) => {
     const [isScrollable, setIsScrollable] = useState(false);
     const [isScrolledToBottom, setIsScrolledToBottom] = useState(false);
+    const navigate = useNavigate();
     const itemListRef = useRef(null);
 
     useEffect(() => {
@@ -24,6 +27,9 @@ const CartSidebar = ({ cartItems, onClose, isOpen, onRemove, onQuantityChange, o
         };
     }, [cartItems]);
 
+    const handleClick = () => {
+        navigate('/cart');
+    };
 
     // Kiểm tra xem đã cuộn đến cuối danh sách chưa
     const handleScroll = () => {
@@ -64,7 +70,7 @@ const CartSidebar = ({ cartItems, onClose, isOpen, onRemove, onQuantityChange, o
                     cartItems.length === 0 ? (
                         <p className='noted' style={styles.noted}>Your cart is empty</p>) : (
                         <>
-                            {/* <scroll> */}
+
                             <div
                                 style={styles.itemListContainer}
                                 ref={itemListRef}
@@ -112,7 +118,7 @@ const CartSidebar = ({ cartItems, onClose, isOpen, onRemove, onQuantityChange, o
                                 </ul>
 
                             </div>
-                            {/* </scroll> */}
+
                         </>
                     )
                 }
@@ -125,14 +131,12 @@ const CartSidebar = ({ cartItems, onClose, isOpen, onRemove, onQuantityChange, o
             </div>
             {cartItems.length > 0 && (
                 <div style={styles.checkoutButtonContainer}>
-                    {/* <button style={styles.checkoutButton} onClick={handleCheckout}>
-                        Checkout
-                    </button> */}
 
                     <div style={styles.totalContainer}>
                         {/* <h3>Total: ${totalPrice.toFixed(2)}</h3> */}
-                        <button style={styles.checkoutButton} onClick={onCheckout}>
-                            Checkout
+                        <button className='pest_btn' style={styles.checkoutButton} onClick={handleClick}>
+                            {/* <Link to="/cart">Move to Cart Page</Link> */}
+                            Move to Cart Page
                         </button>
                     </div>
                 </div>

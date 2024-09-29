@@ -261,7 +261,8 @@ function NavBar() {
                                             <Link to="/product-details">Product Details</Link>
                                         </li> */}
                                             <li>
-                                                <a href="cart.html">Cart Page</a>
+                                                {/* <a href="cart.html">Cart Page</a> */}
+                                                <Link to="/cart">Cart Page</Link>
                                             </li>
                                             <li>
                                                 <a href="checkout.html">Checkout Page</a>
