@@ -7,8 +7,22 @@ import '../index.css';
 function NavBar() {
     const [isSticky, setSticky] = useState(false);
     const [showSearch, setShowSearch] = useState(false);
+    const [email, setEmail] = useState('');
     const navigate = useNavigate();
 
+    useEffect(() => {
+        const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+        if (!isAuthenticated) {
+            setEmail("anonymous");
+            return;
+        } else {
+            const storedEmail = localStorage.getItem('savedEmail');
+            if (storedEmail) {
+                setEmail(storedEmail);
+            }
+        }
+
+    }, []);
     const toggleSearch = () => {
         setShowSearch(!showSearch);
     };
@@ -33,6 +47,10 @@ function NavBar() {
             if (error.message === "Firebase: Error (auth/invalid-credential).")
                 alert("Tài khoản hoặc mật khẩu không đúng");
         }
+    };
+    const handleLogin = (e) => {
+        e.preventDefault();
+        navigate('/');
     };
 
     useEffect(() => {
@@ -102,17 +120,27 @@ function NavBar() {
                             </li>
 
                             <li>
-                                <a>hoangdoan103</a>
-                            </li>
-                            <li>
-                                <a href="#"><i class="fa fa-user-circle-o" aria-hidden="true" /></a>
-                            </li>
-                            <li>
-                                <a href="#"
-                                    onClick={handleLogout}>
-                                    <i class="fa fa-sign-out" aria-hidden="true" />
+                                <a>
+                                    {/* hoangdoan103 */}
+                                    {email}
                                 </a>
                             </li>
+                            {email === "anonymous" ? (
+                                <li>
+                                    <a href="#" onClick={handleLogin}>
+                                        <i class="fa fa-user-circle-o" aria-hidden="true" />
+                                    </a>
+                                </li>
+                            ) : (
+                                <li>
+                                    <a href="#"
+                                        onClick={handleLogout}>
+                                        <i class="fa fa-sign-out" aria-hidden="true" />
+                                    </a>
+                                </li>
+                            )}
+
+
 
                         </ul>
                     </div>
