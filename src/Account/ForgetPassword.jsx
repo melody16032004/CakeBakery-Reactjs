@@ -32,6 +32,11 @@ const ForgetPassword = ({ setShowForget }) => {
         }
     };
 
+    const handleBackToLogin = (e) => {
+        e.preventDefault();
+        setShowForget('login');
+    }
+
     return (
         <div>
             <h2>Quên Mật Khẩu</h2>
@@ -48,8 +53,35 @@ const ForgetPassword = ({ setShowForget }) => {
                 </button>
             </form>
             {message && <p>{message}</p>}
+
+            <div style={styles.backToLogin}>
+                <a href='#'
+                    onClick={handleBackToLogin}
+                    style={styles.link}>
+                    <i class="fa fa-arrow-left" aria-hidden="true" />
+                    Back to login
+                </a>
+
+            </div>
         </div>
     );
+}
+
+const styles = {
+    backToLogin: {
+        display: 'flex',
+        justifyContent: 'center',
+        color: 'white',
+        fontStyle: 'normal',
+        fontWeight: '300',
+        letterSpacing: '3px',
+        paddingTop: '50px',
+
+    },
+    link: {
+        textDecoration: 'none',
+        color: 'white',
+    }
 }
 
 export default ForgetPassword

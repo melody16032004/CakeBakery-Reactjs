@@ -325,19 +325,22 @@ function NavBar() {
                                         </a>
                                         <ul className="dropdown-menu">
                                             <li>
-                                                {/* <a href="shop.html">Main shop</a> */}
                                                 <Link to="/shop">Main shop</Link>
                                             </li>
-                                            {/* <li>
-                                            <Link to="/product-details">Product Details</Link>
-                                        </li> */}
-                                            <li>
-                                                {/* <a href="cart.html">Cart Page</a> */}
-                                                <Link to="/cart">Cart Page</Link>
-                                            </li>
-                                            <li>
-                                                <a href="#">Checkout Page</a>
-                                            </li>
+
+                                            {email !== "anonymous" && (
+                                                <div>
+                                                    <li>
+                                                        <Link to="/cart">Cart Page</Link>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#">Checkout Page</a>
+                                                    </li>
+                                                </div>
+                                            )}
+
+
+
                                         </ul>
                                     </li>
                                     <li>
