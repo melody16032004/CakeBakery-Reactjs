@@ -60,7 +60,7 @@ const CartPage = () => {
     const handleCheckout = (e) => {
         e.preventDefault();
         localStorage.setItem('cartItems', JSON.stringify(cartItems));
-        navigate('/checkout');
+        navigate('/checkout', { replace: true });
     }
 
     const handleQuantityChange = async (productId, newQuantity) => {
@@ -203,9 +203,10 @@ const CartPage = () => {
                                     </h4>
                                 </div>
                                 <div className="cart_footer">
-                                    <Link to="/checkout" onClick={handleCheckout}>
-                                        <a className="pest_btn" href="#" onClick={handleCheckout}>Proceed to Checkout</a>
-                                    </Link>
+                                    {/* <Link to="/checkout" onClick={handleCheckout}>
+                                        
+                                    </Link> */}
+                                    <a className="pest_btn" href="#" onClick={handleCheckout}>Proceed to Checkout</a>
                                 </div>
                             </div>
                         </div>

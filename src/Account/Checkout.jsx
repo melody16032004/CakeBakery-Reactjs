@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import NavBar from "../components/navbar";
 import Footer from "../components/footer";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { auth, db } from './firebaseConfig';
-import { doc, addDoc, setDoc, getDoc, collection, query, where } from 'firebase/firestore';
+import { doc, addDoc, setDoc, getDoc, collection, query, where, deleteDoc } from 'firebase/firestore';
 import "./Checkout.css";
 
 const Checkout = () => {
@@ -14,6 +14,11 @@ const Checkout = () => {
         formGroup: {
             display: 'flex',
         },
+        countDown: {
+            display: 'flex',
+            justifyContent: 'center',
+            marginTop: '20px',
+        }
     }
 
     const [formData, setFormData] = useState({
@@ -40,12 +45,62 @@ const Checkout = () => {
         { id: 5, name: 'Bluetooth Speaker', price: 75.00, quantity: 1 },
     ]);
     const [cartItems, setCartItems] = useState([]);
+    const [timeLeft, setTimeLeft] = useState(300); // Countdown timer for 5 minutes = 300
+    const [isTimerActive, setIsTimerActive] = useState(false);
+    const [orderId, setOrderId] = useState(localStorage.getItem('orderId') || null);
+    const navigate = useNavigate();
+
     useEffect(() => {
         const savedCartItems = localStorage.getItem('cartItems');
         if (savedCartItems) {
             setCartItems(JSON.parse(savedCartItems));
         }
     }, []);
+
+    useEffect(() => {
+        let interval;
+        if (isTimerActive && timeLeft > 0) {
+            interval = setInterval(() => {
+                setTimeLeft(prevTime => {
+                    if (prevTime <= 1) {
+                        clearInterval(interval);
+                        handleConfirmOrder(); // Automatically confirm the order after time is up
+                        return 0;
+                    }
+                    return prevTime - 1;
+                });
+            }, 1000);
+        }
+
+        return () => clearInterval(interval); // Cleanup on unmount
+    }, [isTimerActive, timeLeft]);
+
+    useEffect(() => {
+        const timerStart = localStorage.getItem('timerStart');
+        const storedOrderId = localStorage.getItem('orderId');
+        if (timerStart) {
+            const timeElapsed = Math.floor((new Date().getTime() - parseInt(timerStart, 10)) / 1000);
+            const remainingTime = 300 - timeElapsed;  // 300 seconds (5 minutes)
+
+            if (remainingTime > 0) {
+                setTimeLeft(remainingTime);
+                setIsTimerActive(true);
+            } else {
+                // Time has expired, handle order confirmation
+                handleConfirmOrder();
+            }
+        }
+
+        if (storedOrderId) {
+            setOrderId(storedOrderId); // Ensure orderId is set if it exists in localStorage
+        }
+
+        // Clear timer on component unmount
+        return () => {
+            localStorage.removeItem('timerStart');
+        };
+    }, []);
+
     const total = cartItems.reduce((acc, product) => acc + parseFloat(product.price) * product.quantity, 0);
 
     const calculateTotal = () => {
@@ -53,6 +108,7 @@ const Checkout = () => {
     };
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         try {
             const documentId = Date.now().toString();
 
@@ -62,18 +118,75 @@ const Checkout = () => {
                 quantity: item.quantity,
             }));
 
-            const docRef = await setDoc(doc(db, 'invoices', documentId), {
+            await setDoc(doc(db, 'invoices', documentId), {
                 ...formData,
                 items: cartItem, // Danh sách sản phẩm
                 total: total, // Tổng giá trị hóa đơn
                 createdAt: new Date(), // Ngày tạo hóa đơn
             });
+            const newOrderId = 'some_generated_order_id'; // Replace this with your actual order creation logic
+            setOrderId(newOrderId);
+            localStorage.setItem('orderId', newOrderId); // Store the order ID in localStorage
+            localStorage.setItem('timerStart', new Date().getTime().toString()); // Save start time in localStorage
+
+            setIsTimerActive(true); // Activate the timer
+            setTimeLeft(300);
             console.log('Document written with ID: ', documentId);
-            alert('Invoice saved successfully!');
+            alert('Đơn hàng của bạn đã được giao.\nVui lòng kiểm tra đơn hàng, xin cảm ơn!');
         } catch (error) {
             console.error('Error adding document: ', error);
             alert('Error saving invoice');
         }
+    };
+
+    const handleCancelOrder = async () => {
+        if (!orderId) {
+            console.error('Order ID is missing. Cannot cancel order.');
+            return;
+        }
+
+        try {
+            await deleteDoc(doc(db, 'invoices', orderId)); // Delete the order document from Firestore
+            setIsTimerActive(false); // Stop the timer
+            setOrderId(null); // Reset the order ID
+            setTimeLeft(300); // Reset the timer
+            localStorage.removeItem('orderId'); // Remove orderId from local storage
+            localStorage.removeItem('timerStart'); // Remove the timer start from local storage
+            alert('Your order has been canceled.');
+            navigate('/cart'); // Redirect the user after cancellation
+        } catch (error) {
+            console.error('Error canceling order: ', error);
+            alert('Error canceling the order');
+        }
+    };
+
+    const handleConfirmOrder = async () => {
+        if (orderId) {
+            try {
+                console.log(`Order ${orderId} has been confirmed.`);
+                alert('The order has been confirmed after the timer ran out.');
+
+                await deleteCartItems();
+                setIsTimerActive(false); // Stop the timer
+                localStorage.removeItem('timerStart'); // Clear the timer from localStorage
+            } catch (error) {
+                console.error('Error confirming order: ', error);
+            }
+        } else {
+            console.log("Order ID is missing. Cannot confirm order.");
+        }
+    };
+
+    const deleteCartItems = async () => {
+        // Replace 'cartItems' with your actual Firestore collection where the cart items are stored
+        const cartItemsRef = collection(db, 'carts');
+        const q = query(cartItemsRef, where('userEmail', '==', auth.email)); // Assuming you filter by user ID
+
+        const querySnapshot = await getDoc(q);
+        const deletePromises = querySnapshot.docs.map(doc => deleteDoc(doc.ref)); // Prepare delete promises
+
+        await Promise.all(deletePromises); // Wait for all deletions to complete
+        console.log('Cart items have been deleted successfully.');
     };
 
 
@@ -241,6 +354,8 @@ const Checkout = () => {
                                             <h5>Shipping And Handling <span className="text_f">Free Shipping</span></h5>
                                             <h3>Total <span>${total}</span></h3>
                                         </div>
+                                        {/* Countdown Timer */}
+
                                         <div id="accordion" className="accordion_area">
                                             <div className="card">
                                                 <div className="card-header" id="headingOne">
@@ -326,9 +441,22 @@ const Checkout = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <button type="submit" className="btn pest_btn">
-                                            place order
-                                        </button>
+                                        {isTimerActive && (
+                                            <div style={styles.countDown}>
+                                                <h5>Time left to cancel: {Math.floor(timeLeft / 60)}:{timeLeft % 60 < 10 ? `0${timeLeft % 60}` : timeLeft % 60}</h5>
+                                            </div>
+                                        )}
+
+                                        {isTimerActive ? (
+                                            <button type="button" className="btn pest_btn cancel_btn" onClick={handleCancelOrder}>
+                                                Cancel Order
+                                            </button>
+                                        ) : (
+                                            <button type="submit" className="btn pest_btn">
+                                                place order
+                                            </button>
+                                        )}
+
                                     </div>
                                 </div>
                             </div>

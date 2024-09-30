@@ -28,7 +28,7 @@ const CartSidebar = ({ cartItems, onClose, isOpen, onRemove, onQuantityChange })
     }, [cartItems]);
 
     const handleClick = () => {
-        navigate('/cart');
+        navigate('/cart', { replace: true });
     };
 
     // Kiểm tra xem đã cuộn đến cuối danh sách chưa
