@@ -132,14 +132,6 @@ function Shop() {
             }
         }
     };
-    useEffect(() => {
-        // const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
-        // if (!isAuthenticated) {
-        //     alert("Vui lòng đăng nhập trước khi mua hàng");
-        //     navigate('/'); // Chuyển hướng nếu không đăng nhập
-        // }
-
-    }, [navigate]);
 
     useEffect(() => {
         localStorage.setItem('cartItems', JSON.stringify(cartItems)); // Cập nhật localStorage
@@ -148,12 +140,11 @@ function Shop() {
     useEffect(() => {
         const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
         if (!isAuthenticated) {
-            // alert("Vui lòng đăng nhập trước khi mua hàng");
-            // navigate('/');
             return;
         } else {
             fetchCartItems();
         }
+        // fetchCartItems();
     }, []);
 
     const addToCart = async (product) => {

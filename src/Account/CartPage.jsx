@@ -57,14 +57,14 @@ const CartPage = () => {
 
     const handleQuantityChange = async (productId, newQuantity) => {
         const userEmail = localStorage.getItem('savedEmail');
-        if (newQuantity < 1) {
+        if (Number(newQuantity) < 1) {
             removeFromCart(productId); // Gọi hàm xóa
-        } else if (newQuantity > 20) {
+        } else if (Number(newQuantity) > 20) {
             alert("Số lượng sản phẩm không được vượt quá 20.");
         } else {
             setCartItems((prevItems) => {
                 const updatedItems = prevItems.map((item) =>
-                    item.id === productId ? { ...item, quantity: newQuantity } : item
+                    item.id === productId ? { ...item, quantity: Number(newQuantity) } : item
                 );
 
                 // Cập nhật giỏ hàng vào Firestore

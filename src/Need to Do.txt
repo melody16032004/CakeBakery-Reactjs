@@ -7,3 +7,4 @@
 - Filter product
 - Checkout
 - Add product
+- refresh page: filter bar bug

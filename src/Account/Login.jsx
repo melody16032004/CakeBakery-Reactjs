@@ -53,13 +53,17 @@ const Login = ({ setShowLogin, setShowForget, setCartItems }) => {
             localStorage.setItem("isAuthenticated", true);
             localStorage.setItem("savedEmail", email);
 
-            alert('Đăng nhập thành công!');
+
             navigate('/home');
+            alert('Đăng nhập thành công!');
         } catch (error) {
             if (error.message === "Firebase: Error (auth/invalid-credential).")
                 alert("Tài khoản hoặc mật khẩu không đúng");
         }
     };
+    const handleAlert = () => {
+        alert("Bạn đã đăng nhập với vai trò là khách!");
+    }
 
 
     return (
@@ -86,11 +90,13 @@ const Login = ({ setShowLogin, setShowForget, setCartItems }) => {
                     <p onClick={setShowLogin}>Chưa có tài khoản? Đăng ký</p>
                     <p onClick={setShowForget}>Quên mật khẩu?</p>
                 </div>
-                <button style={styles.withoutAccount}>
+                <button style={styles.withoutAccount}
+                    onClick={handleAlert}>
                     <Link style={styles.customLink}
                         to="/home"
                         onMouseEnter={() => setIsHovered(true)}
-                        onMouseLeave={() => setIsHovered(false)}>
+                        onMouseLeave={() => setIsHovered(false)}
+                    >
                         Login without account!
                     </Link>
 
