@@ -1,5 +1,9 @@
-- giới hạn sản phẩm thêm vào
+- giới hạn sản phẩm thêm vào [DONE]
 - log out tài khoản
 - navbar selected
-- hiển thị cart tương ứng với người dùng khi lưu ở localStorage
+- hiển thị cart tương ứng với người dùng khi lưu ở localStorage [DONE]
 - ở trạng thái quên mật khẩu thêm chức năng quay lại trạng thái login
+- Search product
+- Filter product
+- Checkout
+- Add product

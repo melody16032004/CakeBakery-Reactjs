@@ -144,7 +144,7 @@ function NavBar() {
                                                 {/* <a href="index.html">Home 1</a> */}
                                                 <Link to="/home">Home 1</Link>
                                             </li>
-                                            <li>
+                                            {/* <li>
                                                 <a href="index-2.html">Home 2</a>
                                             </li>
                                             <li>
@@ -155,14 +155,14 @@ function NavBar() {
                                             </li>
                                             <li>
                                                 <a href="index-5.html">Home 5</a>
-                                            </li>
+                                            </li> */}
                                         </ul>
                                     </li>
                                     <li>
-                                        <a href="cake.html">Our Cakes</a>
+                                        <a href="#">Our Cakes</a>
                                     </li>
                                     <li>
-                                        <a href="menu.html">Menu</a>
+                                        <a href="#">Menu</a>
                                     </li>
                                     <li className="dropdown submenu">
                                         <a
@@ -177,13 +177,13 @@ function NavBar() {
                                         </a>
                                         <ul className="dropdown-menu">
                                             <li>
-                                                <a href="about-us.html">About Us</a>
+                                                <a href="#">About Us</a>
                                             </li>
                                             <li>
-                                                <a href="our-team.html">Our Chefs</a>
+                                                <a href="#">Our Chefs</a>
                                             </li>
                                             <li>
-                                                <a href="testimonials.html">Testimonials</a>
+                                                <a href="#">Testimonials</a>
                                             </li>
                                         </ul>
                                     </li>
@@ -202,7 +202,7 @@ function NavBar() {
                                         </a>
                                         <ul className="dropdown-menu">
                                             <li>
-                                                <a href="service.html">Services</a>
+                                                <a href="#">Services</a>
                                             </li>
                                             <li className="dropdown submenu">
                                                 <a
@@ -217,29 +217,29 @@ function NavBar() {
                                                 </a>
                                                 <ul className="dropdown-menu">
                                                     <li>
-                                                        <a href="portfolio.html">- Gallery Classic</a>
+                                                        <a href="#">- Gallery Classic</a>
                                                     </li>
                                                     <li>
-                                                        <a href="portfolio-full-width.html">
+                                                        <a href="#">
                                                             - Gallery Full width
                                                         </a>
                                                     </li>
                                                 </ul>
                                             </li>
                                             <li>
-                                                <a href="faq.html">Faq</a>
+                                                <a href="#">Faq</a>
                                             </li>
                                             <li>
-                                                <a href="what-we-make.html">What we make</a>
+                                                <a href="#">What we make</a>
                                             </li>
                                             <li>
-                                                <a href="special.html">Special Recipe</a>
+                                                <a href="#">Special Recipe</a>
                                             </li>
                                             <li>
-                                                <a href="404.html">404 page</a>
+                                                <a href="#">404 page</a>
                                             </li>
                                             <li>
-                                                <a href="comming-soon.html">Coming Soon page</a>
+                                                <a href="#">Coming Soon page</a>
                                             </li>
                                         </ul>
                                     </li>
@@ -256,13 +256,13 @@ function NavBar() {
                                         </a>
                                         <ul className="dropdown-menu">
                                             <li>
-                                                <a href="blog.html">Blog with sidebar</a>
+                                                <a href="#">Blog with sidebar</a>
                                             </li>
                                             <li>
-                                                <a href="blog-2column.html">Blog 2 column</a>
+                                                <a href="#">Blog 2 column</a>
                                             </li>
                                             <li>
-                                                <a href="single-blog.html">Blog details</a>
+                                                <a href="#">Blog details</a>
                                             </li>
                                         </ul>
                                     </li>
@@ -290,12 +290,12 @@ function NavBar() {
                                                 <Link to="/cart">Cart Page</Link>
                                             </li>
                                             <li>
-                                                <a href="checkout.html">Checkout Page</a>
+                                                <a href="#">Checkout Page</a>
                                             </li>
                                         </ul>
                                     </li>
                                     <li>
-                                        <a href="contact.html">Contact Us</a>
+                                        <a href="#">Contact Us</a>
                                     </li>
                                 </ul>
                             </div>

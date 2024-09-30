@@ -152,11 +152,6 @@ function Shop() {
                 return prevItems;
             }
 
-            // if (existingItem && totalQuantity + 1 > 20) {
-            //     alert('Số lượng sản phẩm trong giỏ đã đạt tối đa.');
-            //     return prevItems;
-            // }
-
             // Kiểm tra nếu sản phẩm đã tồn tại trong giỏ hàng
             if (existingItem) {
                 // Kiểm tra xem số lượng sản phẩm có vượt quá 5 hay không
@@ -186,28 +181,6 @@ function Shop() {
 
                 return updatedItems; // Trả về giỏ hàng đã cập nhật
             }
-
-            // if (existingItem) {
-            //     const updatedItems = prevItems.map((item) =>
-            //         item.quantity === MAX_ITEMS_PER_PRODUCT ?
-            //             alert('Số lượng sản phẩm trong giỏ đã đạt tối đa.') :
-            //             item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-            //     );
-
-            //     const cartDocRef = doc(db, "carts", userEmail);
-            //     setDoc(cartDocRef, { items: updatedItems }, { merge: true });
-
-            //     return updatedItems; 
-            // } else {
-            //     const newItem = { ...product, quantity: 1, userEmail };
-            //     const updatedItems = [...prevItems, newItem];
-
-
-            //     const cartDocRef = doc(db, "carts", userEmail);
-            //     setDoc(cartDocRef, { items: updatedItems }, { merge: true });
-
-            //     return updatedItems;
-            // }
         });
     };
 
@@ -261,13 +234,6 @@ function Shop() {
     };
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-
-    // const paginatedProducts = products.slice(startIndex, endIndex);
-
-
-
-
-
 
     const totalPages = Math.ceil(products.length / itemsPerPage); // Tổng số trang
 
