@@ -1,10 +1,12 @@
 - giới hạn sản phẩm thêm vào [DONE]
-- log out tài khoản
+- log out tài khoản [DONE]
 - navbar selected
 - hiển thị cart tương ứng với người dùng khi lưu ở localStorage [DONE]
-- ở trạng thái quên mật khẩu thêm chức năng quay lại trạng thái login
+- ở trạng thái quên mật khẩu thêm chức năng quay lại trạng thái login [DONE]
 - Search product
 - Filter product
 - Checkout
 - Add product
 - refresh page: filter bar bug
+- ngăn chặn không cho user thay đổi giá trị của isAuthenticated 
+  làm ảnh hưởng tới quá trình đăng nhập

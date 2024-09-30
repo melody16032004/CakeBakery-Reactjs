@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import CartPageItem from "./CartPageItem";
 import NavBar from "../components/navbar";
 import { Link } from "react-router-dom";
@@ -12,6 +13,7 @@ const CartPage = () => {
     const [cartItems, setCartItems] = useState([]);
     const [loading, setLoading] = useState(true); // Thêm state loading
     const [delayPassed, setDelayPassed] = useState(false);
+    const navigate = useNavigate();
 
     // const [email, setEmail] = useState("");
 
@@ -54,6 +56,12 @@ const CartPage = () => {
         const cartData = { cartItems };
         localStorage.setItem('cartItems', JSON.stringify(cartData));
     };
+
+    const handleCheckout = (e) => {
+        e.preventDefault();
+        localStorage.setItem('cartItems', JSON.stringify(cartItems));
+        navigate('/checkout');
+    }
 
     const handleQuantityChange = async (productId, newQuantity) => {
         const userEmail = localStorage.getItem('savedEmail');
@@ -195,9 +203,9 @@ const CartPage = () => {
                                     </h4>
                                 </div>
                                 <div className="cart_footer">
-                                    <a className="pest_btn" href="#">
-                                        Proceed to Checkout
-                                    </a>
+                                    <Link to="/checkout" onClick={handleCheckout}>
+                                        <a className="pest_btn" href="#" onClick={handleCheckout}>Proceed to Checkout</a>
+                                    </Link>
                                 </div>
                             </div>
                         </div>

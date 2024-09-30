@@ -58,7 +58,7 @@ const Product = () => {
                                         <label htmlFor="quantity">Quantity :</label>
                                         <input type="text" placeholder={1} id="quantity" />
                                     </div>
-                                    <a className="pink_more" href="#">
+                                    <a className="pink_more" href="" >
                                         Add to Cart
                                     </a>
                                 </div>
@@ -252,13 +252,13 @@ const Product = () => {
                     </div>
                 </section>
 
-                <Newsletter></Newsletter>
+                {/* <Newsletter></Newsletter> */}
                 <Search></Search>
             </div>
 
-            <h1>{name}</h1>
+            {/* <h1>{name}</h1>
             <img src={image} alt={name} />
-            <p>Price: ${price}</p>
+            <p>Price: ${price}</p> */}
             {/* Thêm thông tin khác về sản phẩm nếu cần */}
             <Footer></Footer>
         </div>

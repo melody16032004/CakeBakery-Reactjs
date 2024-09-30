@@ -250,3 +250,13 @@ input[type="number"] {
   padding-left: 20px;
   height: 15px;
 }
+/* --------------------- */
+.short {
+  padding: 5px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: auto;
+  cursor: pointer;
+  /* appearance: none; */
+}

@@ -6360,7 +6360,7 @@ i:before {
   font-family: "Open Sans", sans-serif;
   font-weight: 600;
   color: #797979;
-  display: inline-block;
+  display: flex;
   line-height: 45px;
   cursor: pointer;
 }

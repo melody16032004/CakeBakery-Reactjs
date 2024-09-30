@@ -1,0 +1,100 @@
+.checkout-panel {
+    width: 500px;
+    margin: 0 auto;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .panel-body {
+    padding: 20px;
+  }
+  
+  .title {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .progress-bar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .step {
+    flex: 1;
+    height: 4px;
+    background-color: #e0e0e0;
+    margin-right: 10px;
+    position: relative;
+  }
+  
+  .step.active {
+    background-color: #4caf50;
+  }
+  
+  .payment-method {
+    margin-bottom: 20px;
+  }
+  
+  .method {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .card-logos img {
+    margin-right: 10px;
+  }
+  
+  .radio-input {
+    display: flex;
+    align-items: center;
+  }
+  
+  .radio-input input {
+    margin-right: 5px;
+  }
+  
+  .input-fields {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .column-1,
+  .column-2 {
+    width: 48%;
+  }
+  
+  .small-inputs {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .info {
+    display: block;
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+  }
+  
+  .panel-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    /* background-color: #4caf50; */
+    color: white;
+  }
+  
+  .back-btn {
+    background-color: #f44336; /* Red for back button */
+  }
+  

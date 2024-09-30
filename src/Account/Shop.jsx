@@ -12,6 +12,7 @@ import "../index.css";
 import ProductList from './ProductList';
 import { auth, db } from './firebaseConfig';
 import { doc, setDoc, getDoc, collection, query, where } from 'firebase/firestore';
+import "../index.css";
 
 function Shop() {
     const MAX_TOTAL_ITEMS = 20;
@@ -34,83 +35,6 @@ function Shop() {
         { id: 6, name: "Velvet Cake", price: "35.25", image: "img/cake-feature/c-feature-7.jpg", image_L: "img/product/product-details-7.jpg" },
         { id: 7, name: "Cherry Cupcake Vanila", price: "23", image: "img/cake-feature/c-feature-8.jpg", image_L: "img/product/product-details-8.jpg" },
         { id: 8, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
-        // { id: 9, name: "Crumby Cupcake", price: "25", image: "img/cake-feature/c-feature-9.jpg", image_L: "img/product/product-details-9.jpg" },
     ];
 
     const fetchCartItems = async () => {
@@ -288,10 +212,23 @@ function Shop() {
     };
 
     // Sort & Filter
-    const handleSortChange = (e) => {
-        setSortOption(e.target.value);
-        setCurrentPage(1); // Đặt lại trang về 1 khi thay đổi sắp xếp
+    // const handleSortChange = (e) => {
+    //     setSortOption(e.target.value);
+    //     setCurrentPage(1); // Đặt lại trang về 1 khi thay đổi sắp xếp
+    // };
+    // Hàm xử lý khi người dùng chọn sắp xếp
+    const handleSortChange = (event) => {
+        const selectedOption = event.target.value;
+        setSortOption(selectedOption);
+        // Thực hiện các hành động sắp xếp dựa trên selectedOption
     };
+    // Khôi phục trạng thái từ localStorage khi component render
+    useEffect(() => {
+        const savedSortOption = localStorage.getItem('sortOption');
+        if (savedSortOption) {
+            setSortOption(savedSortOption);
+        }
+    }, []);
 
     const handleFilterChange = (e) => {
         setFilterCategory(e.target.value);
@@ -363,6 +300,29 @@ function Shop() {
                                         </div>
                                         <div className="float-right">
                                             <h4>Sort by :</h4>
+                                            {/* <button className="dropbtn">
+                                                {sortOption === 'default' ? 'Default' :
+                                                    sortOption === 'priceAsc' ? 'Price: Low to High' :
+                                                        sortOption === 'priceDesc' ? 'Price: High to Low' :
+                                                            sortOption === 'nameAsc' ? 'Name: A to Z' :
+                                                                'Name: Z to A'}
+                                            </button>
+                                            <ul className="dropdown-content">
+                                                <li onClick={() => handleSortChange('default')}>Default</li>
+                                                <li onClick={() => handleSortChange('priceAsc')}>Price: Low to High</li>
+                                                <li onClick={() => handleSortChange('priceDesc')}>Price: High to Low</li>
+                                                <li onClick={() => handleSortChange('nameAsc')}>Name: A to Z</li>
+                                                <li onClick={() => handleSortChange('nameDesc')}>Name: Z to A</li>
+                                            </ul> */}
+                                            {/* <ul className='short'>
+                                                <ul className="short">
+                                                    <li onClick={() => handleSortChange('default')}>Default</li>
+                                                    <li onClick={() => handleSortChange('priceAsc')}>Price: Low to High</li>
+                                                    <li onClick={() => handleSortChange('priceDesc')}>Price: High to Low</li>
+                                                    <li onClick={() => handleSortChange('nameAsc')}>Name: A to Z</li>
+                                                    <li onClick={() => handleSortChange('nameDesc')}>Name: Z to A</li>
+                                                </ul>
+                                            </ul> */}
                                             <select className="short" onChange={handleSortChange} value={sortOption}>
                                                 <option value="default">Default</option>
                                                 <option value="priceAsc">Price: Low to High</option>
