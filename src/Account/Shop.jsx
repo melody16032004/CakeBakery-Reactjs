@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import NavBar from "../components/navbar";
 import Footer from "../components/footer";
 import { Link } from "react-router-dom";
@@ -22,6 +23,7 @@ function Shop() {
     const itemsPerPage = 9; // Số lượng sản phẩm hiển thị mỗi trang
     const [sortOption, setSortOption] = useState('default');
     const [filterCategory, setFilterCategory] = useState('all');
+    const navigate = useNavigate();
     const products = [
         { id: 0, name: "Cupcake of Vanela", price: "20", image: "img/cake-feature/c-feature-1.jpg", image_L: "img/product/product-details-1.jpg" },
         { id: 1, name: "Cupcake of Matcha", price: "25.5", image: "img/cake-feature/c-feature-2.jpg", image_L: "img/product/product-details-2.jpg" },
@@ -131,57 +133,78 @@ function Shop() {
         }
     };
     useEffect(() => {
+        // const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+        // if (!isAuthenticated) {
+        //     alert("Vui lòng đăng nhập trước khi mua hàng");
+        //     navigate('/'); // Chuyển hướng nếu không đăng nhập
+        // }
+
+    }, [navigate]);
+
+    useEffect(() => {
         localStorage.setItem('cartItems', JSON.stringify(cartItems)); // Cập nhật localStorage
     }, [cartItems]);
 
     useEffect(() => {
-
-        fetchCartItems();
+        const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+        if (!isAuthenticated) {
+            // alert("Vui lòng đăng nhập trước khi mua hàng");
+            // navigate('/');
+            return;
+        } else {
+            fetchCartItems();
+        }
     }, []);
 
     const addToCart = async (product) => {
-        const userEmail = localStorage.getItem('savedEmail');
+        const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+        if (!isAuthenticated) {
+            alert("Vui lòng đăng nhập trước khi mua hàng");
+            navigate('/'); // Chuyển hướng nếu không đăng nhập
+        } else {
+            const userEmail = localStorage.getItem('savedEmail');
 
-        setCartItems((prevItems) => {
-            const totalQuantity = prevItems.reduce((acc, item) => acc + item.quantity, 0);
-            const existingItem = prevItems.find((item) => item.id === product.id);
+            setCartItems((prevItems) => {
+                const totalQuantity = prevItems.reduce((acc, item) => acc + item.quantity, 0);
+                const existingItem = prevItems.find((item) => item.id === product.id);
 
-            // Kiểm tra nếu tổng số lượng sản phẩm đã đạt giới hạn
-            if (totalQuantity >= MAX_TOTAL_ITEMS) {
-                alert('Bạn chỉ có thể thêm tối đa 20 sản phẩm vào giỏ hàng.');
-                return prevItems;
-            }
-
-            // Kiểm tra nếu sản phẩm đã tồn tại trong giỏ hàng
-            if (existingItem) {
-                // Kiểm tra xem số lượng sản phẩm có vượt quá 5 hay không
-                if (existingItem.quantity >= MAX_ITEMS_PER_PRODUCT) {
-                    alert('Số lượng sản phẩm này đã đạt tối đa (5).');
+                // Kiểm tra nếu tổng số lượng sản phẩm đã đạt giới hạn
+                if (totalQuantity >= MAX_TOTAL_ITEMS) {
+                    alert('Bạn chỉ có thể thêm tối đa 20 sản phẩm vào giỏ hàng.');
                     return prevItems;
                 }
 
-                // Tăng số lượng sản phẩm nếu chưa đạt tối đa
-                const updatedItems = prevItems.map((item) =>
-                    item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-                );
+                // Kiểm tra nếu sản phẩm đã tồn tại trong giỏ hàng
+                if (existingItem) {
+                    // Kiểm tra xem số lượng sản phẩm có vượt quá 5 hay không
+                    if (existingItem.quantity >= MAX_ITEMS_PER_PRODUCT) {
+                        alert('Số lượng sản phẩm này đã đạt tối đa (5).');
+                        return prevItems;
+                    }
 
-                // Cập nhật Firestore với giỏ hàng đã cập nhật
-                const cartDocRef = doc(db, "carts", userEmail);
-                setDoc(cartDocRef, { items: updatedItems }, { merge: true }); // Cập nhật Firestore
+                    // Tăng số lượng sản phẩm nếu chưa đạt tối đa
+                    const updatedItems = prevItems.map((item) =>
+                        item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+                    );
 
-                return updatedItems; // Trả về giỏ hàng đã cập nhật
-            } else {
-                // Thêm sản phẩm mới vào giỏ hàng
-                const newItem = { ...product, quantity: 1, userEmail };
-                const updatedItems = [...prevItems, newItem];
+                    // Cập nhật Firestore với giỏ hàng đã cập nhật
+                    const cartDocRef = doc(db, "carts", userEmail);
+                    setDoc(cartDocRef, { items: updatedItems }, { merge: true }); // Cập nhật Firestore
 
-                // Cập nhật Firestore với giỏ hàng đã cập nhật
-                const cartDocRef = doc(db, "carts", userEmail);
-                setDoc(cartDocRef, { items: updatedItems }, { merge: true }); // Cập nhật Firestore
+                    return updatedItems; // Trả về giỏ hàng đã cập nhật
+                } else {
+                    // Thêm sản phẩm mới vào giỏ hàng
+                    const newItem = { ...product, quantity: 1, userEmail };
+                    const updatedItems = [...prevItems, newItem];
 
-                return updatedItems; // Trả về giỏ hàng đã cập nhật
-            }
-        });
+                    // Cập nhật Firestore với giỏ hàng đã cập nhật
+                    const cartDocRef = doc(db, "carts", userEmail);
+                    setDoc(cartDocRef, { items: updatedItems }, { merge: true }); // Cập nhật Firestore
+
+                    return updatedItems; // Trả về giỏ hàng đã cập nhật
+                }
+            });
+        }
     };
 
 

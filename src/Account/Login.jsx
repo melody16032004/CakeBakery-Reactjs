@@ -1,35 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import { auth } from './firebaseConfig';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { hover } from '@testing-library/user-event/dist/hover';
 
 const Login = ({ setShowLogin, setShowForget, setCartItems }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
+    const [isHovered, setIsHovered] = useState(false);
+    const styles = {
+        subLogin: {
+            display: 'flex',
+            justifyContent: 'space-between',
+        },
+        withoutAccount: {
+            fontSize: 15,
+            color: 'white',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '200px',
+            margin: '50px auto',
+            backgroundColor: 'transparent',
+            ...(isHovered && {
+                backgroundColor: '#f195b2',
+            })
+        },
+        customLink: {
+            textDecoration: 'none',
+            color: 'white',
+            fontStyle: 'italic',
 
+            ...(isHovered && {
+                color: 'black',
+            }),
+
+        }
+    }
     useEffect(() => {
         const storedEmail = localStorage.getItem('savedEmail');
         if (storedEmail) {
             setEmail(storedEmail);
         }
     }, []);
-
-    // Function to load cart based on user email after successful login
-    // const loadUserCart = (userEmail) => {
-    //     const storedCartData = localStorage.getItem('cartData');
-    //     if (storedCartData) {
-    //         const cartDataArray = JSON.parse(storedCartData);
-    //         const userCartData = cartDataArray.find(cart => cart.email === userEmail);
-    //         if (userCartData) {
-    //             setCartItems(userCartData.cartItems); 
-    //         } else {
-    //             setCartItems([]);
-    //         }
-    //     } else {
-    //         setCartItems([]);
-    //     }
-    // };
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -38,8 +52,6 @@ const Login = ({ setShowLogin, setShowForget, setCartItems }) => {
 
             localStorage.setItem("isAuthenticated", true);
             localStorage.setItem("savedEmail", email);
-
-            // loadUserCart(email);
 
             alert('Đăng nhập thành công!');
             navigate('/home');
@@ -74,17 +86,22 @@ const Login = ({ setShowLogin, setShowForget, setCartItems }) => {
                     <p onClick={setShowLogin}>Chưa có tài khoản? Đăng ký</p>
                     <p onClick={setShowForget}>Quên mật khẩu?</p>
                 </div>
+                <button style={styles.withoutAccount}>
+                    <Link style={styles.customLink}
+                        to="/home"
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}>
+                        Login without account!
+                    </Link>
 
+                </button>
             </form>
         </div>
     );
+
 };
 
-const styles = {
-    subLogin: {
-        display: 'flex',
-        justifyContent: 'space-between',
-    }
-}
+
+
 
 export default Login;

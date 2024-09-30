@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from 'react-router-dom';
 import '../index.css';
 // import ProductList from './ProductList';
 // import Cart from './cart';
@@ -7,6 +7,7 @@ import '../index.css';
 function NavBar() {
     const [isSticky, setSticky] = useState(false);
     const [showSearch, setShowSearch] = useState(false);
+    const navigate = useNavigate();
 
     const toggleSearch = () => {
         setShowSearch(!showSearch);
@@ -17,6 +18,20 @@ function NavBar() {
             setSticky(true);
         } else {
             setSticky(false);
+        }
+    };
+
+    const handleLogout = (e) => {
+        e.preventDefault();
+        try {
+
+            localStorage.setItem("isAuthenticated", false);
+
+            alert('Bạn đã đăng xuất tài khoản!');
+            navigate('/');
+        } catch (error) {
+            if (error.message === "Firebase: Error (auth/invalid-credential).")
+                alert("Tài khoản hoặc mật khẩu không đúng");
         }
     };
 
@@ -85,15 +100,18 @@ function NavBar() {
                                     <i className="fa fa-search" />
                                 </a>
                             </li>
-                            <li>
-                                <a href="#"><i class="fa fa-sign-out" aria-hidden="true" /></a>
 
+                            <li>
+                                <a>hoangdoan103</a>
                             </li>
                             <li>
                                 <a href="#"><i class="fa fa-user-circle-o" aria-hidden="true" /></a>
                             </li>
                             <li>
-                                <a>hoangdoan103</a>
+                                <a href="#"
+                                    onClick={handleLogout}>
+                                    <i class="fa fa-sign-out" aria-hidden="true" />
+                                </a>
                             </li>
 
                         </ul>
