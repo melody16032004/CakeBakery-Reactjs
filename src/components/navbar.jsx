@@ -208,7 +208,8 @@ function NavBar() {
                                         <a href="#">Our Cakes</a>
                                     </li>
                                     <li>
-                                        <a href="#">Menu</a>
+                                        {/* <a href="#">Menu</a> */}
+                                        <Link to="/menu" >Menu</Link>
                                     </li>
                                     <li className="dropdown submenu">
                                         <a
@@ -223,7 +224,7 @@ function NavBar() {
                                         </a>
                                         <ul className="dropdown-menu">
                                             <li>
-                                                <a href="#">About Us</a>
+                                                <Link to="/aboutUs">About Us</Link>
                                             </li>
                                             <li>
                                                 <a href="#">Our Chefs</a>
@@ -344,7 +345,7 @@ function NavBar() {
                                         </ul>
                                     </li>
                                     <li>
-                                        <a href="#">Contact Us</a>
+                                        <Link to='/contact'>Contact Us</Link>
                                     </li>
                                 </ul>
                             </div>

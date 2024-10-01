@@ -12,6 +12,9 @@ import Shop from './Account/Shop';
 import CartPage from './Account/CartPage';
 import Product from './Account/product-detail';
 import Checkout from './Account/Checkout';
+import Menu from './Account/Menu';
+import About from './Account/AboutUs';
+import Contact from './Account/Contact';
 // import { BrowserRouter } from "react-router-dom";
 
 const router = createBrowserRouter([
@@ -22,6 +25,14 @@ const router = createBrowserRouter([
   {
     path: "home",
     element: <Home />,
+  },
+  {
+    path: "menu",
+    element: <Menu />,
+  },
+  {
+    path: "aboutUs",
+    element: <About />,
   },
   {
     path: "shop",
@@ -38,6 +49,10 @@ const router = createBrowserRouter([
   {
     path: "checkout",
     element: <Checkout />,
+  },
+  {
+    path: "contact",
+    element: <Contact />,
   },
 ]);
 
