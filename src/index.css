@@ -132,10 +132,10 @@ button.prev:hover, button.next:hover {
 
 
 input[type="number"] {
-  width: 50px;
-  padding: 5px;
+  /* width: 50px; */
+  /* padding: 5px; */
   /* margin-left: 10px; */
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
   border-radius: 5px;
 }
 

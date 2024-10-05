@@ -50,7 +50,7 @@ function NavBar() {
     };
     const handleLogin = (e) => {
         e.preventDefault();
-        navigate('/');
+        navigate('/navigation');
     };
 
     useEffect(() => {

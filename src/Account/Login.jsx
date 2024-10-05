@@ -53,8 +53,11 @@ const Login = ({ setShowLogin, setShowForget, setCartItems }) => {
             localStorage.setItem("isAuthenticated", true);
             localStorage.setItem("savedEmail", email);
 
+            if (email === 'hoangdoan103@gmail.com')
+                navigate('/admin');
+            else
 
-            navigate('/home');
+                navigate('/home');
             alert('Đăng nhập thành công!');
         } catch (error) {
             if (error.message === "Firebase: Error (auth/invalid-credential).")

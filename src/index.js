@@ -15,12 +15,29 @@ import Checkout from './Account/Checkout';
 import Menu from './Account/Menu';
 import About from './Account/AboutUs';
 import Contact from './Account/Contact';
+import Dashboard from './components/Dashboard';
+import ProductList from './components/ListProduct';
+import AddProduct from './components/AddProduct';
+import CreateCategory from './components/CreateCategory';
+import InvoiceList from './components/InvoiceList';
+import UserAccountManagement from './components/UserManagement';
+import AdminDashboard from './Account/AdminDashboard';
+import Login from './Account/Login';
+import NavigateLogin from './components/navigate-login';
 // import { BrowserRouter } from "react-router-dom";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
+  },
+  {
+    path: "navigation",
+    element: <NavigateLogin />,
+  },
+  {
+    path: "dashboard",
+    element: <Dashboard />,
   },
   {
     path: "home",
@@ -54,6 +71,27 @@ const router = createBrowserRouter([
     path: "contact",
     element: <Contact />,
   },
+  {
+    path: "listproduct",
+    element: <ProductList />,
+  },
+  {
+    path: "addproduct",
+    element: <AddProduct />,
+  },
+  {
+    path: "addcategory",
+    element: <CreateCategory />,
+  },
+  {
+    path: "invoice",
+    element: <InvoiceList />,
+  },
+  {
+    path: "admin",
+    element: <AdminDashboard />,
+  },
+
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

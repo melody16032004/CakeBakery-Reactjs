@@ -13,6 +13,7 @@ import ProductList from './ProductList';
 import { auth, db } from './firebaseConfig';
 import { doc, setDoc, getDoc, collection, query, where } from 'firebase/firestore';
 import "../index.css";
+import NavigateLogin from '../components/navigate-login';
 
 function Shop() {
     const MAX_TOTAL_ITEMS = 20;
@@ -75,7 +76,7 @@ function Shop() {
         const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
         if (!isAuthenticated) {
             alert("Vui lòng đăng nhập trước khi mua hàng");
-            navigate('/'); // Chuyển hướng nếu không đăng nhập
+            navigate('/navigation'); // Chuyển hướng nếu không đăng nhập
         } else {
             const userEmail = localStorage.getItem('savedEmail');
 

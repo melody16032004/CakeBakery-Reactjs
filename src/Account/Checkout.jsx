@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { auth, db } from './firebaseConfig';
 import { doc, addDoc, setDoc, getDoc, collection, query, where, deleteDoc } from 'firebase/firestore';
 import "./Checkout.css";
+import { Typography } from '@mui/material';
 
 const Checkout = () => {
     const styles = {
@@ -123,6 +124,8 @@ const Checkout = () => {
                 items: cartItem, // Danh sách sản phẩm
                 total: total, // Tổng giá trị hóa đơn
                 createdAt: new Date(), // Ngày tạo hóa đơn
+                status: "Đang xử lý",
+                id: documentId,
             });
             const newOrderId = 'some_generated_order_id'; // Replace this with your actual order creation logic
             setOrderId(newOrderId);
@@ -348,11 +351,23 @@ const Checkout = () => {
                                         <div className="price_single_cost">
                                             <h5>Product <span>Total</span></h5>
                                             {cartItems.map(item => (
-                                                <h5 key={item.id}>{item.name} x {item.quantity} <span>${(item.price * item.quantity).toFixed(2)}</span></h5>
+                                                <Typography variant='h5' color='grey' key={item.id}>
+                                                    {item.name} x {item.quantity}
+                                                    <span style={{ display: 'flex', justifyContent: 'end' }}>
+                                                        ${(item.price * item.quantity).toFixed(2)}
+                                                    </span>
+                                                </Typography>
+                                                // <h5 key={item.id}>
+                                                //     {item.name} x {item.quantity}
+                                                //     <span>
+                                                //         ${(item.price * item.quantity).toFixed(2)}
+                                                //     </span>
+                                                // </h5>
                                             ))}
-                                            <h4>Subtotal <span>${total}</span></h4>
+                                            <div style={{ padding: '10px 0' }} />
+                                            <h4>Subtotal <span>${(total).toFixed(2)}</span></h4>
                                             <h5>Shipping And Handling <span className="text_f">Free Shipping</span></h5>
-                                            <h3>Total <span>${total}</span></h3>
+                                            <h3>Total <span>${(total).toFixed(2)}</span></h3>
                                         </div>
                                         {/* Countdown Timer */}
 
