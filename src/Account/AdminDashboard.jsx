@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-import { AppBar, Toolbar, Typography, Drawer, List, ListItem, ListItemText, Box, IconButton } from '@mui/material';
+import { AppBar, Toolbar, Typography, Drawer, List, ListItem, ListItemText, Box, IconButton, Button } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AddProduct from '../components/AddProduct'; // Component thêm sản phẩm
 import ProductList from '../components/ListProduct'; // Component hiển thị danh sách sản phẩm
 import CreateCategory from '../components/CreateCategory';
 import InvoiceList from '../components/InvoiceList';
 import UserAccountManagement from '../components/UserManagement';
-import NavBar from '../components/navbar';
+import { getAuth, signOut } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
 
 const AdminDashboard = () => {
+    const navigate = useNavigate();
     const [drawerOpen, setDrawerOpen] = useState(() => {
         // Đọc trạng thái từ localStorage, nếu không có thì mặc định là false
         const savedState = localStorage.getItem('drawerOpen');
@@ -20,6 +22,18 @@ const AdminDashboard = () => {
 
     const toggleDrawer = () => {
         setDrawerOpen(!drawerOpen); // Đảo ngược trạng thái của sidebar
+    };
+
+    const handleLogout = async () => {
+        const auth = getAuth();
+        try {
+            await signOut(auth);
+            alert('Đăng xuất thành công');
+            navigate('/navigation');
+            // Bạn có thể chuyển hướng người dùng về trang đăng nhập hoặc cập nhật trạng thái UI
+        } catch (error) {
+            console.error('Lỗi khi đăng xuất:', error);
+        }
     };
 
     // Lưu trạng thái sidebar vào localStorage mỗi khi nó thay đổi
@@ -52,7 +66,7 @@ const AdminDashboard = () => {
     return (
         <Box sx={{ display: 'flex' }}>
             <AppBar position="fixed" sx={{ backgroundColor: '#4CAF50' }}>
-                <Toolbar>
+                <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div
                         onClick={toggleDrawer}
                         style={{
@@ -75,8 +89,21 @@ const AdminDashboard = () => {
                     <Typography variant="h6" noWrap sx={{ marginLeft: '16px', color: 'white' }}>
                         Quản lý Cửa hàng Bánh Ngọt
                     </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Button variant="contained" color="inherit" onClick={() => handleLogout()}
+                            sx={{
+                                color: 'black',
+                                border: 'solid 2px white',
+                                height: '65px',
+                                scale: '0.7',
+                                borderRadius: '50%',
+                            }}>
+                            <i className="fa fa-sign-out" aria-hidden="true" style={{ scale: '2' }} />
+                        </Button>
+                    </Box>
                 </Toolbar>
             </AppBar>
+
             <Drawer variant="persistent" anchor="left" open={drawerOpen} sx={{ flexShrink: 0 }}>
                 <Toolbar sx={{ backgroundColor: '#4CAF50' }} />
                 <Box sx={{ width: 240, backgroundColor: '#4CAF50', height: '100%' }}>
@@ -97,7 +124,12 @@ const AdminDashboard = () => {
                             <ListItemText primary={<><i className="fa fa-plus" aria-hidden="true"></i> Thêm danh mục</>} />
                         </ListItem>
                     </List>
+                    <Box sx={{ alignItems: 'end' }} />
+
+
+
                 </Box>
+
             </Drawer>
             <Box
                 component="main"

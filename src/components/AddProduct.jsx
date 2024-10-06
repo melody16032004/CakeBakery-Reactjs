@@ -118,7 +118,7 @@ const AddProduct = () => {
             // Reset các trường đã nhập
             setProductName('');
             setProductDescription('');
-            setProductPrice(10000); // Reset thanh kéo giá
+            setProductPrice(1000); // Reset thanh kéo giá
             setProductQuantity(10); // Reset thanh kéo số lượng
             setProductImage(null); // Reset ảnh
             setSelectedCategory(''); // Reset danh mục
