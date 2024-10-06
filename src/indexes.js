@@ -5,7 +5,7 @@ const cors = require('cors');
 const { getFirestore } = require('firebase-admin/firestore');
 
 // Khởi tạo Firebase Admin SDK với service account key
-const serviceAccount = require('../service-account.json');
+const serviceAccount = require('../fir-15597-7b11ce58b252.json');
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
