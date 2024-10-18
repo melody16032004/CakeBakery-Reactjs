@@ -9,6 +9,7 @@ function NavBar() {
     const [showSearch, setShowSearch] = useState(false);
     const [email, setEmail] = useState('');
     const navigate = useNavigate();
+    const [logout, setLogout] = useState(false);
 
     useEffect(() => {
         const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
@@ -42,7 +43,8 @@ function NavBar() {
             localStorage.setItem("isAuthenticated", false);
 
             alert('Bạn đã đăng xuất tài khoản!');
-            navigate('/');
+            setLogout(true);
+            // navigate('/home');
         } catch (error) {
             if (error.message === "Firebase: Error (auth/invalid-credential).")
                 alert("Tài khoản hoặc mật khẩu không đúng");
@@ -50,6 +52,7 @@ function NavBar() {
     };
     const handleLogin = (e) => {
         e.preventDefault();
+        setLogout(false);
         navigate('/navigation');
     };
 
@@ -77,7 +80,7 @@ function NavBar() {
                         <ul className="h_social list_style">
                             <li>
                                 <a href="#">
-                                    <i className="fa fa-facebook" />
+                                    <i className="fa fa-facebook" /> Fanpage
                                 </a>
                             </li>
                             {/* <li>
@@ -111,21 +114,23 @@ function NavBar() {
                                     />
                                 )}
                             </li>
-                            <li className='social-icons'>
+                            {/* <li className='social-icons'>
                                 <a className="popup-with-zoom-anim search-icon"
                                     href="#test-search"
                                     onClick={toggleSearch}>
                                     <i className="fa fa-search" />
                                 </a>
-                            </li>
+                            </li> */}
+                            {!logout && (
+                                <li>
+                                    <a>
+                                        {/* hoangdoan103 */}
+                                        {email}
+                                    </a>
+                                </li>
+                            )}
 
-                            <li>
-                                <a>
-                                    {/* hoangdoan103 */}
-                                    {email}
-                                </a>
-                            </li>
-                            {email === "anonymous" ? (
+                            {logout ? (
                                 <li>
                                     <a href="#" onClick={handleLogin}>
                                         <i class="fa fa-user-circle-o" aria-hidden="true" />
@@ -183,29 +188,18 @@ function NavBar() {
                                             aria-haspopup="true"
                                             aria-expanded="false"
                                         >
-                                            Home
+                                            {/* Home */}
+                                            <Link to="/home">Home</Link>
                                         </a>
-                                        <ul className="dropdown-menu">
+                                        {/* <ul className="dropdown-menu">
                                             <li>
-                                                {/* <a href="index.html">Home 1</a> */}
-                                                <Link to="/home">Home 1</Link>
+                                                
                                             </li>
-                                            {/* <li>
-                                                <a href="index-2.html">Home 2</a>
-                                            </li>
-                                            <li>
-                                                <a href="index-3.html">Home 3</a>
-                                            </li>
-                                            <li>
-                                                <a href="index-4.html">Home 4</a>
-                                            </li>
-                                            <li>
-                                                <a href="index-5.html">Home 5</a>
-                                            </li> */}
-                                        </ul>
+                                        </ul> */}
                                     </li>
                                     <li>
-                                        <a href="#">Our Cakes</a>
+                                        {/* <a href="#">Our Cakes</a> */}
+                                        <Link to="/musical-instrument">Music</Link>
                                     </li>
                                     <li>
                                         {/* <a href="#">Menu</a> */}
@@ -247,7 +241,7 @@ function NavBar() {
                                         >
                                             Pages
                                         </a>
-                                        <ul className="dropdown-menu">
+                                        {/* <ul className="dropdown-menu">
                                             <li>
                                                 <a href="#">Services</a>
                                             </li>
@@ -258,8 +252,7 @@ function NavBar() {
                                                     href="#"
                                                     role="button"
                                                     aria-haspopup="true"
-                                                    aria-expanded="false"
-                                                >
+                                                    aria-expanded="false">
                                                     Gallery
                                                 </a>
                                                 <ul className="dropdown-menu">
@@ -288,7 +281,7 @@ function NavBar() {
                                             <li>
                                                 <a href="#">Coming Soon page</a>
                                             </li>
-                                        </ul>
+                                        </ul> */}
                                     </li>
                                     <li className="dropdown submenu">
                                         <a
@@ -335,7 +328,7 @@ function NavBar() {
                                                         <Link to="/cart">Cart Page</Link>
                                                     </li>
                                                     <li>
-                                                        <a href="#">Checkout Page</a>
+                                                        <Link to="/order">Your Order</Link>
                                                     </li>
                                                 </div>
                                             )}

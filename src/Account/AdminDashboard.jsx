@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-import { AppBar, Toolbar, Typography, Drawer, List, ListItem, ListItemText, Box, IconButton, Button } from '@mui/material';
+import {
+    AppBar, Toolbar, Typography, Drawer, List,
+    ListItem, ListItemText, Box, IconButton, Button,
+    Accordion, AccordionSummary, AccordionDetails,
+} from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MenuIcon from '@mui/icons-material/Menu';
-import AddProduct from '../components/AddProduct'; // Component thêm sản phẩm
-import ProductList from '../components/ListProduct'; // Component hiển thị danh sách sản phẩm
+import AddProduct from '../components/AddProduct';
+import ProductList from '../components/ListProduct';
 import CreateCategory from '../components/CreateCategory';
 import InvoiceList from '../components/InvoiceList';
 import UserAccountManagement from '../components/UserManagement';
@@ -11,6 +16,10 @@ import { getAuth, signOut } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 
 const AdminDashboard = () => {
+    const [expanded, setExpanded] = useState(false);
+    const handleAccordionChange = (panel) => (event, isExpanded) => {
+        setExpanded(isExpanded ? panel : false); // Only one accordion opens at a time
+    };
     const navigate = useNavigate();
     const [drawerOpen, setDrawerOpen] = useState(() => {
         // Đọc trạng thái từ localStorage, nếu không có thì mặc định là false
@@ -65,7 +74,7 @@ const AdminDashboard = () => {
 
     return (
         <Box sx={{ display: 'flex' }}>
-            <AppBar position="fixed" sx={{ backgroundColor: '#4CAF50' }}>
+            <AppBar position="fixed" sx={{ backgroundColor: '#fc7da5' }}>
                 <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div
                         onClick={toggleDrawer}
@@ -105,24 +114,76 @@ const AdminDashboard = () => {
             </AppBar>
 
             <Drawer variant="persistent" anchor="left" open={drawerOpen} sx={{ flexShrink: 0 }}>
-                <Toolbar sx={{ backgroundColor: '#4CAF50' }} />
-                <Box sx={{ width: 240, backgroundColor: '#4CAF50', height: '100%' }}>
+                <Toolbar sx={{ backgroundColor: '#fc7da5' }} />
+                <Box sx={{ width: 240, backgroundColor: '#f195b2', height: '100%' }}>
                     <List>
-                        <ListItem button onClick={() => handleListItemClick('products')} sx={{ color: 'white' }}>
-                            <ListItemText primary={<><i className="fa fa-list" aria-hidden="true"></i> Danh sách sản phẩm</>} />
-                        </ListItem>
-                        <ListItem button onClick={() => handleListItemClick('invoices')} sx={{ color: 'white' }}>
-                            <ListItemText primary={<><i className="fa fa-list" aria-hidden="true"></i> Danh sách đơn hàng</>} />
-                        </ListItem>
-                        <ListItem button onClick={() => handleListItemClick('users')} sx={{ color: 'white' }}>
-                            <ListItemText primary={<><i className="fa fa-list" aria-hidden="true"></i> Danh sách người dùng</>} />
-                        </ListItem>
-                        <ListItem button onClick={() => handleListItemClick('add')} sx={{ color: 'white' }}>
-                            <ListItemText primary={<><i className="fa fa-plus" aria-hidden="true"></i> Thêm sản phẩm</>} />
-                        </ListItem>
-                        <ListItem button onClick={() => handleListItemClick('addCategory')} sx={{ color: 'white' }}>
-                            <ListItemText primary={<><i className="fa fa-plus" aria-hidden="true"></i> Thêm danh mục</>} />
-                        </ListItem>
+                        <Accordion
+                            expanded={expanded === 'panel1'}
+                            onChange={handleAccordionChange('panel1')}
+                            sx={{ backgroundColor: '#f195b2', color: 'white' }}>
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon sx={{ color: 'white' }} />}>
+                                <ListItemText primary={<>Sản phẩm</>} />
+                            </AccordionSummary>
+                            <AccordionDetails>
+
+                                <ListItem button onClick={() => handleListItemClick('products')} sx={{ color: 'white' }}>
+                                    <ListItemText primary={<><i className="fa fa-list" aria-hidden="true"></i> Danh sách sản phẩm</>} />
+                                </ListItem>
+                                <ListItem button onClick={() => handleListItemClick('add')} sx={{ color: 'white' }}>
+                                    <ListItemText primary={<><i className="fa fa-plus" aria-hidden="true"></i> Thêm sản phẩm</>} />
+                                </ListItem>
+                            </AccordionDetails>
+                        </Accordion>
+                        <Accordion
+                            expanded={expanded === 'panel2'}
+                            onChange={handleAccordionChange('panel2')}
+                            sx={{ backgroundColor: '#f195b2', color: 'white' }}>
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon sx={{ color: 'white' }} />}>
+                                <ListItemText primary={<>Danh mục</>} />
+                            </AccordionSummary>
+                            <AccordionDetails>
+
+                                <ListItem button onClick={() => handleListItemClick('addCategory')} sx={{ color: 'white' }}>
+                                    <ListItemText primary={<><i className="fa fa-plus" aria-hidden="true"></i> Thêm danh mục</>} />
+                                </ListItem>
+
+                            </AccordionDetails>
+                        </Accordion>
+                        <Accordion
+                            expanded={expanded === 'panel3'}
+                            onChange={handleAccordionChange('panel3')}
+                            sx={{ backgroundColor: '#f195b2', color: 'white' }}>
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon sx={{ color: 'white' }} />}>
+                                <ListItemText primary={<>Đơn hàng</>} />
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <ListItem button onClick={() => handleListItemClick('invoices')} sx={{ color: 'white' }}>
+                                    <ListItemText primary={<><i className="fa fa-list" aria-hidden="true"></i> Danh sách đơn hàng</>} />
+                                </ListItem>
+                            </AccordionDetails>
+                        </Accordion>
+                        <Accordion
+                            expanded={expanded === 'panel4'}
+                            onChange={handleAccordionChange('panel4')}
+                            sx={{ backgroundColor: '#f195b2', color: 'white' }}>
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon sx={{ color: 'white' }} />}>
+                                <ListItemText primary={<>Người dùng</>} />
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <ListItem button onClick={() => handleListItemClick('users')} sx={{ color: 'white' }}>
+                                    <ListItemText primary={<><i className="fa fa-list" aria-hidden="true"></i> Danh sách người dùng</>} />
+                                </ListItem>
+                            </AccordionDetails>
+                        </Accordion>
+
+
+
+
+
                     </List>
                     <Box sx={{ alignItems: 'end' }} />
 

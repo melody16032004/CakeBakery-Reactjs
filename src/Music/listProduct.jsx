@@ -3,13 +3,13 @@ import { db } from '../Account/firebaseConfig'; // Đường dẫn đến cấu 
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { IconButton, Box, Typography, Card, CardContent, CardMedia, Button, Dialog, DialogTitle, DialogContent, DialogActions, Checkbox, TextField } from '@mui/material';
 import { Add, Edit, Delete } from '@mui/icons-material';
-import EditProduct from './EditProduct'; // Import component sửa sản phẩm
+import EditProduct from './editProduct'; // Import component sửa sản phẩm
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThList, faTh, faEdit, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons'; // Thêm icon Edit và Trash
 import { Link, useNavigate } from 'react-router-dom';
 import { scales } from 'chart.js';
 
-const ProductList = ({ setSelectedPage }) => {
+const ListProduct = ({ setSelectedPage }) => {
     const [products, setProducts] = useState([]);
     const [editProduct, setEditProduct] = useState(null); // Sản phẩm để sửa
     const [openDialog, setOpenDialog] = useState(false); // Trạng thái hiển thị hộp thoại
@@ -27,7 +27,7 @@ const ProductList = ({ setSelectedPage }) => {
 
     // Lấy danh sách sản phẩm từ Firestore
     const fetchProducts = async () => {
-        const querySnapshot = await getDocs(collection(db, 'products'));
+        const querySnapshot = await getDocs(collection(db, 'music-products'));
         const productsData = querySnapshot.docs.map(doc => ({
             id: doc.id,
             ...doc.data(),
@@ -43,7 +43,7 @@ const ProductList = ({ setSelectedPage }) => {
     // Xóa sản phẩm
     const handleDelete = async (id) => {
         try {
-            await deleteDoc(doc(db, 'products', id));
+            await deleteDoc(doc(db, 'music-products', id));
             alert('Sản phẩm đã được xóa thành công!');
             fetchProducts(); // Cập nhật danh sách sản phẩm sau khi xóa
         } catch (error) {
@@ -56,7 +56,7 @@ const ProductList = ({ setSelectedPage }) => {
     const handleDeleteSelected = async () => {
         try {
             for (const id of selectedProducts) {
-                await deleteDoc(doc(db, 'products', id));
+                await deleteDoc(doc(db, 'music-products', id));
             }
             alert('Các sản phẩm đã được xóa thành công!');
             setSelectedProducts([]); // Reset danh sách đã chọn
@@ -141,18 +141,12 @@ const ProductList = ({ setSelectedPage }) => {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 sx={{ marginBottom: 2 }}
             />
-
-            {/* <Button variant="contained" onClick={toggleViewMode} sx={{ marginBottom: 2 }}>
-                <FontAwesomeIcon icon={viewMode === 'list' ? faTh : faThList} />
-                <span style={{ marginLeft: '8px' }}>Chuyển sang chế độ {viewMode === 'list' ? 'chi tiết' : 'danh sách'}</span>
-            </Button> */}
             <Button
                 variant="outlined"
                 color="error"
                 onClick={handleDeleteSelected}
                 disabled={selectedProducts.length === 0}
-                sx={{ marginBottom: 2 }}
-            >
+                sx={{ marginBottom: 2 }}>
                 Xóa đã chọn
             </Button>
 
@@ -175,7 +169,7 @@ const ProductList = ({ setSelectedPage }) => {
                                         <CardMedia
                                             component="img"
                                             height="140"
-                                            image={product.imageUrl}
+                                            image={product.img}
                                             alt={product.name}
                                         />
                                         <a style={{
@@ -249,4 +243,4 @@ const ProductList = ({ setSelectedPage }) => {
     );
 };
 
-export default ProductList;
+export default ListProduct;

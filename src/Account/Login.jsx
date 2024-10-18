@@ -55,9 +55,8 @@ const Login = ({ setShowLogin, setShowForget, setCartItems }) => {
 
             if (email === 'hoangdoan103@gmail.com')
                 navigate('/admin');
-            else
-
-                navigate('/home');
+            else if (email !== 'hoangdoan103@gmail.com')
+                navigate('/shop');
             alert('Đăng nhập thành công!');
         } catch (error) {
             if (error.message === "Firebase: Error (auth/invalid-credential).")

@@ -109,7 +109,8 @@ const AddProduct = () => {
                 price: productPrice, // Lưu giá sản phẩm
                 quantity: productQuantity, // Lưu số lượng sản phẩm
                 imageUrl: imageUrl, // Lưu URL của hình ảnh
-                categoryId: selectedCategory // Lưu danh mục được chọn
+                categoryId: selectedCategory, // Lưu danh mục được chọn
+                sold: 0,
             });
 
             // Hiện thông báo thành công
@@ -154,7 +155,7 @@ const AddProduct = () => {
     };
 
     return (
-        <Box sx={{ padding: 3 }}>
+        <Box sx={{ padding: '20px 120px' }}>
             <Typography variant="h4" gutterBottom>
                 Thêm sản phẩm
             </Typography>
@@ -177,37 +178,44 @@ const AddProduct = () => {
                     onChange={(e) => setProductDescription(e.target.value)}
                     margin="normal"
                 />
+                <Grid>
+                    <FormControl fullWidth margin="normal">
+                        <InputLabel id="select-category-label">Chọn danh mục</InputLabel>
+                        <Select
+                            labelId="select-category-label"
+                            value={selectedCategory}
+                            onChange={(e) => setSelectedCategory(e.target.value)}
+                            required
+                            variant='outlined'
+                            label='Chọn danh mục'
+                            fullWidth
+                            InputProps={{
+                                style: {
+                                    border: 'none',
+                                },
+                            }}
+                        >
+                            {categories.map((category) => (
+                                <MenuItem key={category.id} value={category.id}>
+                                    {category.name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Grid>
 
-                <Grid container display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+                <Grid container
+                    alignItems={'center'}
+                    display={'flex'}
+                    justifyContent={'space-between'}
+                    marginTop={'15px'}>
                     {/* Chọn danh mục sản phẩm */}
-                    <Grid item xs={3}>
-                        <FormControl fullWidth margin="normal">
-                            <InputLabel id="select-category-label">Chọn danh mục</InputLabel>
-                            <Select
-                                labelId="select-category-label"
-                                value={selectedCategory}
-                                onChange={(e) => setSelectedCategory(e.target.value)}
-                                required
-                                fullWidth
-                                InputProps={{
-                                    style: {
-                                        border: 'none',
-                                    },
-                                }}
-                            >
-                                {categories.map((category) => (
-                                    <MenuItem key={category.id} value={category.id}>
-                                        {category.name}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                        <Grid padding={'5px 0'} />
-                    </Grid>
+
+
+                    {/* <Grid sx={{ width: '10px' }}></Grid> */}
 
                     {/* Cột Giá sản phẩm */}
-                    <Grid item xs={3}>
-                        <Grid paddingTop={4} />
+                    <Grid item xs={6}>
                         <TextField
                             label="Giá sản phẩm ($)"
                             value={productPrice}
@@ -233,23 +241,10 @@ const AddProduct = () => {
                                 }
                             }}
                         />
-                        <Slider
-                            value={typeof productPrice === 'number' ? productPrice : 10} // Giá trị mặc định của slider là 10
-                            onChange={handlePriceChange}
-                            aria-labelledby="input-slider-price"
-                            min={10} // Giá trị nhỏ nhất cho slider là 10
-                            max={1000} // Giá trị lớn nhất cho slider
-                            step={10} // Bước điều chỉnh giá
-                            valueLabelDisplay="auto"
-                        />
                     </Grid>
 
-                    {/* Khoảng trống giữa cột Giá và Số lượng */}
-                    {/* <Grid item xs={2} /> */}
-
                     {/* Cột Số lượng sản phẩm */}
-                    <Grid item xs={3}>
-                        <Grid paddingTop={4} />
+                    <Grid item xs={6}>
                         <TextField
                             label="Số lượng sản phẩm"
                             value={productQuantity}
@@ -275,19 +270,7 @@ const AddProduct = () => {
                                 }
                             }}
                         />
-                        <Slider
-                            value={typeof productQuantity === 'number' ? productQuantity : 1} // Giá trị mặc định của slider là 1
-                            onChange={handleQuantityChange}
-                            aria-labelledby="input-slider-quantity"
-                            min={1} // Giá trị nhỏ nhất cho slider là 1
-                            max={500} // Giá trị lớn nhất cho slider
-                            step={1} // Bước điều chỉnh số lượng
-                            valueLabelDisplay="auto"
-                        />
                     </Grid>
-
-
-
                 </Grid>
 
 

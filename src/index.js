@@ -24,6 +24,14 @@ import UserAccountManagement from './components/UserManagement';
 import AdminDashboard from './Account/AdminDashboard';
 import Login from './Account/Login';
 import NavigateLogin from './components/navigate-login';
+import HomeMusic from './Music/home';
+import Guitar from './Music/guitar';
+import Piano from './Music/piano';
+import Violin from './Music/violin';
+import Accessory from './Music/accessory';
+import MoMoPayment from './components/momo-payment';
+import Order from './Account/your-order';
+import Admin from './Music/admin';
 // import { BrowserRouter } from "react-router-dom";
 
 const router = createBrowserRouter([
@@ -64,6 +72,10 @@ const router = createBrowserRouter([
     element: <CartPage />,
   },
   {
+    path: "order",
+    element: <Order />,
+  },
+  {
     path: "checkout",
     element: <Checkout />,
   },
@@ -88,8 +100,36 @@ const router = createBrowserRouter([
     element: <InvoiceList />,
   },
   {
+    path: "momo",
+    element: <MoMoPayment />,
+  },
+  {
     path: "admin",
     element: <AdminDashboard />,
+  },
+  {
+    path: "musical-instrument",
+    element: <HomeMusic />,
+  },
+  {
+    path: "guitar",
+    element: <Guitar />
+  },
+  {
+    path: "piano",
+    element: <Piano />
+  },
+  {
+    path: "violin",
+    element: <Violin />
+  },
+  {
+    path: "accessory",
+    element: <Accessory />
+  },
+  {
+    path: "dashboard",
+    element: <Admin />
   },
 
 ]);

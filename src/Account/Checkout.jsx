@@ -6,6 +6,9 @@ import { auth, db } from './firebaseConfig';
 import { doc, addDoc, setDoc, getDoc, collection, query, where, deleteDoc } from 'firebase/firestore';
 import "./Checkout.css";
 import { Typography } from '@mui/material';
+import axios from 'axios';
+
+
 
 const Checkout = () => {
     const styles = {
@@ -38,13 +41,32 @@ const Checkout = () => {
             [name]: value,
         });
     };
-    const [cart, setCart] = useState([
-        { id: 1, name: 'Electric Hummer', price: 65.00, quantity: 1 },
-        { id: 2, name: 'Mountain Bike', price: 120.00, quantity: 1 },
-        { id: 3, name: 'Gaming Laptop', price: 1500.00, quantity: 1 },
-        { id: 4, name: 'Smart Watch', price: 200.00, quantity: 1 },
-        { id: 5, name: 'Bluetooth Speaker', price: 75.00, quantity: 1 },
-    ]);
+
+    const [isAddressValid, setIsAddressValid] = useState(true);
+
+    const validateAddressWithPositionstack = async () => {
+        const address = `${formData.address}`;
+        const API_KEY = 'ce8e6250c3f808c529e178c70f3fd3f0';
+        const url = `http://api.positionstack.com/v1/forward?access_key=${API_KEY}&query=${encodeURIComponent(address)}`;
+
+        try {
+            const response = await axios.get(url);
+            const result = response.data.data;
+
+            if (result.length > 0) {
+                setIsAddressValid(true); // Address is valid
+            } else {
+                setIsAddressValid(false); // Address is invalid
+                // alert('The address you entered is invalid. Please enter a valid address.');
+                alert('Địa chỉ bạn nhập không tồn tại.\nVui lòng nhập địa chỉ chính xác.');
+            }
+        } catch (error) {
+            console.error('Error validating address: ', error);
+            setIsAddressValid(false);
+            alert('Địa chỉ không tồn tại.');
+        }
+    };
+
     const [cartItems, setCartItems] = useState([]);
     const [timeLeft, setTimeLeft] = useState(300); // Countdown timer for 5 minutes = 300
     const [isTimerActive, setIsTimerActive] = useState(false);
@@ -58,23 +80,47 @@ const Checkout = () => {
         }
     }, []);
 
-    useEffect(() => {
-        let interval;
-        if (isTimerActive && timeLeft > 0) {
-            interval = setInterval(() => {
-                setTimeLeft(prevTime => {
-                    if (prevTime <= 1) {
-                        clearInterval(interval);
-                        handleConfirmOrder(); // Automatically confirm the order after time is up
-                        return 0;
-                    }
-                    return prevTime - 1;
-                });
-            }, 1000);
-        }
+    // useEffect(() => {
+    //     let interval;
+    //     if (isTimerActive && timeLeft > 0) {
+    //         interval = setInterval(() => {
+    //             setTimeLeft(prevTime => {
+    //                 if (prevTime <= 1) {
+    //                     clearInterval(interval);
+    //                     handleConfirmOrder();
+    //                     return 0;
+    //                 }
+    //                 return prevTime - 1;
+    //             });
+    //         }, 1000);
+    //     }
 
-        return () => clearInterval(interval); // Cleanup on unmount
-    }, [isTimerActive, timeLeft]);
+    //     return () => clearInterval(interval); 
+    // }, [isTimerActive, timeLeft]);
+    useEffect(() => {
+        // Start timer immediately on component mount
+        setIsTimerActive(true);
+
+        const interval = setInterval(() => {
+            setTimeLeft((prevTime) => {
+                if (prevTime == 0) {
+                    clearInterval(interval);
+                    resetTimer();
+                    navigate('/cart'); // Redirect to CartPage
+                    alert('Thời gian đã hết! Bạn sẽ được chuyển hướng về trang giỏ hàng.');
+                    return 0; // Set time left to 0
+                }
+                return prevTime - 1;
+            });
+        }, 1000);
+
+        // Cleanup interval on component unmount
+        return () => clearInterval(interval);
+    }, []);
+    const resetTimer = () => {
+        setTimeLeft(300); // Reset timer to 300 seconds
+        localStorage.removeItem('timerStart'); // Optionally remove timer start from local storage
+    };
 
     useEffect(() => {
         const timerStart = localStorage.getItem('timerStart');
@@ -104,38 +150,44 @@ const Checkout = () => {
 
     const total = cartItems.reduce((acc, product) => acc + parseFloat(product.price) * product.quantity, 0);
 
-    const calculateTotal = () => {
-        return cart.reduce((total, item) => total + item.price * item.quantity, 0);
-    };
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
-            const documentId = Date.now().toString();
+            await validateAddressWithPositionstack();
 
-            const cartItem = cartItems.map(item => ({
-                id: item.id,
-                product: item.name,
-                quantity: item.quantity,
-            }));
+            if (isAddressValid) {
+                console.log('Address is valid, submitting order...');
 
-            await setDoc(doc(db, 'invoices', documentId), {
-                ...formData,
-                items: cartItem, // Danh sách sản phẩm
-                total: total, // Tổng giá trị hóa đơn
-                createdAt: new Date(), // Ngày tạo hóa đơn
-                status: "Đang xử lý",
-                id: documentId,
-            });
-            const newOrderId = 'some_generated_order_id'; // Replace this with your actual order creation logic
-            setOrderId(newOrderId);
-            localStorage.setItem('orderId', newOrderId); // Store the order ID in localStorage
-            localStorage.setItem('timerStart', new Date().getTime().toString()); // Save start time in localStorage
+                const documentId = Date.now().toString();
 
-            setIsTimerActive(true); // Activate the timer
-            setTimeLeft(300);
-            console.log('Document written with ID: ', documentId);
-            alert('Đơn hàng của bạn đã được giao.\nVui lòng kiểm tra đơn hàng, xin cảm ơn!');
+                const cartItem = cartItems.map(item => ({
+                    id: item.id,
+                    product: item.name,
+                    quantity: item.quantity,
+                }));
+
+                await setDoc(doc(db, 'invoices', documentId), {
+                    ...formData,
+                    items: cartItem, // Danh sách sản phẩm
+                    total: total, // Tổng giá trị hóa đơn
+                    createdAt: new Date(), // Ngày tạo hóa đơn
+                    status: "Đang xử lý",
+                    id: documentId,
+                });
+                const newOrderId = documentId; // Replace this with your actual order creation logic
+                setOrderId(newOrderId);
+                localStorage.setItem('orderId', newOrderId); // Store the order ID in localStorage
+                localStorage.setItem('timerStart', new Date().getTime().toString()); // Save start time in localStorage
+
+                setIsTimerActive(true); // Activate the timer
+                setTimeLeft(300);
+                console.log('Document written with ID: ', documentId);
+                alert('Đơn hàng của bạn đã được giao.\nVui lòng kiểm tra đơn hàng, xin cảm ơn!');
+            }
+
+
+
         } catch (error) {
             console.error('Error adding document: ', error);
             alert('Error saving invoice');
@@ -157,11 +209,17 @@ const Checkout = () => {
             localStorage.removeItem('timerStart'); // Remove the timer start from local storage
             alert('Your order has been canceled.');
             navigate('/cart'); // Redirect the user after cancellation
+            resetTimer();
         } catch (error) {
             console.error('Error canceling order: ', error);
             alert('Error canceling the order');
         }
     };
+
+    const handleMomoPayment = () => {
+        // Your Momo payment logic here
+        navigate('/momo');
+    }
 
     const handleConfirmOrder = async () => {
         if (orderId) {
@@ -181,7 +239,6 @@ const Checkout = () => {
     };
 
     const deleteCartItems = async () => {
-        // Replace 'cartItems' with your actual Firestore collection where the cart items are stored
         const cartItemsRef = collection(db, 'carts');
         const q = query(cartItemsRef, where('userEmail', '==', auth.email)); // Assuming you filter by user ID
 
@@ -196,18 +253,15 @@ const Checkout = () => {
     return (
         <div>
             <NavBar />
-            {/* <div style={styles.space}></div> */}
             <section className="banner_area">
                 <div className="container">
                     <div className="banner_text">
                         <h3>Chekout</h3>
                         <ul>
                             <li>
-                                {/* <a href="index.html">Home</a> */}
                                 <Link to="/cart">Cart</Link>
                             </li>
                             <li>
-                                {/* <a href="checkout.html">Chekout</a> */}
                                 <Link to="/checkout">Chekout</Link>
                             </li>
                         </ul>
@@ -218,19 +272,13 @@ const Checkout = () => {
             <section className="billing_details_area p_100">
                 <div className="container">
                     <div className="return_option">
-                        {/* <h4>
-                            Returning customer? <a href="#">Click here to login</a>
-                        </h4> */}
                     </div>
                     <div className="row">
                         <form onSubmit={handleSubmit}
                             style={styles.formGroup}
-                        // method="post"
-                        // noValidate="novalidate"
                         >
                             <div className="col-lg-7">
                                 <div className="main_title">
-                                    {/* <h2>Billing Details</h2> */}
                                     <h2>Chi tiết thanh toán</h2>
                                 </div>
                                 <div className="billing_form_area">
@@ -251,7 +299,6 @@ const Checkout = () => {
                                             />
                                         </div>
                                         <div className="form-group col-md-6">
-                                            {/* <label htmlFor="last">Last Name *</label> */}
                                             <label htmlFor="last">Họ *</label>
                                             <input
                                                 type="text"
@@ -265,7 +312,6 @@ const Checkout = () => {
                                             />
                                         </div>
                                         <div className="form-group col-md-12">
-                                            {/* <label htmlFor="company">Company Name</label> */}
                                             <label htmlFor="company">Tên công ty</label>
                                             <input
                                                 type="text"
@@ -291,14 +337,6 @@ const Checkout = () => {
                                                 onChange={handleChange}
                                                 required
                                             />
-                                            {/* <input
-                                            type="text"
-                                            className="form-control"
-                                            id="address2"
-                                            name="address2"
-                                            placeholder="Apartment, Suit unit etc (optional)"
-                                            required
-                                        /> */}
                                         </div>
                                         <div className="form-group col-md-6">
                                             <label htmlFor="email">Email Address *</label>
@@ -357,12 +395,6 @@ const Checkout = () => {
                                                         ${(item.price * item.quantity).toFixed(2)}
                                                     </span>
                                                 </Typography>
-                                                // <h5 key={item.id}>
-                                                //     {item.name} x {item.quantity}
-                                                //     <span>
-                                                //         ${(item.price * item.quantity).toFixed(2)}
-                                                //     </span>
-                                                // </h5>
                                             ))}
                                             <div style={{ padding: '10px 0' }} />
                                             <h4>Subtotal <span>${(total).toFixed(2)}</span></h4>
@@ -372,35 +404,38 @@ const Checkout = () => {
                                         {/* Countdown Timer */}
 
                                         <div id="accordion" className="accordion_area">
+
+                                            {/* MoMo Payment */}
                                             <div className="card">
                                                 <div className="card-header" id="headingOne">
                                                     <h5 className="mb-0">
                                                         <button
-                                                            className="btn btn-link"
+                                                            className="btn btn-link collapsed"
                                                             data-toggle="collapse"
                                                             data-target="#collapseOne"
-                                                            aria-expanded="true"
+                                                            aria-expanded="false"
                                                             aria-controls="collapseOne"
-                                                            type='button'
-                                                        >
-                                                            Direct Bank Transfer
+                                                            type='button'>
+                                                            MoMo Payment
+                                                            <img src="img/momo-logo.png" alt="MoMo Logo" style={{ width: '50px', marginLeft: '10px' }} />
                                                         </button>
                                                     </h5>
                                                 </div>
                                                 <div
                                                     id="collapseOne"
-                                                    className="collapse show"
+                                                    className="collapse"
                                                     aria-labelledby="headingOne"
                                                     data-parent="#accordion">
                                                     <div className="card-body">
-                                                        {/* Make your payment directly into our bank account. Please
-                                                    use your Order ID as the payment reference. Your order
-                                                    won`t be shipped until the funds have cleared in our
-                                                    account. */}
-                                                        ...
+                                                        <Typography variant='body2' color='textPrimary'>Use MoMo to pay for your order.</Typography>
+                                                        <button className="btn pest_btn" onClick={handleMomoPayment}>
+                                                            Pay with MoMo
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            {/* Cash Payment */}
                                             <div className="card">
                                                 <div className="card-header" id="headingTwo">
                                                     <h5 className="mb-0">
@@ -411,7 +446,8 @@ const Checkout = () => {
                                                             aria-expanded="false"
                                                             aria-controls="collapseTwo"
                                                             type='button'>
-                                                            Check Payment
+                                                            Cash Payment {/* Thay đổi ở đây */}
+                                                            <img src="img/cash-logo.png" alt="Cash Logo" style={{ width: '50px', marginLeft: '10px' }} /> {/* Thay đổi logo nếu cần */}
                                                         </button>
                                                     </h5>
                                                 </div>
@@ -421,40 +457,23 @@ const Checkout = () => {
                                                     aria-labelledby="headingTwo"
                                                     data-parent="#accordion">
                                                     <div className="card-body">
-                                                        {/* Make your payment directly into our bank account. Please
-                                                    use your Order ID as the payment reference. Your order
-                                                    won`t be shipped until the funds have cleared in our
-                                                    account. */}
-                                                        ...
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="card">
-                                                <div className="card-header" id="headingThree">
-                                                    <h5 className="mb-0">
-                                                        <button
-                                                            className="btn btn-link collapsed"
-                                                            data-toggle="collapse"
-                                                            data-target="#collapseThree"
-                                                            aria-expanded="false"
-                                                            aria-controls="collapseThree"
-                                                            type='button'>
-                                                            Paypal
-                                                            <img src="img/checkout-card.png" alt="" />
+                                                        <Typography variant='body2' color='textPrimary'>Use cash to pay for your order.</Typography>
+                                                        <button type="submit" className="btn pest_btn">
+                                                            Pay with Cash
                                                         </button>
-                                                        <a href="#">What is PayPal?</a>
-                                                    </h5>
-                                                </div>
-                                                <div
-                                                    id="collapseThree"
-                                                    className="collapse"
-                                                    aria-labelledby="headingThree"
-                                                    data-parent="#accordion">
-                                                    <div className="card-body">
-                                                        ...
+                                                        {/* {isTimerActive ? (
+                                                            <button type="button" className="btn pest_btn cancel_btn" onClick={handleCancelOrder}>
+                                                                Cancel Order
+                                                            </button>
+                                                        ) : (
+                                                            <button type="submit" className="btn pest_btn">
+                                                                Pay with Cash
+                                                            </button>
+                                                        )} */}
                                                     </div>
                                                 </div>
                                             </div>
+
                                         </div>
                                         {isTimerActive && (
                                             <div style={styles.countDown}>
@@ -462,15 +481,7 @@ const Checkout = () => {
                                             </div>
                                         )}
 
-                                        {isTimerActive ? (
-                                            <button type="button" className="btn pest_btn cancel_btn" onClick={handleCancelOrder}>
-                                                Cancel Order
-                                            </button>
-                                        ) : (
-                                            <button type="submit" className="btn pest_btn">
-                                                place order
-                                            </button>
-                                        )}
+
 
                                     </div>
                                 </div>
@@ -479,7 +490,6 @@ const Checkout = () => {
                     </div>
                 </div>
             </section>
-            {/* <div style={styles.space}></div> */}
             <Footer />
         </div>
     );

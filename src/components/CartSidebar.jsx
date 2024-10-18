@@ -91,7 +91,7 @@ const CartSidebar = ({ cartItems, onClose, isOpen, onRemove, onQuantityChange })
                                                         -
                                                     </button>
                                                     {/* <span>Qty: {item.quantity}</span> */}
-                                                    <input className='inputQty'
+                                                    <input
                                                         type="number"
                                                         value={item.quantity}
                                                         onChange={(e) => handleInputChange(e, item.id)}
@@ -224,6 +224,9 @@ const styles = {
         justifyContent: 'space-between',
         alignItems: 'center',
     },
+    qtyInput: {
+        width: '70px',
+    },
     qtyContainer: {
         display: 'flex',
         justifyContent: 'center',
@@ -232,7 +235,7 @@ const styles = {
 
     },
     qtyButton: {
-        padding: '0px 10px',
+        padding: '5px 0',
         fontsize: '30px',
         backgroundcolor: '#b8b6b6',
         color: 'white',
@@ -240,6 +243,7 @@ const styles = {
         borderradius: '5px',
         cursor: 'pointer',
         margin: '0px 5px',
+        width: '50px'
     },
     price: {
         color: '#f195b2',

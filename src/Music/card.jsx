@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Input } from '@mui/material';
-import './card.css';
+import '../components/card.css';
 
-const Card = ({ addToCart, id, name, price, image, image_L, description, quantity }) => {
+const Card = ({ product, addToCart }) => {
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
 
@@ -18,23 +18,15 @@ const Card = ({ addToCart, id, name, price, image, image_L, description, quantit
     const handleClick = () => {
         navigate('/product-details', {
             state: {
-                id,
-                name,
-                price,
-                image,
-                image_L,
-                description,
-                quantity
+                // id,
+                // name,
+                // price,
+                // image,
+                // image_L,
+                // description,
+                // quantity
             }
         });
-    };
-    const product = {
-        id,
-        name,
-        price,
-        image,
-        image_L,
-        description,
     };
     const styles = {
 
@@ -42,9 +34,8 @@ const Card = ({ addToCart, id, name, price, image, image_L, description, quantit
 
     return (
 
-
         <div className="col-lg-4 col-md-4 col-6" >
-            {quantity === 0 && (
+            {product.qty === 0 && (
                 <div
                     style={{
                         position: 'absolute', // Position it over the card
@@ -66,44 +57,59 @@ const Card = ({ addToCart, id, name, price, image, image_L, description, quantit
             )}
             <div className="cake_feature_item"
                 style={{
-                    opacity: quantity === 0 ? 0.3 : 1, // Fade the image and card when quantity is 0
-                    pointerEvents: quantity === 0 ? 'none' : 'auto', // Disable all interactions when quantity is 0
+                    opacity: product.qty === 0 ? 0.3 : 1,
+                    pointerEvents: product.qty === 0 ? 'none' : 'auto',
                 }}>
 
                 <div className="cake_img">
                     <img
-                        src={image}
+                        src={product.img}
                         alt=""
-                        onClick={quantity > 0 ? handleClick : undefined}
-                        style={{ cursor: quantity === 0 ? 'not-allowed' : 'pointer' }}
+                        onClick={product.qty > 0 ? handleClick : undefined}
+                        style={{
+                            cursor: product.qty === 0 ? 'not-allowed' : 'pointer',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                        }}
                     />
                     <button
                         className="view-btn"
                         onClick={handleClickOpen}
-                        disabled={quantity === 0}
+                        disabled={product.qty === 0}
                         style={{
-                            cursor: quantity === 0 ? 'not-allowed' : 'pointer',
-                            backgroundColor: quantity === 0 ? 'grey' : '',
+                            cursor: product.qty === 0 ? 'not-allowed' : 'pointer',
+                            backgroundColor: product.qty === 0 ? 'grey' : '',
                         }}>
                         Xem
                     </button>
                 </div>
 
                 <div className="cake_text">
-                    <h4>${price}</h4>
-                    <h3>{name}</h3>
+                    <Typography color="textPrimary" sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        fontSize: '25px',
+                        fontWeight: 'bold',
+                        fontFamily: 'Poppins',
+                        textDecoration: 'none',
+                        color: 'red',
+                    }}>
+                        {product.price} VND
+                    </Typography>
+                    <h3>{product.name}</h3>
                     <a
-                        className={`pest_btn ${quantity === 0 ? 'disabled' : ''}`}
+                        className={`pest_btn ${product.qty === 0 ? 'disabled' : ''}`}
                         href="#"
                         onClick={(e) => {
                             e.preventDefault();
-                            if (quantity > 0) {
+                            if (product.qty > 0) {
                                 addToCart(product);
                             }
                         }}
                         style={{
-                            backgroundColor: quantity === 0 ? 'grey' : '',
-                            cursor: quantity === 0 ? 'not-allowed' : 'pointer'
+                            backgroundColor: product.qty === 0 ? 'grey' : '',
+                            cursor: product.qty === 0 ? 'not-allowed' : 'pointer'
                         }}>
                         Add to cart
                     </a>
@@ -111,14 +117,14 @@ const Card = ({ addToCart, id, name, price, image, image_L, description, quantit
             </div>
 
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>{name}</DialogTitle>
+                <DialogTitle>{product.name}</DialogTitle>
                 <DialogContent>
                     {/* Large Product Image */}
-                    <img src={image_L} alt={name} style={{ width: '100%' }} />
+                    <img src={product.imgDetail} alt={product.name} style={{ width: '100%' }} />
 
                     {/* Product Price */}
                     <Typography variant="body1" color="info" sx={{ display: 'flex', justifyContent: 'center', fontWeight: 'bold' }}>
-                        Price: ${price}
+                        Price: ${product.price}
                     </Typography>
 
                     {/* Product Description Section (Non-editable Input) */}
@@ -126,7 +132,7 @@ const Card = ({ addToCart, id, name, price, image, image_L, description, quantit
                         <Typography variant="h6">Description</Typography>
                         <Input
                             type="text"
-                            value={description && description.length > 115 ? `${description.slice(0, 50)}...` : description || 'empty'}
+                            value={product.description && product.description.length > 115 ? `${product.description.slice(0, 50)}...` : product.description || 'empty'}
                             fullWidth
                             multiline
                             disabled // This disables the input field, making it non-clickable and non-editable

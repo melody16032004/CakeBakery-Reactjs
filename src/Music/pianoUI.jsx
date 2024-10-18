@@ -5,16 +5,17 @@ import Footer from "../components/footer";
 import { Link } from "react-router-dom";
 import Search from "../components/searchBox";
 import Newsletter from "../components/newsletter";
-import Card from "../components/card";
+
 import CartIcon from '../components/CartIcon';
 import CartSidebar from '../components/CartSidebar';
 import "../index.css";
-import ProductList from './ProductList';
-import { auth, db } from './firebaseConfig';
+import ProductList from '../Account/ProductList';
+import { auth, db } from '../Account/firebaseConfig';
 import { doc, setDoc, getDoc, getDocs, collection, query, where } from 'firebase/firestore';
 import "../index.css";
 import NavigateLogin from '../components/navigate-login';
 import CircularProgress from '@mui/material/CircularProgress';
+import Card from './card';
 
 function Shop() {
     const MAX_TOTAL_ITEMS = 20;
@@ -55,7 +56,7 @@ function Shop() {
             try {
                 setLoading(true);
 
-                const productsCollection = collection(db, 'products'); // 'products' is your collection name
+                const productsCollection = collection(db, 'music-products'); // 'products' is your collection name
                 const productsSnapshot = await getDocs(productsCollection);
                 const productsList = productsSnapshot.docs.map(doc => ({
                     id: doc.id,
@@ -265,41 +266,18 @@ function Shop() {
     const paginatedProducts = sortedProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
     const productList = paginatedProducts.map(product => (
         <Card
-            id={product.id}
-            image={product.imageUrl}
-            name={product.name}
-            price={product.price}
-            image_L={product.imageUrl}
+            product={product}
             addToCart={addToCart}
-            description={product.description}
-            quantity={product.quantity}
         />
     ));
     // 
 
     return (
         <div>
-            <NavBar />
             <div>
-                <section className="banner_area">
-                    <div className="container">
-                        <div className="banner_text">
-                            <h3>Shop</h3>
-                            <ul>
-                                <li>
-                                    <Link to="/home">Home</Link>
-                                </li>
-                                <li>
-                                    <Link to="/shop">Shop</Link>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </section>
-
                 <section className="product_area p_100">
                     <div className="container">
-                        <div className="row product_inner_row">
+                        <div className="">
 
                             <div className="col-lg-9">
                                 <div className="row m0 product_task_bar">
@@ -392,37 +370,11 @@ function Shop() {
                                     {/* --------------------------------------- */}
                                 </div>
                             </div>
-                            <div className="col-lg-3">
-                                <div className="product_left_sidebar">
-                                    <aside className="left_sidebar search_widget">
-                                        <div className="input-group">
-                                            <input type="text" className="form-control" placeholder="Enter Search Keywords" />
-                                            <div className="input-group-append">
-                                                <button className="btn" type="button">
-                                                    <i className="icon icon-Search" />
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </aside>
-                                    <aside className="left_sidebar p_catgories_widget">
-                                        <div className="p_w_title">
-                                            <h3>Product Categories</h3>
-                                        </div>
-                                        <ul className="list_style">
-                                            <li><a href="#">Cupcake (17)</a></li>
-                                            <li><a href="#">Chocolate (15)</a></li>
-                                            <li><a href="#">Celebration (14)</a></li>
-                                            <li><a href="#">Wedding Cake (8)</a></li>
-                                            <li><a href="#">Desserts (11)</a></li>
-                                        </ul>
-                                    </aside>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </section>
             </div>
-            <Footer />
+
         </div>
     );
 }

@@ -10,6 +10,8 @@ import ProductList from "./components/ListProduct";
 import CreateCategory from "./components/CreateCategory";
 import AdminDashboard from "./Account/AdminDashboard";
 import Home from "./Account/Home";
+import HomeMusic from "./Music/home";
+import Admin from "./Music/admin";
 
 const theme = createTheme({
   palette: {
@@ -27,6 +29,7 @@ const theme = createTheme({
   },
 });
 
+
 const App = () => {
   return (
     // <Shop />
@@ -35,6 +38,8 @@ const App = () => {
     // <ThemeProvider theme={theme}>
     //   <AdminDashboard />
     // </ThemeProvider>
+    // <HomeMusic />
+    // <Admin />
   );
 };
 

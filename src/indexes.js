@@ -1,5 +1,8 @@
 const admin = require('firebase-admin');
 const express = require('express');
+const axios = require('axios');
+const crypto = require('crypto');
+const router = express.Router();
 const server = express();
 const cors = require('cors');
 const { getFirestore } = require('firebase-admin/firestore');
@@ -82,8 +85,59 @@ app.get('/active-users', async (req, res) => {
 });
 
 
+app.post('/api/momo/payment', async (req, res) => {
+    const { amount } = req.body;
+    const partnerCode = 'YOUR_PARTNER_CODE';
+    const accessKey = 'YOUR_ACCESS_KEY';
+    const secretKey = 'YOUR_SECRET_KEY';
+    const requestId = partnerCode + new Date().getTime();
+    const orderId = requestId;
+    const orderInfo = 'Thanh toán qua MoMo';
+    const redirectUrl = 'http://your-website.com/momo-result';
+    const ipnUrl = 'http://your-website.com/momo-ipn';
+
+    // Tạo chữ ký xác thực yêu cầu
+    const rawSignature = `partnerCode=${partnerCode}&accessKey=${accessKey}&requestId=${requestId}&amount=${amount}&orderId=${orderId}&orderInfo=${orderInfo}&returnUrl=${redirectUrl}&notifyUrl=${ipnUrl}&extraData=`;
+    const signature = crypto.createHmac('sha256', secretKey).update(rawSignature).digest('hex');
+
+    // Dữ liệu yêu cầu gửi tới MoMo
+    const requestBody = {
+        partnerCode,
+        accessKey,
+        requestId,
+        amount,
+        orderId,
+        orderInfo,
+        returnUrl: redirectUrl,
+        notifyUrl: ipnUrl,
+        requestType: 'captureWallet',
+        signature,
+        extraData: ''
+    };
+
+    try {
+        // Gửi yêu cầu tới API MoMo
+        const response = await axios.post('https://test-payment.momo.vn/v2/gateway/api/create', requestBody, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.data && response.data.payUrl) {
+            res.json({ payUrl: response.data.payUrl });
+        } else {
+            res.status(400).json({ message: 'Không thể tạo yêu cầu thanh toán MoMo' });
+        }
+    } catch (error) {
+        console.error('Lỗi khi thanh toán MoMo:', error);
+        res.status(500).json({ message: 'Lỗi hệ thống' });
+    }
+});
+
+
 // Khởi động server trên cổng 5000
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server đang chạy trên cổng ${PORT}`);
 });
+
