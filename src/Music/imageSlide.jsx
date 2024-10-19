@@ -5,12 +5,17 @@ import Slider from 'react-slick';
 import { Box, Typography } from '@mui/material';
 
 // Images for the carousel
+// const images = [
+//     'https://vietthuong.vn/image/catalog/Baner/2024/donthusang-ngan-uu-dai-home.png',
+//     'https://vietthuong.vn/image/catalog/Baner/2024/giai-kho-vtm-2024.png',
+//     'https://vietthuong.vn/image/catalog/Baner/2024/thayday-guitar-vietthuong.jpg',
+//     'https://vietthuong.vn/image/catalog/Baner/2023/samdanfender-ldp-t03.jpg',
+//     'https://vietthuong.vn/image/catalog/Baner/2023/km-tang-voucher-hoc-nhac-vt.png',
+// ];
 const images = [
-    'https://vietthuong.vn/image/catalog/Baner/2024/donthusang-ngan-uu-dai-home.png',
-    'https://vietthuong.vn/image/catalog/Baner/2024/giai-kho-vtm-2024.png',
-    'https://vietthuong.vn/image/catalog/Baner/2024/thayday-guitar-vietthuong.jpg',
-    'https://vietthuong.vn/image/catalog/Baner/2023/samdanfender-ldp-t03.jpg',
-    'https://vietthuong.vn/image/catalog/Baner/2023/km-tang-voucher-hoc-nhac-vt.png',
+    'img/home-slider/slider-1.jpg',
+    'img/home-slider/slider-2.jpg',
+    'img/home-slider/slider-3.jpg',
 ];
 
 const ImageSlider = () => {
@@ -23,13 +28,14 @@ const ImageSlider = () => {
         slidesToScroll: 1,
         autoplay: true, // Enables auto-slide
         autoplaySpeed: 3000, // Time in ms between slides
+
     };
 
     return (
         <Box sx={{
             paddingBottom: '30px',
-            marginTop: '110px',
-            overflowX: 'hidden',  // Only hide horizontal overflow to prevent scrollbars
+            // marginTop: '110px',
+            overflowX: 'hidden',
         }}>
             <Typography variant="h6" sx={{ color: '#fff', textAlign: 'center', marginBottom: '20px' }}>
                 Featured Instruments
@@ -41,8 +47,9 @@ const ImageSlider = () => {
                             style={{
                                 borderRadius: '10px',
                                 maxWidth: '100%',   // Ensure the image stays within its container
-                                height: 'auto',     // Maintain the aspect ratio
+                                height: '600px',     // Maintain the aspect ratio
                                 display: 'block',   // Remove inline space
+                                objectFit: 'cover', // Ensure the image is fully visible
                             }} />
                     </Box>
                 ))}

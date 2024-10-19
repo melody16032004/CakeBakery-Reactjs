@@ -32,6 +32,7 @@ import Accessory from './Music/accessory';
 import MoMoPayment from './components/momo-payment';
 import Order from './Account/your-order';
 import Admin from './Music/admin';
+import Feedback from './Account/Feedback';
 // import { BrowserRouter } from "react-router-dom";
 
 const router = createBrowserRouter([
@@ -54,6 +55,10 @@ const router = createBrowserRouter([
   {
     path: "menu",
     element: <Menu />,
+  },
+  {
+    path: "feedback",
+    element: <Feedback />,
   },
   {
     path: "aboutUs",

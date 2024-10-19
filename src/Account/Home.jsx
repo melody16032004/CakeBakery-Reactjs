@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import NavBar from "../components/navbar";
 import Footer from "../components/footer";
 import "../index.css";
+import ImageSlider from '../Music/imageSlide';
 
 function Home() {
 
@@ -9,8 +10,8 @@ function Home() {
         <div>
             <NavBar />
 
-
-            <section className="main_slider_area">
+            <ImageSlider />
+            {/* <section className="main_slider_area">
                 <div id="main_slider" className="rev_slider" data-version="5.3.1.6">
                     <ul>
                         <li
@@ -38,7 +39,6 @@ function Home() {
                             data-param10=""
                             data-description=""
                         >
-                            {/* MAIN IMAGE */}
                             <img
                                 src="img/home-slider/slider-3.jpg"
                                 alt=""
@@ -49,7 +49,6 @@ function Home() {
                                 className="rev-slidebg"
                                 data-no-retina=""
                             />
-                            {/* LAYER NR. 1 */}
                             <div className="slider_text_box">
                                 <div
                                     className="tp-caption tp-resizeme first_text"
@@ -134,7 +133,6 @@ function Home() {
                             data-param10=""
                             data-description=""
                         >
-                            {/* MAIN IMAGE */}
                             <img
                                 src="img/home-slider/slider-4.jpg"
                                 alt=""
@@ -145,9 +143,6 @@ function Home() {
                                 className="rev-slidebg"
                                 data-no-retina=""
                             />
-                            {/* LAYERS */}
-                            {/* LAYERS */}
-                            {/* LAYER NR. 1 */}
                             <div className="slider_text_box">
                                 <div
                                     className="tp-caption tp-resizeme first_text"
@@ -232,7 +227,6 @@ function Home() {
                             data-param10=""
                             data-description=""
                         >
-                            {/* MAIN IMAGE */}
                             <img
                                 src="img/home-slider/slider-5.jpg"
                                 alt=""
@@ -243,9 +237,6 @@ function Home() {
                                 className="rev-slidebg"
                                 data-no-retina=""
                             />
-                            {/* LAYERS */}
-                            {/* LAYERS */}
-                            {/* LAYER NR. 1 */}
                             <div className="slider_text_box">
                                 <div
                                     className="tp-caption tp-resizeme first_text"
@@ -307,7 +298,7 @@ function Home() {
                         </li>
                     </ul>
                 </div>
-            </section>
+            </section> */}
 
             <section className="welcome_bakery_area cake_feature_main p_100">
                 <div className="container">
@@ -749,7 +740,7 @@ function Home() {
                 </div>
             </section>
 
-            <section className="new_arivals_area p_100">
+            {/* <section className="new_arivals_area p_100">
                 <div className="container">
                     <div className="single_pest_title">
                         <h2>New Arrivals</h2>
@@ -837,7 +828,7 @@ function Home() {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section> */}
 
             <section className="latest_news_area gray_bg p_100">
                 <div className="container">

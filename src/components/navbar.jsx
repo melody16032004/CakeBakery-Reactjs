@@ -290,11 +290,10 @@ function NavBar() {
                                             href="#"
                                             role="button"
                                             aria-haspopup="true"
-                                            aria-expanded="false"
-                                        >
-                                            Blog
+                                            aria-expanded="false">
+                                            <Link to="/feedback">Feedback</Link>
                                         </a>
-                                        <ul className="dropdown-menu">
+                                        {/* <ul className="dropdown-menu">
                                             <li>
                                                 <a href="#">Blog with sidebar</a>
                                             </li>
@@ -304,7 +303,7 @@ function NavBar() {
                                             <li>
                                                 <a href="#">Blog details</a>
                                             </li>
-                                        </ul>
+                                        </ul> */}
                                     </li>
                                     <li className="dropdown submenu">
                                         <a
