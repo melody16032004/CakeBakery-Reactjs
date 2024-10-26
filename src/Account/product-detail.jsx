@@ -40,6 +40,7 @@ const Product = () => {
                                         className="img-fluid"
                                         src={image_L}
                                         alt=""
+                                        style={{ scale: '1.5', marginLeft: '70px', marginTop: '70px', borderRadius: '5px' }}
                                     />
                                 </div>
                             </div>

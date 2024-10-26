@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Input } from '@mui/material';
 import './card.css';
 
@@ -138,7 +138,12 @@ const Card = ({ addToCart, id, name, price, image, image_L, description, quantit
                 </DialogContent>
 
                 <DialogActions>
-                    <Button onClick={handleClose}>Close</Button>
+                    <Button onClick={handleClick}>
+                        View
+                        {/* <Link to='/product-details'>
+                            View
+                        </Link> */}
+                    </Button>
                 </DialogActions>
             </Dialog>
 

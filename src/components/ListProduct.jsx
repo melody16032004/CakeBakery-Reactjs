@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../Account/firebaseConfig'; // Đường dẫn đến cấu hình Firebase của bạn
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
-import { IconButton, Box, Typography, Card, CardContent, CardMedia, Button, Dialog, DialogTitle, DialogContent, DialogActions, Checkbox, TextField } from '@mui/material';
+import {
+    IconButton, Box, Typography, Card, CardContent, CardMedia,
+    Button, Dialog, DialogTitle, DialogContent, DialogActions,
+    Checkbox, TextField
+} from '@mui/material';
 import { Add, Edit, Delete } from '@mui/icons-material';
 import EditProduct from './EditProduct'; // Import component sửa sản phẩm
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

@@ -131,18 +131,56 @@ const Order = () => {
                                             ID Đơn hàng: {invoice.id}
                                         </Typography>
                                         <Typography variant='body1' color='textSecondary'>Tổng cộng: <strong>${invoice.total}</strong></Typography>
-                                        <Typography variant='body1' color='textSecondary'>Trạng thái: <strong>{invoice.status}</strong></Typography>
+                                        <Typography
+                                            variant="body1"
+                                            display="flex"
+                                            alignItems="center"
+                                            color="textSecondary"
+                                        >
+                                            Trạng thái:&nbsp;
+                                            {invoice.status !== 'Đang xử lý' ? (
+                                                <Box
+                                                    sx={{
+                                                        display: 'inline-flex',
+                                                        alignItems: 'center',
+                                                        borderRadius: '8px',
+                                                        padding: '4px 10px',
+                                                        backgroundColor: 'green', // Màu nền cho trạng thái "Đang xử lý"
+                                                    }}
+                                                >
+                                                    <strong style={{ color: 'white' }}>{invoice.status}</strong>
+                                                </Box>
+                                            ) : (
+                                                <Box
+                                                    sx={{
+                                                        display: 'inline-flex',
+                                                        alignItems: 'center',
+                                                        borderRadius: '8px',
+                                                        padding: '4px 10px',
+                                                        backgroundColor: 'gray', // Màu nền cho trạng thái khác
+                                                    }}
+                                                >
+                                                    <strong style={{ color: 'white' }}>{invoice.status}</strong>
+                                                </Box>
+                                            )}
+                                        </Typography>
+
+
+
                                     </Box>
                                     {/* Nút Hiện/Ẩn chi tiết với icon */}
-                                    <StyledIconButton onClick={() => handleToggleDetails(invoice.id)}>
-                                        {visibleDetails[invoice.id] ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                                    </StyledIconButton>
+                                    <button onClick={() => handleToggleDetails(invoice.id)} style={{
+                                        width: '150px',
+                                    }}>
+                                        {visibleDetails[invoice.id] ? 'Ẩn chi tiết' : 'Hiện chi tiết'}
+                                    </button>
                                 </Box>
 
                                 {/* Thông tin ẩn */}
                                 <HiddenInfo visible={visibleDetails[invoice.id]} sx={{ padding: '10px 0' }}>
-                                    <Typography variant='body1'>Địa chỉ: {invoice.address}</Typography>
-                                    <Typography variant='body1'>Số điện thoại: {invoice.phone}</Typography>
+                                    {/* <Typography variant='body1'>Địa chỉ: {invoice.address}</Typography>
+                                    <Typography variant='body1'>Số điện thoại: {invoice.phone}</Typography> */}
+
                                     <Typography variant='subtitle1' mt={2} gutterBottom>Sản phẩm:</Typography>
                                     <Box component="ul" sx={{ paddingLeft: '20px' }}>
                                         {invoice.items.map((item, index) => (

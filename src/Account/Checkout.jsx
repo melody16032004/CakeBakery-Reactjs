@@ -7,6 +7,7 @@ import { doc, addDoc, setDoc, getDoc, getDocs, collection, query, where, deleteD
 import "./Checkout.css";
 import { Typography } from '@mui/material';
 import axios from 'axios';
+import SelectLocation from '../components/SelectLocation';
 
 
 
@@ -349,6 +350,8 @@ const Checkout = () => {
                                         <div className="form-group col-md-12">
                                             {/* <label htmlFor="address">Address *</label> */}
                                             <label htmlFor="address">Địa chỉ *</label>
+
+                                            <SelectLocation />
 
                                             <input
                                                 type="text"

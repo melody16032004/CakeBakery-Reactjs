@@ -66,6 +66,62 @@
 
   <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.6/bodymovin.min.js"></script>
+  <!-- Lấy thông tin TP -->
+  <script src="https://esgoo.net/scripts/jquery.js"></script>
+  <style type="text/css">
+    .css_select_div {
+      text-align: center;
+    }
+
+    .css_select {
+      display: inline-table;
+      width: 25%;
+      padding: 5px;
+      margin: 5px 2%;
+      border: solid 1px #686868;
+      border-radius: 5px;
+    }
+  </style>
+  <script>
+    $(document).ready(function () {
+      //Lấy tỉnh thành
+      $.getJSON('https://esgoo.net/api-tinhthanh/1/0.htm', function (data_tinh) {
+        if (data_tinh.error == 0) {
+          $.each(data_tinh.data, function (key_tinh, val_tinh) {
+            $("#tinh").append('<option value="' + val_tinh.id + '">' + val_tinh.full_name + '</option>');
+          });
+          $("#tinh").change(function (e) {
+            var idtinh = $(this).val();
+            //Lấy quận huyện
+            $.getJSON('https://esgoo.net/api-tinhthanh/2/' + idtinh + '.htm', function (data_quan) {
+              if (data_quan.error == 0) {
+                $("#quan").html('<option value="0">Quận Huyện</option>');
+                $("#phuong").html('<option value="0">Phường Xã</option>');
+                $.each(data_quan.data, function (key_quan, val_quan) {
+                  $("#quan").append('<option value="' + val_quan.id + '">' + val_quan.full_name + '</option>');
+                });
+                //Lấy phường xã  
+                $("#quan").change(function (e) {
+                  var idquan = $(this).val();
+                  $.getJSON('https://esgoo.net/api-tinhthanh/3/' + idquan + '.htm', function (data_phuong) {
+                    if (data_phuong.error == 0) {
+                      $("#phuong").html('<option value="0">Phường Xã</option>');
+                      $.each(data_phuong.data, function (key_phuong, val_phuong) {
+                        $("#phuong").append('<option value="' + val_phuong.id + '">' + val_phuong.full_name + '</option>');
+                      });
+                    }
+                  });
+                });
+
+              }
+            });
+          });
+
+        }
+      });
+    });	    
+  </script>
+  <!-- ----------------------------------------------------------------------------------- -->
   <style>
     /* CSS cho phần intro */
     #intro {
@@ -158,9 +214,15 @@
 <body>
   <!-- Phần intro animation -->
 
+
   <div id="intro">
     <div class="intro-content">
-      <div class="intro-text">Chào mừng đến với Cake Bakery!</div> <!-- Hiệu ứng chữ -->
+
+      <div class="intro-text">Chào mừng đến với
+        <a className="" href="#">
+          <img src="img/logo-2.png" alt="" />
+        </a>
+      </div> <!-- Hiệu ứng chữ -->
       <dotlottie-player src="https://lottie.host/e4ed5ccb-1be5-4521-aa47-91320cdc5a27/eFSFv2Hs4R.json"
         background="transparent" speed="1" class="lottie-animation" loop autoplay>
       </dotlottie-player> <!-- Animation Lottie -->

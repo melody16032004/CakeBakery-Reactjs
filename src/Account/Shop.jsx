@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import NavBar from "../components/navbar";
 import Footer from "../components/footer";
 import { Link } from "react-router-dom";
-import Search from "../components/searchBox";
+import SearchBox from "../components/searchBox";
 import Newsletter from "../components/newsletter";
 import Card from "../components/card";
 import CartIcon from '../components/CartIcon';
@@ -28,6 +28,15 @@ function Shop() {
     const [filterCategory, setFilterCategory] = useState('all');
     const navigate = useNavigate();
     const [products, setProducts] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
+
+
+    // Lọc sản phẩm dựa trên search query
+    const handleSearchChange = (query) => {
+        setSearchQuery(query);
+        setCurrentPage(1);
+    };
+
 
     const fetchCartItems = async () => {
         const userEmail = localStorage.getItem('savedEmail');
@@ -247,10 +256,13 @@ function Shop() {
         setCurrentPage(1); // Đặt lại trang về 1 khi thay đổi lọc
     };
     // Lọc và sắp xếp sản phẩm
+    // Bước 1: Lọc theo category
     const filteredProducts = products.filter(product =>
         filterCategory === 'all' || product.category === filterCategory
     );
-    const sortedProducts = filteredProducts.sort((a, b) => {
+
+    // Bước 2: Sắp xếp các sản phẩm đã lọc
+    const sortedAndFilteredProducts = filteredProducts.sort((a, b) => {
         if (sortOption === 'priceAsc') {
             return a.price - b.price;  // Sắp xếp theo giá tăng dần
         } else if (sortOption === 'priceDesc') {
@@ -262,7 +274,18 @@ function Shop() {
         }
         return 0;  // Giữ nguyên thứ tự mặc định
     });
-    const paginatedProducts = sortedProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+    // Bước 3: Lọc kết quả theo searchQuery sau khi sắp xếp
+    const filteredAndSearchedProducts = sortedAndFilteredProducts.filter(product =>
+        product.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    // Bước 4: Phân trang danh sách đã lọc và sắp xếp
+    const paginatedProducts = filteredAndSearchedProducts.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
     const productList = paginatedProducts.map(product => (
         <Card
             id={product.id}
@@ -395,14 +418,17 @@ function Shop() {
                             <div className="col-lg-3">
                                 <div className="product_left_sidebar">
                                     <aside className="left_sidebar search_widget">
-                                        <div className="input-group">
+                                        <SearchBox className="input-group"
+                                            searchQuery={searchQuery}
+                                            onSearchChange={handleSearchChange} />
+                                        {/* <div className="input-group">
                                             <input type="text" className="form-control" placeholder="Enter Search Keywords" />
                                             <div className="input-group-append">
                                                 <button className="btn" type="button">
                                                     <i className="icon icon-Search" />
                                                 </button>
                                             </div>
-                                        </div>
+                                        </div> */}
                                     </aside>
                                     <aside className="left_sidebar p_catgories_widget">
                                         <div className="p_w_title">

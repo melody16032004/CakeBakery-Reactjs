@@ -1,27 +1,22 @@
-import React from "react";
+import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
-function Search() {
-    return (
-        <div>
-            <div className="search_area zoom-anim-dialog mfp-hide" id="test-search">
-                <div className="search_box_inner">
-                    <h3>Search</h3>
-                    <div className="input-group">
-                        <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Search for..."
-                        />
-                        <span className="input-group-btn">
-                            <button className="btn btn-default" type="button">
-                                <i className="icon icon-Search" />
-                            </button>
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-}
+const SearchBox = ({ searchQuery, onSearchChange }) => (
+    <div className="search-bar" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+        <FontAwesomeIcon
+            icon={faSearch}
+            style={{ position: 'absolute', left: '10px', color: '#888' }}
+        />
+        <input
+            type="text"
+            placeholder="Tìm kiếm sản phẩm..."
+            value={searchQuery}
+            onChange={(e) => onSearchChange(e.target.value)}
+            className="form-control"
+            style={{ paddingLeft: '30px' }} // Chừa khoảng trống cho icon
+        />
+    </div>
+);
 
-export default Search
+export default SearchBox;
