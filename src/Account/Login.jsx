@@ -53,9 +53,9 @@ const Login = ({ setShowLogin, setShowForget, setCartItems }) => {
             localStorage.setItem("isAuthenticated", true);
             localStorage.setItem("savedEmail", email);
 
-            if (email === 'hoangdoan103@gmail.com')
+            if (email === 'hoangdoan103@gmail.com' || email === 'nguyengiahoanhao.perfect@gmail.com')
                 navigate('/admin');
-            else if (email !== 'hoangdoan103@gmail.com')
+            else if (email !== 'hoangdoan103@gmail.com' && email !== 'nguyengiahoanhao.perfect@gmail.com')
                 navigate('/shop');
             alert('Đăng nhập thành công!');
         } catch (error) {
