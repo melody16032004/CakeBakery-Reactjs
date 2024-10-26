@@ -23,7 +23,9 @@ const FeedbackPopup = ({ onSubmitFeedback, userEmail }) => {
             const feedbackData = {
                 user: username || "Người dùng",
                 content: feedback,
-                tags: tags.map(tag => tag.name),
+                // tags: tags.map(tag => tag.name),
+                // img: tags.map(tag => tag.imageUrl),
+                tags: tags.map(tag => ({ name: tag.name, imageUrl: tag.imageUrl })),
                 rating,
                 timestamp: new Date().toLocaleString(),
             };

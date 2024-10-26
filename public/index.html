@@ -58,13 +58,122 @@
 
   <script src="js/theme.js"></script>
   <!-- Thêm vào file index.html trong thư mục public -->
+  <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js" type="text/javascript" charset="utf-8"></script>
+  <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js" type="text/javascript" charset="utf-8"></script>
+  <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js" type="text/javascript" charset="utf-8"></script>
+  <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js" type="text/javascript" charset="utf-8"></script>
+  <link rel="stylesheet" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" type="text/css" />
 
+  <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.6/bodymovin.min.js"></script>
+  <style>
+    /* CSS cho phần intro */
+    #intro {
+      position: fixed;
+      width: 100%;
+      height: 100vh;
+      background-color: #fff;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      /* Canh giữa theo chiều dọc */
+      overflow: hidden;
+      /* Ẩn các phần tử ra ngoài */
+    }
+
+    /* Hiệu ứng cho chữ và GIF */
+    .intro-content {
+      display: flex;
+      /* Sử dụng flexbox để di chuyển cùng một hàng */
+      align-items: center;
+      /* Canh giữa theo chiều dọc */
+      position: absolute;
+      /* Đặt vị trí tuyệt đối */
+      left: 0%;
+      /* Bắt đầu từ 10% chiều rộng màn hình */
+      opacity: 0;
+      /* Bắt đầu ẩn */
+      animation: moveIn 5s forwards;
+      /* Áp dụng animation cho cả chữ và GIF */
+    }
+
+    /* Hiệu ứng di chuyển cho cả GIF và chữ */
+    @keyframes moveIn {
+      0% {
+        transform: translateX(0);
+        /* Bắt đầu từ vị trí ban đầu */
+        opacity: 0;
+        /* Ẩn */
+      }
+
+      20% {
+        opacity: 1;
+        /* Hiện ra */
+      }
+
+      80% {
+        opacity: 1;
+        /* Giữ nguyên hiển thị */
+      }
+
+      100% {
+        transform: translateX(70%);
+        /* Di chuyển đến 80% chiều rộng màn hình */
+        opacity: 0;
+        /* Biến mất */
+      }
+    }
+
+    /* Hiệu ứng cho chữ */
+    .intro-text {
+      font-size: 36px;
+      /* Kích thước chữ */
+      color: #ff6347;
+      /* Màu chữ */
+      margin-left: 20px;
+      /* Khoảng cách giữa chữ và animation */
+    }
+
+    /* Hiệu ứng cho animation Lottie */
+    .lottie-animation {
+      width: 300px;
+      /* Đặt chiều rộng */
+      height: 300px;
+      /* Đặt chiều cao */
+    }
+  </style>
+
+  <script>
+    window.addEventListener('load', () => {
+      // Ẩn intro sau khi cả chữ và GIF đã ra ngoài màn hình
+      setTimeout(() => {
+        document.getElementById('intro').style.display = 'none'; // Ẩn intro
+        document.getElementById('main-content').style.display = 'block'; // Hiển thị nội dung chính
+      }, 5500); // Thời gian hiển thị intro là 5 giây
+    });
+  </script>
 
 </head>
 
 <body>
+  <!-- Phần intro animation -->
+
+  <div id="intro">
+    <div class="intro-content">
+      <div class="intro-text">Chào mừng đến với Cake Bakery!</div> <!-- Hiệu ứng chữ -->
+      <dotlottie-player src="https://lottie.host/e4ed5ccb-1be5-4521-aa47-91320cdc5a27/eFSFv2Hs4R.json"
+        background="transparent" speed="1" class="lottie-animation" loop autoplay>
+      </dotlottie-player> <!-- Animation Lottie -->
+    </div>
+  </div>
+
   <noscript>You need to enable JavaScript to run this app.</noscript>
-  <div id="root"></div>
+
+  <!-- Nội dung chính -->
+  <div id="main-content" style="display:none;">
+    <!-- Nội dung chính của trang -->
+    <div id="root"></div>
+  </div>
 
 </body>
 

@@ -3,7 +3,7 @@ import NavBar from "../components/navbar";
 import Footer from "../components/footer";
 import { Link, useNavigate } from "react-router-dom";
 import { auth, db } from './firebaseConfig';
-import { doc, addDoc, setDoc, getDoc, collection, query, where, deleteDoc } from 'firebase/firestore';
+import { doc, addDoc, setDoc, getDoc, getDocs, collection, query, where, deleteDoc, writeBatch } from 'firebase/firestore';
 import "./Checkout.css";
 import { Typography } from '@mui/material';
 import axios from 'axios';
@@ -184,14 +184,37 @@ const Checkout = () => {
                 setTimeLeft(300);
                 console.log('Document written with ID: ', documentId);
                 alert('Đơn hàng của bạn đã được giao.\nVui lòng kiểm tra đơn hàng, xin cảm ơn!');
+
+                // await clearUserCart();
+                await deleteDoc(doc(db, 'carts', auth.currentUser.email));
+                navigate('/order');
             }
-
-
-
         } catch (error) {
             console.error('Error adding document: ', error);
             alert('Error saving invoice');
         }
+    };
+
+    // Hàm xóa giỏ hàng của người dùng trong Firestore theo userEmail
+    const clearUserCart = async () => {
+        const currentUser = auth.currentUser; // Lấy thông tin người dùng hiện tại
+        if (!currentUser) {
+            console.error('User not logged in');
+            return;
+        }
+
+        const cartRef = collection(db, 'carts');
+        const q = query(cartRef, where('userEmail', '==', currentUser.email)); // Truy vấn theo email của người dùng
+
+        const querySnapshot = await getDocs(q);
+        const batch = writeBatch(db); // Sử dụng batch để xóa nhiều tài liệu cùng lúc
+
+        querySnapshot.forEach((doc) => {
+            batch.delete(doc.ref); // Xóa từng tài liệu trong cart của người dùng
+        });
+
+        await batch.commit();
+        console.log('Cart cleared for user:', currentUser.email);
     };
 
     const handleCancelOrder = async () => {

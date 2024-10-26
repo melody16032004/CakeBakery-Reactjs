@@ -1,8 +1,88 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import NavBar from "../components/navbar";
 import Footer from "../components/footer";
 
+
 const Contact = () => {
+
+    const contact_details = {
+        border: '1px solid #e5e5e5',
+        borderRadius: '8px',
+        padding: '20px',
+        background: '#f9f9f9',
+    }
+    const contact_form_area = {
+        background: '#ffffff',
+        borderRadius: '8px',
+        padding: '40px',
+        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+    }
+
+    const mapRef = useRef(null);
+    const mapInstance = useRef(null);
+    const [position, setPosition] = useState(null);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        // Kiểm tra Geolocation có khả dụng không
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    setPosition([position.coords.latitude, position.coords.longitude]);
+                },
+                () => {
+                    setError("Không thể lấy vị trí của bạn.");
+                }
+            );
+        } else {
+            setError("Geolocation không được hỗ trợ trên trình duyệt này.");
+        }
+    }, []);
+
+    useEffect(() => {
+        if (position) {
+            const platform = new window.H.service.Platform({
+                apikey: "qpbQINuKDeZ89K9J6QvQVaapXuyNkeqDL7279K8FhDE",
+            });
+
+            const defaultLayers = platform.createDefaultLayers();
+            const map = new window.H.Map(
+                mapRef.current,
+                defaultLayers.vector.normal.map,
+                {
+                    zoom: 13,
+                    center: { lat: position[0], lng: position[1] },
+                }
+            );
+
+            mapInstance.current = map; // Gán map vào ref
+
+            // Thêm điều khiển zoom
+            const ui = window.H.ui.UI.createDefault(map, defaultLayers);
+            ui.getControl('zoom').setAlignment('bottom-right');
+
+            const mapEvents = new window.H.mapevents.MapEvents(map);
+            const behavior = new window.H.mapevents.Behavior(mapEvents);
+
+            const icon = new window.H.map.Icon('img/map-marker.png');
+            const marker = new window.H.map.Marker(
+                { lat: position[0], lng: position[1] },
+                { icon: icon }
+            );
+            map.addObject(marker);
+
+            return () => {
+                map.dispose();
+            };
+        }
+    }, [position]);
+
+
+
+    if (error) {
+        return <p>{error}</p>; // Hiển thị thông báo lỗi nếu có
+    }
+
     return (
         <div>
             <NavBar />
@@ -22,9 +102,9 @@ const Contact = () => {
                 </div>
             </section>
 
-            <section className="contact_form_area p_100">
+            <section className="contact_form_area p_100" style={contact_form_area}>
                 <div className="container">
-                    <div className="main_title">
+                    <div className="main_title text-center">
                         <h2>Get In Touch</h2>
                         <h5>
                             Do you have anything in your mind to let us know? Kindly don't delay
@@ -35,7 +115,6 @@ const Contact = () => {
                         <div className="col-lg-7">
                             <form
                                 className="row contact_us_form"
-                                action="http://galaxyanalytics.net/demos/cake/theme/cake-html/contact_process.php"
                                 method="post"
                                 id="contactForm"
                                 noValidate="novalidate"
@@ -47,6 +126,7 @@ const Contact = () => {
                                         id="name"
                                         name="name"
                                         placeholder="Your name"
+                                        required
                                     />
                                 </div>
                                 <div className="form-group col-md-6">
@@ -56,6 +136,7 @@ const Contact = () => {
                                         id="email"
                                         name="email"
                                         placeholder="Email address"
+                                        required
                                     />
                                 </div>
                                 <div className="form-group col-md-12">
@@ -65,6 +146,7 @@ const Contact = () => {
                                         id="subject"
                                         name="subject"
                                         placeholder="Subject"
+                                        required
                                     />
                                 </div>
                                 <div className="form-group col-md-12">
@@ -72,41 +154,41 @@ const Contact = () => {
                                         className="form-control"
                                         name="message"
                                         id="message"
-                                        rows={1}
-                                        placeholder="Wrtie message"
-                                        defaultValue={""}
+                                        rows={4}
+                                        placeholder="Write your message"
+                                        required
                                     />
                                 </div>
                                 <div className="form-group col-md-12">
                                     <button
                                         type="submit"
                                         value="submit"
-                                        className="btn order_s_btn form-control"
+                                        className="btn btn-primary form-control"
                                     >
-                                        submit now
+                                        Submit Now
                                     </button>
                                 </div>
                             </form>
                         </div>
                         <div className="col-lg-4 offset-md-1">
-                            <div className="contact_details">
+                            <div className="contact_details" style={contact_details}>
                                 <div className="contact_d_item">
-                                    <h3>Address :</h3>
+                                    <h3>Address:</h3>
                                     <p>
                                         54B, Tailstoi Town 5238 <br /> La city, IA 522364
                                     </p>
                                 </div>
                                 <div className="contact_d_item">
                                     <h5>
-                                        Phone : <a href="tel:01372466790">01372.466.790</a>
+                                        Phone: <a href="tel:01372466790">01372.466.790</a>
                                     </h5>
                                     <h5>
-                                        Email :{" "}
+                                        Email:{" "}
                                         <a href="mailto:rockybd1995@gmail.com">rockybd1995@gmail.com</a>
                                     </h5>
                                 </div>
                                 <div className="contact_d_item">
-                                    <h3>Opening Hours :</h3>
+                                    <h3>Opening Hours:</h3>
                                     <p>8:00 AM - 10:00 PM</p>
                                     <p>Monday - Sunday</p>
                                 </div>
@@ -116,18 +198,42 @@ const Contact = () => {
                 </div>
             </section>
 
-            <section className="map_area">
-                <div
-                    id="mapBox"
-                    className="mapBox row m0"
-                    data-lat="40.701083"
-                    data-lon="-74.1522848"
-                    data-zoom={13}
-                    data-marker="img/map-marker.png"
-                    data-info="54B, Tailstoi Town 5238 La city, IA 522364"
-                    data-mlat="40.701083"
-                    data-mlon="-74.1522848"
-                ></div>
+            <section className="map_area" style={{ alignItems: 'center', justifyContent: 'center', display: 'flex', margin: '30px 0' }}>
+                <div ref={mapRef} style={{ width: "80%", height: "600px" }}>
+                    {!position && <p>Đang lấy vị trí của bạn...</p>}
+                </div>
+
+                {/* Nút với biểu tượng */}
+                <button
+                    style={{
+                        position: 'absolute',
+                        bottom: '-1000px',
+                        right: '166px',
+                        backgroundColor: 'white',
+                        border: '1px solid #ccc',
+                        borderRadius: '50%',
+                        width: '50px',
+                        height: '50px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        cursor: 'pointer',
+                        zIndex: 1000 // Đảm bảo nút không bị che bởi bản đồ
+
+                    }}
+                    onClick={() => {
+                        if (mapInstance.current && position) {
+                            mapInstance.current.setCenter({ lat: position[0], lng: position[1] }); // Di chuyển tới vị trí hiện tại
+                            mapInstance.current.setZoom(15); // Đặt lại mức zoom nếu cần
+                        }
+                    }}
+                    tabIndex="-1" // Loại bỏ khả năng focus
+                    onFocus={(e) => e.preventDefault()} // Ngăn sự kiện focus xảy ra
+                    onMouseDown={(e) => e.preventDefault()}
+                >
+                    {/* <img src={'img/comment/comment-1.jpg'} alt="Location" style={{ width: '24px', height: '24px' }} /> */}
+                    <i className="fa fa-map-marker" aria-hidden="true" style={{ fontSize: '24px', color: '#007BFF' }}></i>
+                </button>
             </section>
             <Footer />
         </div>

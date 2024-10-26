@@ -3,6 +3,7 @@ import NavBar from "../components/navbar";
 import Footer from "../components/footer";
 import "../index.css";
 import ImageSlider from '../Music/imageSlide';
+import { Link } from 'react-router-dom';
 
 function Home() {
 
@@ -614,7 +615,7 @@ function Home() {
                             </div>
                             <div className="col-lg-12">
                                 <a className="pest_btn" href="#">
-                                    View Full Menu
+                                    <Link to='/shop' style={{ textDecoration: 'none', color: 'white' }}>View Full Menu</Link>
                                 </a>
                             </div>
                         </div>

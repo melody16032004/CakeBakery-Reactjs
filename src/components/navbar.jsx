@@ -14,7 +14,7 @@ function NavBar() {
     useEffect(() => {
         const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
         if (!isAuthenticated) {
-            setEmail("anonymous");
+            setEmail("Khách vãng lai");
             return;
         } else {
             const storedEmail = localStorage.getItem('savedEmail');
@@ -83,28 +83,8 @@ function NavBar() {
                                     <i className="fa fa-facebook" /> Fanpage
                                 </a>
                             </li>
-                            {/* <li>
-                                <a href="#">
-                                    <i className="fa fa-twitter" />
-                                </a>
-                            </li> */}
-                            {/* <li>
-                                <a href="#">
-                                    <i className="fa fa-google-plus" />
-                                </a>
-                            </li> */}
-                            {/* <li>
-                                <a href="#">
-                                    <i className="fa fa-linkedin" />
-                                </a>
-                            </li> */}
                         </ul>
                         <ul className="h_search list_style">
-                            {/* <li className="shop_cart">
-                                <a href="#">
-                                    <i className="lnr lnr-cart" />
-                                </a>
-                            </li> */}
                             <li>
                                 {showSearch && (
                                     <input
@@ -114,13 +94,6 @@ function NavBar() {
                                     />
                                 )}
                             </li>
-                            {/* <li className='social-icons'>
-                                <a className="popup-with-zoom-anim search-icon"
-                                    href="#test-search"
-                                    onClick={toggleSearch}>
-                                    <i className="fa fa-search" />
-                                </a>
-                            </li> */}
                             {!logout && (
                                 <li>
                                     <a>
@@ -130,7 +103,7 @@ function NavBar() {
                                 </li>
                             )}
 
-                            {logout ? (
+                            {logout || email === 'Khách vãng lai' ? (
                                 <li>
                                     <a href="#" onClick={handleLogin}>
                                         <i class="fa fa-user-circle-o" aria-hidden="true" />
@@ -189,7 +162,7 @@ function NavBar() {
                                             aria-expanded="false"
                                         >
                                             {/* Home */}
-                                            <Link to="/home">Home</Link>
+                                            <Link to="/home">Trang Chủ</Link>
                                         </a>
                                         {/* <ul className="dropdown-menu">
                                             <li>
@@ -198,8 +171,8 @@ function NavBar() {
                                         </ul> */}
                                     </li>
                                     <li>
-                                        {/* <a href="#">Our Cakes</a> */}
-                                        <Link to="/musical-instrument">Music</Link>
+                                        <a href="#">Our Cakes</a>
+                                        {/* <Link to="/musical-instrument">Music</Link> */}
                                     </li>
                                     <li>
                                         {/* <a href="#">Menu</a> */}
@@ -214,7 +187,7 @@ function NavBar() {
                                             aria-haspopup="true"
                                             aria-expanded="false"
                                         >
-                                            About Us
+                                            Về chúng tôi
                                         </a>
                                         <ul className="dropdown-menu">
                                             <li>
@@ -239,49 +212,8 @@ function NavBar() {
                                             aria-haspopup="true"
                                             aria-expanded="false"
                                         >
-                                            Pages
+                                            <Link to='/mini-game'>Mini Game</Link>
                                         </a>
-                                        {/* <ul className="dropdown-menu">
-                                            <li>
-                                                <a href="#">Services</a>
-                                            </li>
-                                            <li className="dropdown submenu">
-                                                <a
-                                                    className="dropdown-toggle"
-                                                    data-toggle="dropdown"
-                                                    href="#"
-                                                    role="button"
-                                                    aria-haspopup="true"
-                                                    aria-expanded="false">
-                                                    Gallery
-                                                </a>
-                                                <ul className="dropdown-menu">
-                                                    <li>
-                                                        <a href="#">- Gallery Classic</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#">
-                                                            - Gallery Full width
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                            <li>
-                                                <a href="#">Faq</a>
-                                            </li>
-                                            <li>
-                                                <a href="#">What we make</a>
-                                            </li>
-                                            <li>
-                                                <a href="#">Special Recipe</a>
-                                            </li>
-                                            <li>
-                                                <a href="#">404 page</a>
-                                            </li>
-                                            <li>
-                                                <a href="#">Coming Soon page</a>
-                                            </li>
-                                        </ul> */}
                                     </li>
                                     <li className="dropdown submenu">
                                         <a
@@ -291,19 +223,8 @@ function NavBar() {
                                             role="button"
                                             aria-haspopup="true"
                                             aria-expanded="false">
-                                            <Link to="/feedback">Feedback</Link>
+                                            <Link to="/feedback">Đánh giá</Link>
                                         </a>
-                                        {/* <ul className="dropdown-menu">
-                                            <li>
-                                                <a href="#">Blog with sidebar</a>
-                                            </li>
-                                            <li>
-                                                <a href="#">Blog 2 column</a>
-                                            </li>
-                                            <li>
-                                                <a href="#">Blog details</a>
-                                            </li>
-                                        </ul> */}
                                     </li>
                                     <li className="dropdown submenu">
                                         <a
@@ -314,20 +235,20 @@ function NavBar() {
                                             aria-haspopup="true"
                                             aria-expanded="false"
                                         >
-                                            Shop
+                                            Cửa hàng
                                         </a>
                                         <ul className="dropdown-menu">
                                             <li>
-                                                <Link to="/shop">Main shop</Link>
+                                                <Link to="/shop">Sản phẩm</Link>
                                             </li>
 
                                             {email !== "anonymous" && (
                                                 <div>
                                                     <li>
-                                                        <Link to="/cart">Cart Page</Link>
+                                                        <Link to="/cart">Giỏ hàng</Link>
                                                     </li>
                                                     <li>
-                                                        <Link to="/order">Your Order</Link>
+                                                        <Link to="/order">Đơn hàng</Link>
                                                     </li>
                                                 </div>
                                             )}

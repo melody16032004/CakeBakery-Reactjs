@@ -3,7 +3,8 @@ import FeedbackPopup from '../components/FeedbackPopup';
 import {
     Button, Container, Box, Avatar, Typography,
     CircularProgress, Chip, MenuItem, Select, InputLabel,
-    FormControl
+    FormControl, Grid, Dialog, DialogTitle, DialogContent,
+    DialogActions,
 } from '@mui/material';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
@@ -27,6 +28,10 @@ const Feedback = () => {
     const [rating, setRating] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
     const feedbacksPerPage = 3;
+    const [selectedStar, setSelectedStar] = useState('all');
+    const [selectedTime, setSelectedTime] = useState('all');
+    const [open, setOpen] = useState(false);
+    const [selectedTag, setSelectedTag] = useState(null);
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -71,6 +76,7 @@ const Feedback = () => {
             dislikedBy: [],
             user: userEmail,
             timestamp: Timestamp.now(),
+            rating: newFeedback.rating || 0,
         };
 
         try {
@@ -86,71 +92,78 @@ const Feedback = () => {
         const updatedFeedbacks = [...feedbacks];
         const feedback = updatedFeedbacks[index];
 
-        // Đảm bảo likedBy và dislikedBy luôn là mảng
+        // Đảm bảo mảng likedBy và dislikedBy không undefined
         feedback.likedBy = feedback.likedBy || [];
         feedback.dislikedBy = feedback.dislikedBy || [];
 
-        // Nếu người dùng đã dislike
-        if (feedback.dislikedBy.includes(userEmail)) {
-            feedback.dislikes -= 1; // Giảm số lượng dislikes
-            feedback.dislikedBy = feedback.dislikedBy.filter(email => email !== userEmail); // Xóa người dùng khỏi dislikedBy
+        // Nếu người dùng đã like, thì unlike
+        if (feedback.likedBy.includes(userEmail)) {
+            feedback.likes -= 1;
+            feedback.likedBy = feedback.likedBy.filter(email => email !== userEmail);
+        } else {
+            // Nếu đã dislike, hủy dislike trước khi like
+            if (feedback.dislikedBy.includes(userEmail)) {
+                feedback.dislikes -= 1;
+                feedback.dislikedBy = feedback.dislikedBy.filter(email => email !== userEmail);
+            }
+
+            // Like phản hồi
+            feedback.likes = (feedback.likes || 0) + 1;
+            feedback.likedBy.push(userEmail);
         }
 
-        // Nếu người dùng chưa like
-        if (!feedback.likedBy.includes(userEmail)) {
-            feedback.likes = (feedback.likes || 0) + 1; // Tăng likes
-            feedback.likedBy.push(userEmail); // Thêm người dùng vào danh sách đã like
-        }
-
-        // Cập nhật feedbacks
         setFeedbacks(updatedFeedbacks);
 
         // Cập nhật Firestore
         const feedbackRef = doc(db, 'feedbacks', feedback.id);
         await updateDoc(feedbackRef, {
             likes: feedback.likes,
-            dislikedBy: feedback.dislikedBy,
-            likedBy: feedback.likedBy
+            likedBy: feedback.likedBy,
+            dislikes: feedback.dislikes,
+            dislikedBy: feedback.dislikedBy
         });
 
-        // Lấy lại dữ liệu phản hồi sau khi cập nhật
-        await refreshFeedbacks();
+        await refreshFeedbacks(); // Lấy lại dữ liệu mới từ Firestore
     };
 
     const handleDislike = async (index) => {
         const updatedFeedbacks = [...feedbacks];
         const feedback = updatedFeedbacks[index];
 
-        // Đảm bảo likedBy và dislikedBy luôn là mảng
+        // Đảm bảo mảng likedBy và dislikedBy không undefined
         feedback.likedBy = feedback.likedBy || [];
         feedback.dislikedBy = feedback.dislikedBy || [];
 
-        // Nếu người dùng đã like
-        if (feedback.likedBy.includes(userEmail)) {
-            feedback.likes -= 1; // Giảm số lượng likes
-            feedback.likedBy = feedback.likedBy.filter(email => email !== userEmail); // Xóa người dùng khỏi likedBy
+        // Nếu người dùng đã dislike, thì undislike
+        if (feedback.dislikedBy.includes(userEmail)) {
+            feedback.dislikes -= 1;
+            feedback.dislikedBy = feedback.dislikedBy.filter(email => email !== userEmail);
+        } else {
+            // Nếu đã like, hủy like trước khi dislike
+            if (feedback.likedBy.includes(userEmail)) {
+                feedback.likes -= 1;
+                feedback.likedBy = feedback.likedBy.filter(email => email !== userEmail);
+            }
+
+            // Dislike phản hồi
+            feedback.dislikes = (feedback.dislikes || 0) + 1;
+            feedback.dislikedBy.push(userEmail);
         }
 
-        // Nếu người dùng chưa dislike
-        if (!feedback.dislikedBy.includes(userEmail)) {
-            feedback.dislikes = (feedback.dislikes || 0) + 1; // Tăng dislikes
-            feedback.dislikedBy.push(userEmail); // Thêm người dùng vào danh sách đã dislike
-        }
-
-        // Cập nhật feedbacks
         setFeedbacks(updatedFeedbacks);
 
         // Cập nhật Firestore
         const feedbackRef = doc(db, 'feedbacks', feedback.id);
         await updateDoc(feedbackRef, {
-            dislikes: feedback.dislikes,
+            likes: feedback.likes,
             likedBy: feedback.likedBy,
+            dislikes: feedback.dislikes,
             dislikedBy: feedback.dislikedBy
         });
 
-        // Lấy lại dữ liệu phản hồi sau khi cập nhật
-        await refreshFeedbacks();
+        await refreshFeedbacks(); // Lấy lại dữ liệu mới từ Firestore
     };
+
 
 
 
@@ -168,7 +181,13 @@ const Feedback = () => {
     };
 
     const handleTagClick = (tag) => {
-        alert(`Clicked on tag: ${tag}`); // Tùy chỉnh chức năng ở đây
+        setSelectedTag(tag);
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+        setSelectedTag(null);
     };
 
     // Hàm xử lý khi người dùng chọn tiêu chí lọc
@@ -176,9 +195,36 @@ const Feedback = () => {
         setFilterOption(event.target.value);
     };
 
+    const filterFeedbacksByStar = (feedbacks, selectedStar) => {
+        if (selectedStar === "all") {
+            return feedbacks; // Hiển thị tất cả feedback nếu chọn "all"
+        }
+
+        return feedbacks.filter(feedback => feedback.rating === selectedStar);
+    };
+
+    // Hàm chuyển đổi chuỗi thời gian thành đối tượng Date
+    const parseDateTime = (dateTimeStr) => {
+        if (!dateTimeStr) return null; // Trả về null nếu không có giá trị
+
+        const [time, date] = dateTimeStr.split(' ');
+        if (!time || !date) return null; // Trả về null nếu không thể tách được time hoặc date
+
+        const [hour, minute, second] = time.split(':');
+        const [day, month, year] = date.split('/');
+
+        return new Date(year, month - 1, day, hour, minute, second);
+    };
+
+
     // Hàm lọc feedbacks dựa trên tiêu chí
     const getFilteredFeedbacks = () => {
         let sortedFeedbacks = [...feedbacks];
+
+        if (selectedStar !== 'all') {
+            sortedFeedbacks = sortedFeedbacks.filter(feedback => feedback.rating === Number(selectedStar));
+        }
+
         switch (filterOption) {
             case 'likes-high':
                 sortedFeedbacks.sort((a, b) => (b.likes || 0) - (a.likes || 0)); // Likes nhiều -> ít
@@ -195,10 +241,57 @@ const Feedback = () => {
             default:
                 break;
         }
+
+        // Lọc theo thời gian (không xét giờ)
+        const currentTime = new Date();
+        switch (selectedTime) {
+            case 'today':
+                sortedFeedbacks = sortedFeedbacks.filter(feedback => {
+                    const feedbackTime = parseDateTime(feedback.time);
+                    return feedbackTime && feedbackTime.toDateString() === currentTime.toDateString();
+                });
+                break;
+            case 'this-week':
+                const startOfWeek = new Date(currentTime);
+                startOfWeek.setDate(currentTime.getDate() - currentTime.getDay());
+                startOfWeek.setHours(0, 0, 0, 0); // Đặt giờ về 0
+                sortedFeedbacks = sortedFeedbacks.filter(feedback => {
+                    const feedbackTime = parseDateTime(feedback.time);
+                    return feedbackTime && feedbackTime >= startOfWeek;
+                });
+                break;
+            case 'this-month':
+                const startOfMonth = new Date(currentTime.getFullYear(), currentTime.getMonth(), 1);
+                startOfMonth.setHours(0, 0, 0, 0); // Đặt giờ về 0
+                sortedFeedbacks = sortedFeedbacks.filter(feedback => {
+                    const feedbackTime = parseDateTime(feedback.time);
+                    return feedbackTime && feedbackTime >= startOfMonth;
+                });
+                break;
+            case 'this-year':
+                const startOfYear = new Date(currentTime.getFullYear(), 0, 1);
+                startOfYear.setHours(0, 0, 0, 0); // Đặt giờ về 0
+                sortedFeedbacks = sortedFeedbacks.filter(feedback => {
+                    const feedbackTime = parseDateTime(feedback.time);
+                    return feedbackTime && feedbackTime >= startOfYear;
+                });
+                break;
+            default:
+                break;
+        }
+
+        // Sắp xếp theo thời gian
+        sortedFeedbacks.sort((a, b) => {
+            const timeA = parseDateTime(a.time);
+            const timeB = parseDateTime(b.time);
+            return (timeB || 0) - (timeA || 0);
+        });
+
         return sortedFeedbacks;
     };
 
     const filteredFeedbacks = getFilteredFeedbacks(); // Lấy các phản hồi đã lọc
+    // const filteredFeedback = filterFeedbacksByStar(feedbacks, selectedStar);
     const indexOfLastFeedback = currentPage * feedbacksPerPage;
     const indexOfFirstFeedback = indexOfLastFeedback - feedbacksPerPage;
     const currentFeedbacks = filteredFeedbacks.slice(indexOfFirstFeedback, indexOfLastFeedback);
@@ -212,10 +305,10 @@ const Feedback = () => {
                         <h3>Feedback</h3>
                         <ul>
                             <li>
-                                <Link to='/home'>Home</Link>
+                                <Link to='/home'>Trang chủ</Link>
                             </li>
                             <li>
-                                <Link to='/menu'>Feedback</Link>
+                                <Link to='/menu'>Đánh giá</Link>
                             </li>
                         </ul>
                     </div>
@@ -227,15 +320,41 @@ const Feedback = () => {
                         <FeedbackPopup onSubmitFeedback={handleFeedbackSubmit} userEmail={userEmail} />
                     )}
 
-                    <FormControl fullWidth sx={{ mb: 2 }}>
-                        <InputLabel>Filter by</InputLabel>
-                        <Select value={filterOption} onChange={handleFilterChange} label="Filter by">
-                            <MenuItem value="likes-high">Likes (High to Low)</MenuItem>
-                            <MenuItem value="likes-low">Likes (Low to High)</MenuItem>
-                            <MenuItem value="dislikes-high">Dislikes (High to Low)</MenuItem>
-                            <MenuItem value="dislikes-low">Dislikes (Low to High)</MenuItem>
-                        </Select>
-                    </FormControl>
+                    <Grid container spacing={2} justifyContent="flex-end">
+                        <Grid item xs={9.5}>
+                            <FormControl fullWidth sx={{ mb: 4 }}>
+                                <InputLabel>Filter by</InputLabel>
+                                <Select value={filterOption} onChange={handleFilterChange} label="Filter by">
+                                    <MenuItem value="likes-high">Lượt thích nhiều nhất</MenuItem>
+                                    <MenuItem value="likes-low">Lượt thích ít nhất</MenuItem>
+                                    {/* <MenuItem value="dislikes-high">Lượt không thích nhiều nhất</MenuItem>
+                                    <MenuItem value="dislikes-low">Dislikes (Low to High)</MenuItem> */}
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={2}>
+                            <FormControl fullWidth sx={{ mb: 2 }}>
+                                <InputLabel id="rating-filter-label">Số sao</InputLabel>
+                                <Select
+                                    labelId="rating-filter-label"
+                                    id="rating-filter"
+                                    value={selectedStar} // State lưu giá trị số sao được chọn
+                                    label="Số sao"
+                                    onChange={(e) => setSelectedStar(e.target.value)} // Hàm để cập nhật giá trị
+                                >
+                                    <MenuItem value="all">Tất cả</MenuItem>
+                                    <MenuItem value={5}>5 sao</MenuItem>
+                                    <MenuItem value={4}>4 sao</MenuItem>
+                                    <MenuItem value={3}>3 sao</MenuItem>
+                                    <MenuItem value={2}>2 sao</MenuItem>
+                                    <MenuItem value={1}>1 sao</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                    </Grid>
+
+
+
 
                     {loading ? ( // Hiển thị loading khi dữ liệu đang được tải
                         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
@@ -243,7 +362,6 @@ const Feedback = () => {
                         </Box>
                     ) : (
                         <ul>
-                            {/* {getFilteredFeedbacks().map((fb, index) => ( */}
                             {currentFeedbacks.map((fb, index) => (
                                 <li key={fb.id}
                                     style={{
@@ -270,27 +388,13 @@ const Feedback = () => {
                                             </strong>
                                         </Box>
                                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                            <span
-                                                // key={value}
-                                                style={{ color: fb.rating <= rating ? 'gold' : 'gray' }}>
-                                                <StarBorderIcon />
-                                                <StarBorderIcon />
-                                                <StarBorderIcon />
-                                                <StarBorderIcon />
-                                                <StarBorderIcon />
-                                            </span>
-
-
-                                            {/* {[1, 2, 3, 4, 5].map((value) => (
-                                                <span
-                                                    key={value}
-                                                    // onClick={() => setRating(value)}
-                                                    style={{ cursor: 'pointer', color: value <= rating ? 'gold' : 'gray' }} // Đổi màu ngôi sao
-                                                >
-                                                    {value <= rating ? <StarIcon /> : <StarBorderIcon />}
+                                            {[...Array(5)].map((_, i) => (
+                                                <span key={i} style={{ color: i < fb.rating ? 'gold' : 'gray' }}>
+                                                    {i < fb.rating ? <StarIcon /> : <StarBorderIcon />}
                                                 </span>
-                                            ))} */}
+                                            ))}
                                         </Box>
+
                                     </Box>
 
 
@@ -300,20 +404,36 @@ const Feedback = () => {
                                         <strong>Tags: </strong>
                                         {fb.tags && fb.tags.length > 0 ? (
                                             fb.tags.map((tag, idx) => (
-                                                <Chip
-                                                    key={idx}
-                                                    label={tag} // Hiển thị tên tag
-                                                    clickable // Cho phép click
-                                                    color="primary"
-                                                    variant="outlined"
-                                                    onClick={() => handleTagClick(tag)} // Xử lý sự kiện click
-                                                    sx={{ margin: '4px' }}
-                                                />
+                                                <>
+                                                    <Chip
+                                                        key={idx}
+                                                        label={tag.name} // Hiển thị tên tag
+                                                        clickable // Cho phép click
+                                                        color="primary"
+                                                        variant="outlined"
+                                                        onClick={() => handleTagClick(tag)} // Xử lý sự kiện click
+                                                        sx={{ margin: '4px' }}
+                                                    />
+                                                    <Dialog open={open} onClose={handleClose}>
+                                                        <DialogTitle>Image Preview</DialogTitle>
+                                                        <DialogContent>
+                                                            {selectedTag && <img key={idx} src={selectedTag.imageUrl} alt={selectedTag} style={{ maxWidth: '100%' }} />}
+                                                        </DialogContent>
+                                                        <DialogActions>
+                                                            <Button onClick={handleClose} color="inherit">
+                                                                <Link to="/shop">Buy</Link>
+                                                            </Button>
+                                                        </DialogActions>
+                                                    </Dialog>
+                                                </>
+
+
                                             ))
                                         ) : (
                                             <span>No tags</span>
                                         )}
                                     </Box>
+
                                     <br />
 
 
@@ -333,7 +453,7 @@ const Feedback = () => {
                                             color='success'
                                             startIcon={<ThumbUpIcon />}
                                             onClick={() => handleLike(index)}
-                                            disabled={fb.likedBy.includes(userEmail)}
+                                            disabled={fb.likedBy.includes(userEmail)} // Vô hiệu hóa khi đã like
                                             sx={{
                                                 marginRight: 1, '&:focus': {
                                                     outline: 'none',
@@ -347,7 +467,7 @@ const Feedback = () => {
                                             variant="contained"
                                             startIcon={<ThumbDownIcon />}
                                             onClick={() => handleDislike(index)}
-                                            disabled={fb.dislikedBy.includes(userEmail)}
+                                            disabled={fb.dislikedBy.includes(userEmail)} // Vô hiệu hóa khi đã dislike
                                             sx={{
                                                 '&:focus': {
                                                     outline: 'none',
@@ -356,6 +476,7 @@ const Feedback = () => {
                                         >
                                             {fb.dislikes || 0}
                                         </Button>
+
                                     </Box>
                                 </li>
                             ))}
@@ -369,7 +490,7 @@ const Feedback = () => {
                         >
                             Previous
                         </Button>
-                        <Box sx={{ margin: '0 10px' }}>{`Page ${currentPage}`}</Box>
+                        <Box sx={{ margin: '0 10px', width: '200px', alignItems: 'center', justifyContent: 'center', display: 'flex' }}>{`Page ${currentPage}`}</Box>
                         <Button
                             onClick={() => setCurrentPage(prev => prev + 1)}
                             disabled={indexOfLastFeedback >= filteredFeedbacks.length}

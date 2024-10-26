@@ -121,10 +121,10 @@ const CartPage = () => {
                         <h3>Cart</h3>
                         <ul>
                             <li>
-                                <Link to="/shop">Main Shop</Link>
+                                <Link to="/shop">Cửa hàng</Link>
                             </li>
                             <li>
-                                <Link to="/cart">Cart Page</Link>
+                                <Link to="/cart">Giỏ hàng</Link>
                             </li>
                         </ul>
                     </div>
@@ -203,10 +203,11 @@ const CartPage = () => {
                                     </h4>
                                 </div>
                                 <div className="cart_footer">
-                                    {/* <Link to="/checkout" onClick={handleCheckout}>
-                                        
-                                    </Link> */}
-                                    <a className="pest_btn" href="#" onClick={handleCheckout}>Proceed to Checkout</a>
+                                    {cartItems.length > 0 && (
+                                        <a className="pest_btn" href="#" onClick={handleCheckout}>
+                                            Proceed to Checkout
+                                        </a>
+                                    )}
                                 </div>
                             </div>
                         </div>

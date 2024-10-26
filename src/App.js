@@ -12,6 +12,7 @@ import AdminDashboard from "./Account/AdminDashboard";
 import Home from "./Account/Home";
 import HomeMusic from "./Music/home";
 import Admin from "./Music/admin";
+import MemoryGame from "./components/Game";
 
 const theme = createTheme({
   palette: {
@@ -34,6 +35,7 @@ const App = () => {
   return (
     // <Shop />
     <Home />
+    // <MemoryGame />
     // <NavigateLogin />
     // <ThemeProvider theme={theme}>
     //   <AdminDashboard />

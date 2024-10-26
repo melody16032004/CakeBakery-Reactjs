@@ -287,10 +287,10 @@ function Shop() {
                             <h3>Shop</h3>
                             <ul>
                                 <li>
-                                    <Link to="/home">Home</Link>
+                                    <Link to="/home">Trang chủ</Link>
                                 </li>
                                 <li>
-                                    <Link to="/shop">Shop</Link>
+                                    <Link to="/shop">Cửa hàng</Link>
                                 </li>
                             </ul>
                         </div>

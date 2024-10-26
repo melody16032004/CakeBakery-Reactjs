@@ -56,7 +56,7 @@ const Card = ({ addToCart, id, name, price, image, image_L, description, quantit
                         fontSize: '20px', // Size of the watermark text
                         fontWeight: 'bold', // Bold text
                         color: 'white', // Color of the text
-                        zIndex: 99, // Make sure it appears on top
+                        zIndex: 9, // Make sure it appears on top
                         pointerEvents: 'none', // Prevent interaction with the watermark
                         borderRadius: '10px',
                     }}
