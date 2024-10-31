@@ -73,6 +73,17 @@ const Checkout = () => {
     const [isTimerActive, setIsTimerActive] = useState(false);
     const [orderId, setOrderId] = useState(localStorage.getItem('orderId') || null);
     const navigate = useNavigate();
+    const [address, setAddress] = useState('');
+    const [city, setCity] = useState('');
+    const [province, setProvince] = useState('');
+    const [district, setDistrict] = useState('');
+
+    const handleAddressChange = (e) => {
+        setAddress(e.target.value);
+    };
+    const handleCityChange = (newCity) => setCity(newCity);
+    const handleProvinceChange = (newProvince) => setProvince(newProvince);
+    const handleDistrictChange = (newDistrict) => setDistrict(newDistrict);
 
     useEffect(() => {
         const savedCartItems = localStorage.getItem('cartItems');
@@ -347,23 +358,45 @@ const Checkout = () => {
                                                 onChange={handleChange}
                                             />
                                         </div>
+
                                         <div className="form-group col-md-12">
-                                            {/* <label htmlFor="address">Address *</label> */}
                                             <label htmlFor="address">Địa chỉ *</label>
 
-                                            <SelectLocation />
+                                            <SelectLocation
+                                                city={city}
+                                                province={province}
+                                                district={district}
+                                                onCityChange={handleCityChange}
+                                                onProvinceChange={handleProvinceChange}
+                                                onDistrictChange={handleDistrictChange}
+                                            />
 
+                                        </div>
+
+                                        <div className="form-group col-md-4">
+                                            <input
+                                                type='text'
+                                                className='form-control'
+                                                id='address'
+                                                name='address'
+                                                placeholder='Street Address'
+                                                value={formData.address}
+                                                onChange={handleChange}
+                                                required />
+                                        </div>
+                                        <div className="form-group col-md-8">
                                             <input
                                                 type="text"
                                                 className="form-control"
                                                 id="address"
                                                 name="address"
                                                 placeholder="Street Address"
-                                                value={formData.address}
-                                                onChange={handleChange}
+                                                value={"/" + district + "/" + province + "/" + city}
+                                                onChange={handleAddressChange}
                                                 required
                                             />
                                         </div>
+
                                         <div className="form-group col-md-6">
                                             <label htmlFor="email">Email Address *</label>
                                             <input
