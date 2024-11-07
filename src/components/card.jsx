@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Input } from '@mui/material';
 import './card.css';
+import CurrencyConverter from "./CurrencyConverter";
 
 const Card = ({ addToCart, id, name, price, image, image_L, description, quantity }) => {
     const [open, setOpen] = useState(false);
@@ -90,7 +91,10 @@ const Card = ({ addToCart, id, name, price, image, image_L, description, quantit
                 </div>
 
                 <div className="cake_text">
-                    <h4>${price}</h4>
+                    <h4>
+                        {/* ${price} */}
+                        <CurrencyConverter usdAmount={price} />
+                    </h4>
                     <h3>{name}</h3>
                     <a
                         className={`pest_btn ${quantity === 0 ? 'disabled' : ''}`}

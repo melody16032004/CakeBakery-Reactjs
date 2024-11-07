@@ -4,6 +4,7 @@ import Footer from "../components/footer";
 import "../index.css";
 import ImageSlider from '../Music/imageSlide';
 import { Link } from 'react-router-dom';
+import { Typography } from '@mui/material';
 
 function Home() {
 
@@ -441,8 +442,8 @@ function Home() {
                                             <h4>Cookies Cakes</h4>
                                         </a>
                                         <p>
-                                            Lorem Ipsum is simply my text of the printing and Ipsum is
-                                            simply text of the Ipsum is simply.
+                                            Thưởng thức bộ sưu tập bánh quy và bánh ngọt tuyệt vời của chúng tôi,
+                                            được làm thủ công để mang lại sự ngọt ngào cho từng khoảnh khắc.
                                         </p>
                                     </div>
                                 </div>
@@ -459,8 +460,10 @@ function Home() {
                                             <h4>Tasty Cupcakes</h4>
                                         </a>
                                         <p>
-                                            Lorem Ipsum is simply my text of the printing and Ipsum is
-                                            simply text of the Ipsum is simply.
+                                            Thưởng thức những chiếc bánh cupcake thơm ngon, mềm mịn,
+                                            hoàn hảo cho mọi dịp đặc biệt và ngọt ngào cho từng miếng cắn.
+                                            <br />
+                                            <br />
                                         </p>
                                     </div>
                                 </div>
@@ -477,8 +480,9 @@ function Home() {
                                             <h4>Wedding Cakes</h4>
                                         </a>
                                         <p>
-                                            Lorem Ipsum is simply my text of the printing and Ipsum is
-                                            simply text of the Ipsum is simply.
+                                            Những chiếc bánh cưới tinh tế, được thiết kế hoàn hảo cho ngày trọng đại của bạn,
+                                            mang đến vẻ đẹp sang trọng và hương vị ngọt ngào trong từng lớp bánh.
+                                            <br />
                                         </p>
                                     </div>
                                 </div>
@@ -495,8 +499,11 @@ function Home() {
                                             <h4>Awesome Recipes</h4>
                                         </a>
                                         <p>
-                                            Lorem Ipsum is simply my text of the printing and Ipsum is
-                                            simply text of the Ipsum is simply.
+                                            Khám phá những công thức đơn giản để tạo ra món ăn ngon và hấp dẫn trong tầm tay bạn.
+                                            <br />
+                                            <br />
+                                            <br />
+                                            <br />
                                         </p>
                                     </div>
                                 </div>
@@ -513,9 +520,17 @@ function Home() {
                                             <h4>Menu Planner</h4>
                                         </a>
                                         <p>
-                                            Lorem Ipsum is simply my text of the printing and Ipsum is
-                                            simply text of the Ipsum is simply.
+                                            Công cụ giúp tổ chức và quản lý thực đơn hàng ngày, theo dõi nguyên liệu, và chia sẻ công
+                                            thức nấu ăn, giúp tiết kiệm thời gian và nâng cao trải nghiệm nấu nướng.
+                                            <br />
+                                            <br />
                                         </p>
+                                        {/* <Typography variant='body2' color='textDisabled' >
+                                            Công cụ giúp tổ chức và quản lý thực đơn hàng ngày, theo dõi nguyên liệu, và chia sẻ công
+                                            thức nấu ăn, giúp tiết kiệm thời gian và nâng cao trải nghiệm nấu nướng.
+                                            <br />
+                                            <br />
+                                        </Typography> */}
                                     </div>
                                 </div>
                             </div>
@@ -531,8 +546,8 @@ function Home() {
                                             <h4>Home Delivery</h4>
                                         </a>
                                         <p>
-                                            Lorem Ipsum is simply my text of the printing and Ipsum is
-                                            simply text of the Ipsum is simply.
+                                            Dịch vụ cho phép người dùng đặt hàng và nhận sản phẩm ngay tại nhà, mang lại sự tiện
+                                            lợi và tiết kiệm thời gian cho việc mua sắm thực phẩm, đồ uống, và hàng hóa khác.
                                         </p>
                                     </div>
                                 </div>

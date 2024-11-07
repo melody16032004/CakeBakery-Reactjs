@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThList, faTh, faEdit, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons'; // Thêm icon Edit và Trash
 import { Link, useNavigate } from 'react-router-dom';
 import { scales } from 'chart.js';
+import CurrencyConverter from './CurrencyConverter';
 
 const ProductList = ({ setSelectedPage }) => {
     const [products, setProducts] = useState([]);
@@ -23,7 +24,10 @@ const ProductList = ({ setSelectedPage }) => {
     const navigate = useNavigate();
     const [quantity, setQuantity] = useState(1);
     const [openDialogQty, setOpenDialogQty] = useState(false);
-
+    const usdToVndRate = 25415;
+    const formatTOVND = (usd) => {
+        return (usd * usdToVndRate).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+    }
 
     const toggleAddProduct = () => {
         setSelectedPage('add');
@@ -220,8 +224,26 @@ const ProductList = ({ setSelectedPage }) => {
                                         </DialogActions>
                                     </Dialog>
 
-                                    <Typography variant="h8">{product.name}</Typography>
-                                    <Typography variant="body1" color='primary' sx={{ display: 'flex', justifyContent: 'left' }}>{`Giá: $${product.price}`}</Typography>
+                                    <Typography variant="h8"><strong>{product.name}</strong></Typography>
+                                    <Typography variant="body1" color='primary'
+                                        sx={{
+                                            display: 'flex',
+                                            justifyContent: 'left',
+                                            textDecoration: 'none',
+                                            "&:hover": {
+                                                textDecoration: 'none', // Bỏ gạch dưới khi hover
+                                            },
+                                            "& a": {
+                                                textDecoration: 'none', // Xóa gạch dưới cho các thẻ <a> bên trong nếu có
+                                                "&:hover": {
+                                                    textDecoration: 'none', // Bỏ gạch dưới khi hover vào liên kết
+                                                }
+                                            }
+                                        }}>
+                                        {/* {`Giá: $${product.price}`} */}
+                                        {/* Giá: {formatTOVND(product.price)} */}
+                                        Giá: <CurrencyConverter usdAmount={product.price} />
+                                    </Typography>
                                 </>
                             </Box>
                         </CardContent>

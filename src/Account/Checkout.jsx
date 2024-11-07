@@ -8,10 +8,22 @@ import "./Checkout.css";
 import { Typography } from '@mui/material';
 import axios from 'axios';
 import SelectLocation from '../components/SelectLocation';
+import PaypalButton from '../components/PaypalButton';
 
 
 
 const Checkout = () => {
+    const handleSuccess = (details) => {
+        alert("Thanh toán thành công!");
+        console.log("Thông tin đơn hàng:", details);
+    };
+
+    const handleError = (error) => {
+        alert("Có lỗi xảy ra khi thanh toán.");
+        console.error("Lỗi thanh toán:", error);
+    };
+
+
     const styles = {
         space: {
             height: '150px',
@@ -253,7 +265,7 @@ const Checkout = () => {
 
     const handleMomoPayment = () => {
         // Your Momo payment logic here
-        navigate('/momo');
+        navigate('/paypal');
     }
 
     const handleConfirmOrder = async () => {
@@ -379,7 +391,7 @@ const Checkout = () => {
                                                 className='form-control'
                                                 id='address'
                                                 name='address'
-                                                placeholder='Street Address'
+                                                placeholder='Số nhà'
                                                 value={formData.address}
                                                 onChange={handleChange}
                                                 required />
@@ -435,6 +447,11 @@ const Checkout = () => {
                                                 onChange={handleChange}
                                             />
                                         </div>
+                                        {/* <PaypalButton
+                                            amount="20.00" // Giá trị thanh toán
+                                            onSuccess={handleSuccess}
+                                            onError={handleError}
+                                        /> */}
                                     </div>
                                 </div>
                             </div>
@@ -475,8 +492,8 @@ const Checkout = () => {
                                                             aria-expanded="false"
                                                             aria-controls="collapseOne"
                                                             type='button'>
-                                                            MoMo Payment
-                                                            <img src="img/momo-logo.png" alt="MoMo Logo" style={{ width: '50px', marginLeft: '10px' }} />
+                                                            Paypal Payment
+                                                            <img src="img/paypal-logo.png" alt="MoMo Logo" style={{ width: '50px', marginLeft: '10px' }} />
                                                         </button>
                                                     </h5>
                                                 </div>
@@ -486,10 +503,15 @@ const Checkout = () => {
                                                     aria-labelledby="headingOne"
                                                     data-parent="#accordion">
                                                     <div className="card-body">
-                                                        <Typography variant='body2' color='textPrimary'>Use MoMo to pay for your order.</Typography>
-                                                        <button className="btn pest_btn" onClick={handleMomoPayment}>
+                                                        <Typography variant='body2' color='textPrimary'>Use Paypal to pay for your order.</Typography>
+                                                        {/* <button className="btn pest_btn" onClick={handleMomoPayment}>
                                                             Pay with MoMo
-                                                        </button>
+                                                        </button> */}
+                                                        <PaypalButton
+                                                            amount="10.00"          // Giá trị cần thanh toán
+                                                            currency="USD"          // Đơn vị tiền tệ (USD, EUR, etc.)
+                                                            onSuccess={handleSuccess} // Hàm xử lý khi thanh toán thành công
+                                                        />
                                                     </div>
                                                 </div>
                                             </div>

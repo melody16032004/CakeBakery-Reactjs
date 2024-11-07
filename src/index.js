@@ -34,6 +34,7 @@ import Order from './Account/your-order';
 import Admin from './Music/admin';
 import Feedback from './Account/Feedback';
 import MemoryGame from './components/Game';
+import PaypalButton from './components/PaypalButton';
 // import { BrowserRouter } from "react-router-dom";
 
 const router = createBrowserRouter([
@@ -112,6 +113,10 @@ const router = createBrowserRouter([
   {
     path: "momo",
     element: <MoMoPayment />,
+  },
+  {
+    path: "paypal",
+    element: <PaypalButton />,
   },
   {
     path: "admin",
