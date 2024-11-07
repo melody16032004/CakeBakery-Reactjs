@@ -22,6 +22,7 @@ import {
     DialogActions,
     Grid,
 } from '@mui/material';
+import CurrencyConverter from './CurrencyConverter';
 
 const InvoiceList = () => {
     const [invoices, setInvoices] = useState([]);
@@ -174,7 +175,7 @@ const InvoiceList = () => {
                                         Mã đơn: <strong>#{invoice.id}</strong>
                                     </Typography>
                                     <Typography variant="body1" color="textDisabled">
-                                        Tổng số tiền: <strong>${(invoice.total).toFixed(2)}</strong>
+                                        Tổng số tiền: <strong><CurrencyConverter usdAmount={(invoice.total).toFixed(2)} /></strong>
                                     </Typography>
                                     <Typography variant="body1" color="textDisabled">
                                         Ngày tạo: <strong>{formatCreatedAt(invoice.createdAt)}</strong>
@@ -283,7 +284,7 @@ const InvoiceList = () => {
                                 <Typography color='textDisabled' variant="body1">Địa chỉ: <strong>{selectedInvoice.address}</strong></Typography>
                                 <Typography color='textDisabled' variant="body1">Số điện thoại: <strong>{selectedInvoice.phone}</strong></Typography>
                                 <Typography color="textDisabled" variant="body1" > Ngày tạo: <strong>{formatCreatedAt(selectedInvoice.createdAt)}</strong></Typography>
-                                <Typography color='textDisabled' variant="body1">Tổng số tiền: <strong>${(selectedInvoice.total).toFixed(2)}</strong></Typography>
+                                <Typography color='textDisabled' variant="body1">Tổng số tiền: <strong> <CurrencyConverter usdAmount={(selectedInvoice.total).toFixed(2)} /></strong></Typography>
                                 <Typography color={selectedInvoice.status === "Đã giao" ? "green" : selectedInvoice.status === "Đang xử lý" ? "red" : "orange"} variant="body1"> <strong>Trạng thái: {selectedInvoice.status}</strong></Typography>
                                 <TextField
                                     label='Lời nhắn của khách'

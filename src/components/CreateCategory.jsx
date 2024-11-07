@@ -174,7 +174,7 @@ const CreateCategory = () => {
                             />
 
                             {/* Menu chọn cách sắp xếp */}
-                            <FormControl fullWidth margin="normal">
+                            {/* <FormControl fullWidth margin="normal">
                                 <InputLabel id="sort-label">Sắp xếp theo</InputLabel>
                                 <Select
                                     labelId="sort-label"
@@ -186,7 +186,7 @@ const CreateCategory = () => {
                                     <MenuItem value="asc">Tăng dần</MenuItem>
                                     <MenuItem value="desc">Giảm dần</MenuItem>
                                 </Select>
-                            </FormControl>
+                            </FormControl> */}
 
                             <Box sx={{ maxHeight: 300, overflow: 'auto' }}>
                                 <List>

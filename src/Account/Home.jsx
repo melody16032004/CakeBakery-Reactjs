@@ -3,11 +3,130 @@ import NavBar from "../components/navbar";
 import Footer from "../components/footer";
 import "../index.css";
 import ImageSlider from '../Music/imageSlide';
-import { Link } from 'react-router-dom';
-import { Typography } from '@mui/material';
+import { Link, useNavigate } from 'react-router-dom';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Input } from '@mui/material';
+
+import { auth, db } from './firebaseConfig';
+import { doc, setDoc, getDoc, getDocs, collection, query, where } from 'firebase/firestore';
+import Card from '../components/card';
+import CurrencyConverter from '../components/CurrencyConverter';
 
 function Home() {
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [open, setOpen] = useState(false);
+    const navigate = useNavigate();
 
+    const handleClickOpen = () => {
+        setOpen(true); // Open the dialog
+    };
+
+    const handleClose = () => {
+        setOpen(false); // Close the dialog
+    };
+
+    const handleClick = (id, name, price, image, image_L, description, quantity) => {
+        navigate('/product-details', {
+            state: {
+                id,
+                name,
+                price,
+                image,
+                image_L,
+                description,
+                quantity
+            }
+        });
+    };
+
+    useEffect(() => {
+
+        const fetchProducts = async () => {
+            try {
+                setLoading(true);
+
+                const productsCollection = collection(db, 'products'); // 'products' is your collection name
+                const productsSnapshot = await getDocs(productsCollection);
+                const productsList = productsSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                setProducts(productsList);
+
+                setLoading(false);
+            } catch (error) {
+                setLoading(false);
+            }
+
+
+        };
+
+        fetchProducts();
+    }, []);
+
+    // const addToCart = async (product) => {
+    //     const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+    //     if (!isAuthenticated) {
+    //         alert("Vui lòng đăng nhập trước khi mua hàng");
+    //         navigate('/navigation'); // Chuyển hướng nếu không đăng nhập
+    //     } else {
+    //         const userEmail = localStorage.getItem('savedEmail');
+
+    //         setCartItems((prevItems) => {
+    //             const totalQuantity = prevItems.reduce((acc, item) => acc + item.quantity, 0);
+    //             const existingItem = prevItems.find((item) => item.id === product.id);
+
+    //             // Kiểm tra nếu tổng số lượng sản phẩm đã đạt giới hạn
+    //             if (totalQuantity >= MAX_TOTAL_ITEMS) {
+    //                 alert('Bạn chỉ có thể thêm tối đa 20 sản phẩm vào giỏ hàng.');
+    //                 return prevItems;
+    //             }
+
+    //             // Kiểm tra nếu sản phẩm đã tồn tại trong giỏ hàng
+    //             if (existingItem) {
+    //                 // Kiểm tra xem số lượng sản phẩm có vượt quá 5 hay không
+    //                 if (existingItem.quantity >= MAX_ITEMS_PER_PRODUCT) {
+    //                     alert('Số lượng sản phẩm này đã đạt tối đa (5).');
+    //                     return prevItems;
+    //                 }
+
+    //                 // Tăng số lượng sản phẩm nếu chưa đạt tối đa
+    //                 const updatedItems = prevItems.map((item) =>
+    //                     item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+    //                 );
+
+    //                 // Cập nhật Firestore với giỏ hàng đã cập nhật
+    //                 const cartDocRef = doc(db, "carts", userEmail);
+    //                 setDoc(cartDocRef, { items: updatedItems }, { merge: true }); // Cập nhật Firestore
+
+    //                 return updatedItems; // Trả về giỏ hàng đã cập nhật
+    //             } else {
+    //                 // Thêm sản phẩm mới vào giỏ hàng
+    //                 const newItem = { ...product, quantity: 1, userEmail };
+    //                 const updatedItems = [...prevItems, newItem];
+
+    //                 // Cập nhật Firestore với giỏ hàng đã cập nhật
+    //                 const cartDocRef = doc(db, "carts", userEmail);
+    //                 setDoc(cartDocRef, { items: updatedItems }, { merge: true }); // Cập nhật Firestore
+
+    //                 return updatedItems; // Trả về giỏ hàng đã cập nhật
+    //             }
+    //         });
+    //     }
+    // };
+
+    const productList = products.map(product => (
+        <Card
+            id={product.id}
+            image={product.imageUrl}
+            name={product.name}
+            price={product.price}
+            image_L={product.imageUrl}
+            // addToCart={addToCart}
+            description={product.description}
+            quantity={product.quantity}
+        />
+    ));
     return (
         <div>
             <NavBar />
@@ -309,119 +428,90 @@ function Home() {
                         <h5> Seldolor sit amet consect etur</h5>
                     </div>
                     <div className="cake_feature_row row">
-                        <div className="col-lg-3 col-md-4 col-6">
-                            <div className="cake_feature_item">
-                                <div className="cake_img">
-                                    <img src="img/cake-feature/c-feature-1.jpg" alt="" />
+                        {/* {productList} */}
+                        {products.slice(0, 8).map((product, index) => (
+                            <div key={index} className="col-lg-3 col-md-4 col-6">
+                                <div className="cake_feature_item">
+                                    <div className="cake_img">
+                                        <img
+                                            src={product.imageUrl}
+                                            alt=""
+                                            onClick={product.quantity > 0 ? handleClick : undefined}
+                                            style={{ cursor: product.quantity === 0 ? 'not-allowed' : 'pointer' }}
+                                        />
+                                    </div>
+                                    <div className="cake_text">
+                                        {/* <h4>
+                                            <CurrencyConverter usdAmount={product.price} />
+                                        </h4> */}
+                                        <h3>
+                                            <strong>
+                                                {product.name}
+                                            </strong>
+                                        </h3>
+                                        {/* <a className="pest_btn" href="#">
+
+                                            Xem
+                                        </a> */}
+                                        <Link
+                                            to="/product-details"
+                                            className="pest_btn"
+                                            state={{
+                                                id: product.id,
+                                                name: product.name,
+                                                price: product.price,
+                                                image: product.image,
+                                                image_L: product.imageUrl,
+                                                description: product.description,
+                                                quantity: product.quantity
+                                            }}
+                                        >
+                                            Xem
+                                        </Link>
+
+                                    </div>
                                 </div>
-                                <div className="cake_text">
-                                    <h4>$29</h4>
-                                    <h3>Strawberry Cupcakes</h3>
-                                    <a className="pest_btn" href="#">
-                                        Add to cart
-                                    </a>
-                                </div>
+
+                                <Dialog open={open} onClose={handleClose}>
+                                    <DialogTitle>{product.name}</DialogTitle>
+                                    <DialogContent>
+                                        {/* Large Product Image */}
+                                        <img src={product.image_L} alt={product.name} style={{ width: '100%' }} />
+
+                                        {/* Product Price */}
+                                        <Typography variant="body1" color="info" sx={{ display: 'flex', justifyContent: 'center', fontWeight: 'bold' }}>
+                                            Price: ${product.price}
+                                        </Typography>
+
+                                        {/* Product Description Section (Non-editable Input) */}
+                                        <div style={{ marginTop: '16px' }}>
+                                            <Typography variant="h6">Description</Typography>
+                                            <Input
+                                                type="text"
+                                                value={product.description && product.description.length > 115 ? `${product.description.slice(0, 50)}...` : product.description || 'empty'}
+                                                fullWidth
+                                                multiline
+                                                disabled // This disables the input field, making it non-clickable and non-editable
+                                                inputProps={{
+                                                    style: { color: 'black', cursor: 'default' } // Style to ensure it doesn't look 'disabled'
+                                                }}
+                                            />
+                                        </div>
+                                    </DialogContent>
+
+                                    <DialogActions>
+                                        <Button onClick={handleClick}>
+                                            View
+                                            {/* <Link to='/product-details'>
+                            View
+                        </Link> */}
+                                        </Button>
+                                    </DialogActions>
+                                </Dialog>
                             </div>
-                        </div>
-                        <div className="col-lg-3 col-md-4 col-6">
-                            <div className="cake_feature_item">
-                                <div className="cake_img">
-                                    <img src="img/cake-feature/c-feature-2.jpg" alt="" />
-                                </div>
-                                <div className="cake_text">
-                                    <h4>$29</h4>
-                                    <h3>Strawberry Cupcakes</h3>
-                                    <a className="pest_btn" href="#">
-                                        Add to cart
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-lg-3 col-md-4 col-6">
-                            <div className="cake_feature_item">
-                                <div className="cake_img">
-                                    <img src="img/cake-feature/c-feature-3.jpg" alt="" />
-                                </div>
-                                <div className="cake_text">
-                                    <h4>$29</h4>
-                                    <h3>Strawberry Cupcakes</h3>
-                                    <a className="pest_btn" href="#">
-                                        Add to cart
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-lg-3 col-md-4 col-6">
-                            <div className="cake_feature_item">
-                                <div className="cake_img">
-                                    <img src="img/cake-feature/c-feature-4.jpg" alt="" />
-                                </div>
-                                <div className="cake_text">
-                                    <h4>$29</h4>
-                                    <h3>Strawberry Cupcakes</h3>
-                                    <a className="pest_btn" href="#">
-                                        Add to cart
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-lg-3 col-md-4 col-6">
-                            <div className="cake_feature_item">
-                                <div className="cake_img">
-                                    <img src="img/cake-feature/c-feature-1.jpg" alt="" />
-                                </div>
-                                <div className="cake_text">
-                                    <h4>$29</h4>
-                                    <h3>Strawberry Cupcakes</h3>
-                                    <a className="pest_btn" href="#">
-                                        Add to cart
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-lg-3 col-md-4 col-6">
-                            <div className="cake_feature_item">
-                                <div className="cake_img">
-                                    <img src="img/cake-feature/c-feature-2.jpg" alt="" />
-                                </div>
-                                <div className="cake_text">
-                                    <h4>$29</h4>
-                                    <h3>Strawberry Cupcakes</h3>
-                                    <a className="pest_btn" href="#">
-                                        Add to cart
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-lg-3 col-md-4 col-6">
-                            <div className="cake_feature_item">
-                                <div className="cake_img">
-                                    <img src="img/cake-feature/c-feature-3.jpg" alt="" />
-                                </div>
-                                <div className="cake_text">
-                                    <h4>$29</h4>
-                                    <h3>Strawberry Cupcakes</h3>
-                                    <a className="pest_btn" href="#">
-                                        Add to cart
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-lg-3 col-md-4 col-6">
-                            <div className="cake_feature_item">
-                                <div className="cake_img">
-                                    <img src="img/cake-feature/c-feature-4.jpg" alt="" />
-                                </div>
-                                <div className="cake_text">
-                                    <h4>$29</h4>
-                                    <h3>Strawberry Cupcakes</h3>
-                                    <a className="pest_btn" href="#">
-                                        Add to cart
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+                        ))}
                     </div>
+
                 </div>
             </section>
 

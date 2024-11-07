@@ -95,7 +95,11 @@ const Card = ({ addToCart, id, name, price, image, image_L, description, quantit
                         {/* ${price} */}
                         <CurrencyConverter usdAmount={price} />
                     </h4>
-                    <h3>{name}</h3>
+                    <h3>
+                        <strong>
+                            {name}
+                        </strong>
+                    </h3>
                     <a
                         className={`pest_btn ${quantity === 0 ? 'disabled' : ''}`}
                         href="#"
@@ -121,9 +125,9 @@ const Card = ({ addToCart, id, name, price, image, image_L, description, quantit
                     <img src={image_L} alt={name} style={{ width: '100%' }} />
 
                     {/* Product Price */}
-                    <Typography variant="body1" color="info" sx={{ display: 'flex', justifyContent: 'center', fontWeight: 'bold' }}>
-                        Price: ${price}
-                    </Typography>
+                    {/* <Typography variant="body1" color="info" sx={{ display: 'flex', justifyContent: 'center', fontWeight: 'bold' }}>
+                        Price: <CurrencyConverter usdAmount={price} />
+                    </Typography> */}
 
                     {/* Product Description Section (Non-editable Input) */}
                     <div style={{ marginTop: '16px' }}>

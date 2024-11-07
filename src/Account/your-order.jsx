@@ -8,6 +8,7 @@ import { styled } from '@mui/system';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'; // Biểu tượng mở rộng
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'; // Biểu tượng thu lại
 import { Link } from 'react-router-dom';
+import CurrencyConverter from '../components/CurrencyConverter';
 
 // Styled component cho Background
 const StyledContainer = styled(Container)({
@@ -114,7 +115,8 @@ const Order = () => {
             {/* --------------------------------------------------------- */}
             <StyledContainer sx={{ paddingTop: '100px', paddingBottom: '50px' }}>
                 <Typography variant="h4" textAlign="center" gutterBottom>
-                    Đơn hàng của {customerEmail}
+                    Đơn hàng của bạn
+                    {/* {customerEmail} */}
                 </Typography>
 
                 {invoices.length === 0 ? (
@@ -130,7 +132,8 @@ const Order = () => {
                                         <Typography variant="h6" gutterBottom>
                                             ID Đơn hàng: {invoice.id}
                                         </Typography>
-                                        <Typography variant='body1' color='textSecondary'>Tổng cộng: <strong>${invoice.total}</strong></Typography>
+
+                                        <Typography variant='body1' color='textSecondary'>Tổng cộng: <strong> <CurrencyConverter usdAmount={invoice.total} /></strong></Typography>
                                         <Typography
                                             variant="body1"
                                             display="flex"

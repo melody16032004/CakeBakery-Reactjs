@@ -7,6 +7,7 @@ import Footer from "../components/footer";
 import Newsletter from "../components/newsletter";
 import { auth, db } from './firebaseConfig';
 import { doc, setDoc, getDoc, collection, query, where } from 'firebase/firestore';
+import CurrencyConverter from "../components/CurrencyConverter";
 
 
 const CartPage = () => {
@@ -194,12 +195,12 @@ const CartPage = () => {
                                 <div className="cart_head">Cart Total</div>
                                 <div className="sub_total">
                                     <h5>
-                                        Sub Total <span>${total.toFixed(2)}</span>
+                                        Sub Total <span> <CurrencyConverter usdAmount={total.toFixed(2)} /></span>
                                     </h5>
                                 </div>
                                 <div className="total">
                                     <h4>
-                                        Total <span>${total.toFixed(2)}</span>
+                                        Total <span> <CurrencyConverter usdAmount={total.toFixed(2)} /></span>
                                     </h4>
                                 </div>
                                 <div className="cart_footer">

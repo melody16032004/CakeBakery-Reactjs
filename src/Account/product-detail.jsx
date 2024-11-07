@@ -6,6 +6,7 @@ import Search from "../components/searchBox";
 import Newsletter from "../components/newsletter";
 import { useLocation } from 'react-router-dom';
 import ScrollToTop from '../components/ScrollToTop';
+import CurrencyConverter from "../components/CurrencyConverter";
 
 const Product = () => {
     const location = useLocation();
@@ -53,7 +54,9 @@ const Product = () => {
                                         voluptatem sequi nesciunt. Neque porro quisquam est,{" "}
                                     </p>
                                     <h5>
-                                        Price :<span>${price}</span>
+                                        Price :<span>
+                                            <CurrencyConverter usdAmount={price} />
+                                        </span>
                                     </h5>
                                     <div className="quantity_box">
                                         <label htmlFor="quantity">Quantity :</label>
@@ -254,7 +257,6 @@ const Product = () => {
                 </section>
 
                 {/* <Newsletter></Newsletter> */}
-                <Search></Search>
             </div>
 
             {/* <h1>{name}</h1>

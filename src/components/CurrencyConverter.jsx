@@ -1,6 +1,6 @@
 import React from "react";
 
-const usdToVndRate = 25415;
+const usdToVndRate = 25000;
 const CurrencyConverter = ({ usdAmount }) => {
 
     const formatTOVND = (usd) => {

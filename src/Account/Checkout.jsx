@@ -9,6 +9,7 @@ import { Typography } from '@mui/material';
 import axios from 'axios';
 import SelectLocation from '../components/SelectLocation';
 import PaypalButton from '../components/PaypalButton';
+import CurrencyConverter from '../components/CurrencyConverter';
 
 
 
@@ -468,14 +469,14 @@ const Checkout = () => {
                                                 <Typography variant='h5' color='grey' key={item.id}>
                                                     {item.name} x {item.quantity}
                                                     <span style={{ display: 'flex', justifyContent: 'end' }}>
-                                                        ${(item.price * item.quantity).toFixed(2)}
+                                                        <CurrencyConverter usdAmount={(item.price * item.quantity).toFixed(2)} />
                                                     </span>
                                                 </Typography>
                                             ))}
                                             <div style={{ padding: '10px 0' }} />
-                                            <h4>Subtotal <span>${(total).toFixed(2)}</span></h4>
+                                            <h4>Subtotal <span><CurrencyConverter usdAmount={(total).toFixed(2)} /></span></h4>
                                             <h5>Shipping And Handling <span className="text_f">Free Shipping</span></h5>
-                                            <h3>Total <span>${(total).toFixed(2)}</span></h3>
+                                            <h3>Total <span><CurrencyConverter usdAmount={(total).toFixed(2)} /></span></h3>
                                         </div>
                                         {/* Countdown Timer */}
 

@@ -1,5 +1,6 @@
 // CartItem.js
 import React from 'react';
+import CurrencyConverter from '../components/CurrencyConverter';
 
 const CartItem = ({ key, image, productName, price, quantity, onQuantityChange, onRemove }) => {
     return (
@@ -8,7 +9,10 @@ const CartItem = ({ key, image, productName, price, quantity, onQuantityChange, 
                 <img style={styles.customImg} src={image} alt={productName} />
             </td>
             <td>{productName}</td>
-            <td>${parseFloat(price).toFixed(2)}</td>
+            <td>
+                {/* ${parseFloat(price).toFixed(2)} */}
+                <CurrencyConverter usdAmount={parseFloat(price).toFixed(2)} />
+            </td>
             <td>
                 <select className="product_select" value={quantity} onChange={onQuantityChange}>
                     {[...Array(5).keys()].map((num) => (
@@ -18,7 +22,10 @@ const CartItem = ({ key, image, productName, price, quantity, onQuantityChange, 
                     ))}
                 </select>
             </td>
-            <td>{`$${(parseFloat(price) * quantity).toFixed(2)}`}</td>
+            <td>
+                {/* {`$${(parseFloat(price) * quantity).toFixed(2)}`} */}
+                <CurrencyConverter usdAmount={(parseFloat(price) * quantity).toFixed(2)} />
+            </td>
             <td>
                 <button onClick={onRemove}>
                     <i className="fas fa-trash"></i>
