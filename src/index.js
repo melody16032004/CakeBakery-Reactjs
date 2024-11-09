@@ -34,7 +34,12 @@ import Order from './Account/your-order';
 import Admin from './Music/admin';
 import Feedback from './Account/Feedback';
 import MemoryGame from './components/Game';
+
 import PaypalButton from './components/PaypalButton';
+
+import AddPost from './components/AddPost';
+import BlogPost from './components/BlogPost';
+import BlogDetail from './components/BlogDetail';
 // import { BrowserRouter } from "react-router-dom";
 
 const router = createBrowserRouter([
@@ -145,6 +150,18 @@ const router = createBrowserRouter([
   {
     path: "dashboard",
     element: <Admin />
+  },
+  {
+    path: "/addpost",
+    element: <AddPost />, // Thêm route cho AddPost
+  },
+  {
+    path: "/blogs",
+    element: <BlogPost />,  // Route để hiển thị danh sách bài viết
+  },
+  {
+    path: "/blog/:id",
+    element: <BlogDetail />,  // Route để hiển thị chi tiết bài viết
   },
 
 ]);

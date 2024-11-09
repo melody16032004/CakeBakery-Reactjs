@@ -12,6 +12,7 @@ import ProductList from '../components/ListProduct';
 import CreateCategory from '../components/CreateCategory';
 import InvoiceList from '../components/InvoiceList';
 import UserAccountManagement from '../components/UserManagement';
+import BlogAdmin from '../components/BlogAdmin';
 import { getAuth, signOut } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 
@@ -67,6 +68,8 @@ const AdminDashboard = () => {
                 return <InvoiceList />;
             case 'users':
                 return <UserAccountManagement />;
+            case 'blogs':
+                return <BlogAdmin />;
             default:
                 return <ProductList setSelectedPage={setSelectedPage} />;
         }
@@ -112,7 +115,6 @@ const AdminDashboard = () => {
                     </Box>
                 </Toolbar>
             </AppBar>
-
             <Drawer variant="persistent" anchor="left" open={drawerOpen} sx={{ flexShrink: 0 }}>
                 <Toolbar sx={{ backgroundColor: '#fc7da5' }} />
                 <Box sx={{ width: 240, backgroundColor: '#f195b2', height: '100%' }}>
@@ -179,18 +181,23 @@ const AdminDashboard = () => {
                                 </ListItem>
                             </AccordionDetails>
                         </Accordion>
-
-
-
-
-
+                        <Accordion
+                            expanded={expanded === 'panel5'}
+                            onChange={handleAccordionChange('panel5')}
+                            sx={{ backgroundColor: '#f195b2', color: 'white' }}>
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon sx={{ color: 'white' }} />}>
+                                <ListItemText primary={<>Blog</>} />
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <ListItem button onClick={() => handleListItemClick('blogs')} sx={{ color: 'white' }}>
+                                    <ListItemText primary={<><i className="fa fa-list" aria-hidden="true"></i> Tất cả bài viết</>} />
+                                </ListItem>
+                            </AccordionDetails>
+                        </Accordion>
                     </List>
                     <Box sx={{ alignItems: 'end' }} />
-
-
-
                 </Box>
-
             </Drawer>
             <Box
                 component="main"
