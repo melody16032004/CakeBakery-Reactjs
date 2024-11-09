@@ -133,7 +133,7 @@ const Order = () => {
                                             ID Đơn hàng: {invoice.id}
                                         </Typography>
 
-                                        <Typography variant='body1' color='textSecondary'>Tổng cộng: <strong> <CurrencyConverter usdAmount={invoice.total} /></strong></Typography>
+                                        <Typography variant='body1' color='textSecondary'>Tổng cộng: <strong> {invoice.total}đ</strong></Typography>
                                         <Typography
                                             variant="body1"
                                             display="flex"

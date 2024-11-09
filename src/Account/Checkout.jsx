@@ -192,10 +192,24 @@ const Checkout = () => {
                     quantity: item.quantity,
                 }));
 
+                const exchangeRate = 25000; // Ví dụ: 23000
+                let totalVND = total * exchangeRate;
+
+                // Tính phí ship
+                let shippingCost = 0;
+                if (totalVND <= 100000) {
+                    shippingCost = totalVND * 0.1;
+                } else if (totalVND <= 500000) {
+                    shippingCost = totalVND * 0.05;
+                }
+
+                // Tổng cộng với phí ship
+                const grandTotalVND = totalVND + shippingCost;
+
                 await setDoc(doc(db, 'invoices', documentId), {
                     ...formData,
                     items: cartItem, // Danh sách sản phẩm
-                    total: total, // Tổng giá trị hóa đơn
+                    total: grandTotalVND, // Tổng giá trị hóa đơn
                     createdAt: new Date(), // Ngày tạo hóa đơn
                     status: "Đang xử lý",
                     id: documentId,
@@ -475,8 +489,49 @@ const Checkout = () => {
                                             ))}
                                             <div style={{ padding: '10px 0' }} />
                                             <h4>Subtotal <span><CurrencyConverter usdAmount={(total).toFixed(2)} /></span></h4>
-                                            <h5>Shipping And Handling <span className="text_f">Free Shipping</span></h5>
-                                            <h3>Total <span><CurrencyConverter usdAmount={(total).toFixed(2)} /></span></h3>
+                                            <h5>
+                                                Shipping And Handling
+                                                <span className="text_f">
+                                                    {(() => {
+                                                        const totalVND = total * 25000; // Thay thế bằng tỷ giá thực tế nếu cần thiết
+                                                        const shippingCost =
+                                                            totalVND <= 100000 ? `SHIP 10% tổng đơn hàng` :
+                                                                totalVND <= 500000 ? `SHIP 5% tổng đơn hàng` :
+                                                                    `Free Shipping`;
+
+                                                        return shippingCost;
+                                                    })()}
+                                                </span>
+                                            </h5>
+
+                                            {/* <h3>Total
+                                                <span>
+                                                    <CurrencyConverter usdAmount={(total).toFixed(2)} />
+                                                </span>
+                                            </h3> */}
+                                            {(() => {
+                                                const totalVND = parseFloat(total.toFixed(2)) * 25000; // Đổi sang VND, thay thế `<tỷ giá USD/VND>` bằng tỷ giá thực tế
+
+                                                // Tính phí ship dựa trên điều kiện
+                                                let shippingCost = 0;
+                                                if (totalVND <= 100000) {
+                                                    shippingCost = totalVND * 0.1; // Phí ship 10% tổng đơn hàng
+                                                } else if (totalVND <= 500000) {
+                                                    shippingCost = totalVND * 0.05; // Phí ship 5% tổng đơn hàng
+                                                } // Phí ship sẽ là 0 khi tổng trên 500,000 VND
+
+                                                const grandTotal = total + shippingCost / 25000; // Tính tổng cộng bao gồm phí ship và đổi lại USD nếu cần
+
+                                                return (
+                                                    <h3>
+                                                        Total
+                                                        <span>
+                                                            <CurrencyConverter usdAmount={parseFloat(grandTotal.toFixed(2))} />
+                                                        </span>
+                                                    </h3>
+                                                );
+                                            })()}
+
                                         </div>
                                         {/* Countdown Timer */}
 
