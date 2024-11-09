@@ -2,6 +2,7 @@ import React from "react";
 import NavBar from "../components/navbar";
 import Footer from "../components/footer";
 import { Link } from "react-router-dom";
+import CurrencyConverter from "../components/CurrencyConverter";
 
 const Menu = () => {
     return (
@@ -44,56 +45,56 @@ const Menu = () => {
                                         <h4>Double Chocolate Pie</h4>
                                         <p>
                                             Chocolate puding, vanilla, fruite rasberry jam milk{" "}
-                                            <span>$8.99</span>
+                                            <span><CurrencyConverter usdAmount={8.99} /></span>
                                         </p>
                                     </div>
                                     <div className="discover_item">
                                         <h4>Zabaglione Cake</h4>
                                         <p>
                                             Chocolate puding, vanilla, fruite rasberry jam evporate milk{" "}
-                                            <span>$12.99</span>
+                                            <span><CurrencyConverter usdAmount={12.99} /></span>
                                         </p>
                                     </div>
                                     <div className="discover_item">
                                         <h4>Blueberry Muffin</h4>
                                         <p>
                                             Chocolate puding, vanilla, fruite rasberry jam milk{" "}
-                                            <span>$8.99</span>
+                                            <span><CurrencyConverter usdAmount={8.99} /></span>
                                         </p>
                                     </div>
                                     <div className="discover_item">
                                         <h4>Box of Delight</h4>
                                         <p>
                                             Chocolate puding, vanilla, fruite rasberry jam evporate milk{" "}
-                                            <span>$7.99</span>
+                                            <span><CurrencyConverter usdAmount={7.99} /></span>
                                         </p>
                                     </div>
                                     <div className="discover_item">
                                         <h4>Classic French Croissant</h4>
                                         <p>
                                             Chocolate puding, vanilla, fruite rasberry jam evporate milk{" "}
-                                            <span>$6.79</span>
+                                            <span><CurrencyConverter usdAmount={6.79} /></span>
                                         </p>
                                     </div>
                                     <div className="discover_item">
                                         <h4>Macarons &amp; Tea</h4>
                                         <p>
                                             Chocolate puding, vanilla, fruite rasberry jam evporate milk{" "}
-                                            <span>$5.99</span>
+                                            <span><CurrencyConverter usdAmount={5.99} /></span>
                                         </p>
                                     </div>
                                     <div className="discover_item">
                                         <h4>Strawberry Sweet Cake</h4>
                                         <p>
                                             Chocolate puding, vanilla, fruite rasberry jam evporate milk{" "}
-                                            <span>$12.99</span>
+                                            <span><CurrencyConverter usdAmount={12.99} /></span>
                                         </p>
                                     </div>
                                     <div className="discover_item">
                                         <h4>Cupcake of Vanela</h4>
                                         <p>
                                             Chocolate puding, vanilla, fruite rasberry jam evporate milk{" "}
-                                            <span>$20.00</span>
+                                            <span><CurrencyConverter usdAmount={20.00} /></span>
                                         </p>
                                     </div>
                                 </div>
@@ -104,56 +105,56 @@ const Menu = () => {
                                         <h4>Fried Egg Sandwich</h4>
                                         <p>
                                             Chocolate puding, vanilla, fruite rasberry jam milk{" "}
-                                            <span>$8.99</span>
+                                            <span><CurrencyConverter usdAmount={8.99} /></span>
                                         </p>
                                     </div>
                                     <div className="discover_item">
                                         <h4>Multigrain Hot Cake</h4>
                                         <p>
                                             Chocolate puding, vanilla, fruite rasberry jam evporate milk{" "}
-                                            <span>$12.99</span>
+                                            <span><CurrencyConverter usdAmount={12.99} /></span>
                                         </p>
                                     </div>
                                     <div className="discover_item">
                                         <h4>Branch Special Cake</h4>
                                         <p>
                                             Chocolate puding, vanilla, fruite rasberry jam milk{" "}
-                                            <span>$8.99</span>
+                                            <span><CurrencyConverter usdAmount={8.99} /></span>
                                         </p>
                                     </div>
                                     <div className="discover_item">
                                         <h4>Bialy Egg Sandwich with Cake</h4>
                                         <p>
                                             Chocolate puding, vanilla, fruite rasberry jam milk{" "}
-                                            <span>$7.99</span>
+                                            <span><CurrencyConverter usdAmount={7.99} /></span>
                                         </p>
                                     </div>
                                     <div className="discover_item">
                                         <h4>Strawberry Sweet Cake</h4>
                                         <p>
                                             Chocolate puding, vanilla, fruite rasberry jam evporate milk{" "}
-                                            <span>$6.79</span>
+                                            <span><CurrencyConverter usdAmount={6.79} /></span>
                                         </p>
                                     </div>
                                     <div className="discover_item">
                                         <h4>Double Chocolate Pie</h4>
                                         <p>
                                             Chocolate puding, vanilla, fruite rasberry jam evporate milk{" "}
-                                            <span>$5.99</span>
+                                            <span><CurrencyConverter usdAmount={5.99} /></span>
                                         </p>
                                     </div>
                                     <div className="discover_item">
                                         <h4>Blueberry Muffin</h4>
                                         <p>
                                             Chocolate puding, vanilla, fruite rasberry jam evporate milk{" "}
-                                            <span>$12.99</span>
+                                            <span><CurrencyConverter usdAmount={12.99} /></span>
                                         </p>
                                     </div>
                                     <div className="discover_item">
                                         <h4>Classic Chocolate Cake</h4>
                                         <p>
                                             Chocolate puding, vanilla, fruite rasberry jam evporate milk{" "}
-                                            <span>$20.00</span>
+                                            <span><CurrencyConverter usdAmount={20.00} /></span>
                                         </p>
                                     </div>
                                 </div>

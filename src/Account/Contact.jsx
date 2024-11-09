@@ -175,16 +175,16 @@ const Contact = () => {
                                 <div className="contact_d_item">
                                     <h3>Address:</h3>
                                     <p>
-                                        54B, Tailstoi Town 5238 <br /> La city, IA 522364
+                                        481/9, khu phố 2, Phường Hiệp Thành, <br /> Quận 12, TP.HCM
                                     </p>
                                 </div>
                                 <div className="contact_d_item">
                                     <h5>
-                                        Phone: <a href="tel:01372466790">01372.466.790</a>
+                                        Phone: <a href="tel:01372466790">035.898.3714</a>
                                     </h5>
                                     <h5>
                                         Email:{" "}
-                                        <a href="mailto:rockybd1995@gmail.com">rockybd1995@gmail.com</a>
+                                        <a href="mailto:rockybd1995@gmail.com">cakebakery@gmail.com</a>
                                     </h5>
                                 </div>
                                 <div className="contact_d_item">

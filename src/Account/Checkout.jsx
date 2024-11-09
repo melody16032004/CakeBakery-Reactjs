@@ -178,60 +178,62 @@ const Checkout = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        try {
-            await validateAddressWithPositionstack();
+        console.log('Address is valid, submitting order...');
 
-            if (isAddressValid) {
-                console.log('Address is valid, submitting order...');
+        const documentId = Date.now().toString();
 
-                const documentId = Date.now().toString();
+        const cartItem = cartItems.map(item => ({
+            id: item.id,
+            product: item.name,
+            quantity: item.quantity,
+        }));
 
-                const cartItem = cartItems.map(item => ({
-                    id: item.id,
-                    product: item.name,
-                    quantity: item.quantity,
-                }));
+        const exchangeRate = 25000; // Ví dụ: 23000
+        let totalVND = total * exchangeRate;
 
-                const exchangeRate = 25000; // Ví dụ: 23000
-                let totalVND = total * exchangeRate;
-
-                // Tính phí ship
-                let shippingCost = 0;
-                if (totalVND <= 100000) {
-                    shippingCost = totalVND * 0.1;
-                } else if (totalVND <= 500000) {
-                    shippingCost = totalVND * 0.05;
-                }
-
-                // Tổng cộng với phí ship
-                const grandTotalVND = totalVND + shippingCost;
-
-                await setDoc(doc(db, 'invoices', documentId), {
-                    ...formData,
-                    items: cartItem, // Danh sách sản phẩm
-                    total: grandTotalVND, // Tổng giá trị hóa đơn
-                    createdAt: new Date(), // Ngày tạo hóa đơn
-                    status: "Đang xử lý",
-                    id: documentId,
-                });
-                const newOrderId = documentId; // Replace this with your actual order creation logic
-                setOrderId(newOrderId);
-                localStorage.setItem('orderId', newOrderId); // Store the order ID in localStorage
-                localStorage.setItem('timerStart', new Date().getTime().toString()); // Save start time in localStorage
-
-                setIsTimerActive(true); // Activate the timer
-                setTimeLeft(300);
-                console.log('Document written with ID: ', documentId);
-                alert('Đơn hàng của bạn đã được giao.\nVui lòng kiểm tra đơn hàng, xin cảm ơn!');
-
-                // await clearUserCart();
-                await deleteDoc(doc(db, 'carts', auth.currentUser.email));
-                navigate('/order');
-            }
-        } catch (error) {
-            console.error('Error adding document: ', error);
-            alert('Error saving invoice');
+        // Tính phí ship
+        let shippingCost = 0;
+        if (totalVND <= 100000) {
+            shippingCost = totalVND * 0.1;
+        } else if (totalVND <= 500000) {
+            shippingCost = totalVND * 0.05;
         }
+
+        // Tổng cộng với phí ship
+        const grandTotalVND = totalVND + shippingCost;
+
+        await setDoc(doc(db, 'invoices', documentId), {
+            ...formData,
+            address: formData.address + '/' + province + '/' + district + '/' + city,
+            items: cartItem, // Danh sách sản phẩm
+            total: grandTotalVND, // Tổng giá trị hóa đơn
+            createdAt: new Date(), // Ngày tạo hóa đơn
+            status: "Đang xử lý",
+            id: documentId,
+        });
+        const newOrderId = documentId; // Replace this with your actual order creation logic
+        setOrderId(newOrderId);
+        localStorage.setItem('orderId', newOrderId); // Store the order ID in localStorage
+        localStorage.setItem('timerStart', new Date().getTime().toString()); // Save start time in localStorage
+
+        setIsTimerActive(true); // Activate the timer
+        setTimeLeft(300);
+        console.log('Document written with ID: ', documentId);
+        alert('Đơn hàng của bạn đã được giao.\nVui lòng kiểm tra đơn hàng, xin cảm ơn!');
+
+        // await clearUserCart();
+        await deleteDoc(doc(db, 'carts', auth.currentUser.email));
+        navigate('/order');
+        // try {
+        //     await validateAddressWithPositionstack();
+
+        //     if (isAddressValid) {
+
+        //     }
+        // } catch (error) {
+        //     console.error('Error adding document: ', error);
+        //     alert('Error saving invoice');
+        // }
     };
 
     // Hàm xóa giỏ hàng của người dùng trong Firestore theo userEmail
