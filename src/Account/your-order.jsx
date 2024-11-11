@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { db } from './firebaseConfig';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, addDoc, doc, updateDoc } from 'firebase/firestore';
 import NavBar from "../components/navbar";
 import Footer from "../components/footer";
-import { Box, Typography, Paper, Container, CircularProgress, IconButton } from '@mui/material';
+import { Box, Typography, Paper, Container, CircularProgress, TextField, Button } from '@mui/material';
 import { styled } from '@mui/system';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'; // Biểu tượng mở rộng
-import ExpandLessIcon from '@mui/icons-material/ExpandLess'; // Biểu tượng thu lại
 import { Link } from 'react-router-dom';
-import CurrencyConverter from '../components/CurrencyConverter';
 
 // Styled component cho Background
 const StyledContainer = styled(Container)({
@@ -37,20 +34,17 @@ const HiddenInfo = styled(Box)(({ visible }) => ({
     marginTop: '10px',
 }));
 
-// Styled component cho nút
-const StyledIconButton = styled(IconButton)({
-    marginLeft: '10px', // Khoảng cách giữa thông tin và nút
-    color: '#ff4081',
-});
-
 const Order = () => {
     const [invoices, setInvoices] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [customerEmail, setCustomerEmail] = useState(null);
+    const [feedback, setFeedback] = useState(''); // State để lưu feedback của người dùng
+    const [feedbacks, setFeedbacks] = useState({});
+    const [isFeedbackSubmitted, setIsFeedbackSubmitted] = useState({}); // Kiểm tra feedback đã được gửi chưa
 
-    // State để quản lý hiển thị thông tin chi tiết
     const [visibleDetails, setVisibleDetails] = useState({});
+
 
     useEffect(() => {
         const storedEmail = localStorage.getItem('savedEmail');
@@ -59,6 +53,10 @@ const Order = () => {
         } else {
             setError('Không tìm thấy email trong localStorage.');
         }
+
+        // Lấy trạng thái feedback từ localStorage
+        const storedFeedbackStatus = JSON.parse(localStorage.getItem('feedbackStatus')) || {};
+        setIsFeedbackSubmitted(storedFeedbackStatus);
     }, []);
 
     useEffect(() => {
@@ -91,6 +89,34 @@ const Order = () => {
         }));
     };
 
+    // Hàm xử lý khi người dùng nhập feedback
+    const handleFeedbackChange = (id, value) => {
+        setFeedbacks(prev => ({
+            ...prev,
+            [id]: value,
+        }));
+    };
+
+    // Hàm gửi feedback cho từng đơn hàng
+    const handleFeedbackSubmit = async (id) => {
+        const feedback = feedbacks[id];
+        if (feedback) {
+            try {
+                await updateDoc(doc(db, 'invoices', id), { feedback });
+                alert('Feedback đã được gửi thành công!');
+
+                // Cập nhật trạng thái feedback đã gửi
+                const newFeedbackStatus = { ...isFeedbackSubmitted, [id]: true };
+                setIsFeedbackSubmitted(newFeedbackStatus);
+
+                // Lưu trạng thái feedback vào localStorage
+                localStorage.setItem('feedbackStatus', JSON.stringify(newFeedbackStatus));
+            } catch (error) {
+                console.error('Lỗi khi cập nhật feedback:', error);
+            }
+        }
+    };
+
     if (loading) return <div style={{ textAlign: 'center', padding: '100px 0' }}><CircularProgress /></div>;
     if (error) return <div style={{ textAlign: 'center', padding: '100px 0' }}>{error}</div>;
 
@@ -100,7 +126,7 @@ const Order = () => {
             <section className="banner_area">
                 <div className="container">
                     <div className="banner_text">
-                        <h3>Chekout</h3>
+                        <h3>Checkout</h3>
                         <ul>
                             <li>
                                 <Link to="/home">Trang chủ</Link>
@@ -112,11 +138,10 @@ const Order = () => {
                     </div>
                 </div>
             </section>
-            {/* --------------------------------------------------------- */}
+
             <StyledContainer sx={{ paddingTop: '100px', paddingBottom: '50px' }}>
                 <Typography variant="h4" textAlign="center" gutterBottom>
                     Đơn hàng của bạn
-                    {/* {customerEmail} */}
                 </Typography>
 
                 {invoices.length === 0 ? (
@@ -132,58 +157,28 @@ const Order = () => {
                                         <Typography variant="h6" gutterBottom>
                                             ID Đơn hàng: {invoice.id}
                                         </Typography>
-
-                                        <Typography variant='body1' color='textSecondary'>Tổng cộng: <strong> {invoice.total}đ</strong></Typography>
-                                        <Typography
-                                            variant="body1"
-                                            display="flex"
-                                            alignItems="center"
-                                            color="textSecondary"
-                                        >
-                                            Trạng thái:&nbsp;
-                                            {invoice.status !== 'Đang xử lý' ? (
-                                                <Box
-                                                    sx={{
-                                                        display: 'inline-flex',
-                                                        alignItems: 'center',
-                                                        borderRadius: '8px',
-                                                        padding: '4px 10px',
-                                                        backgroundColor: 'green', // Màu nền cho trạng thái "Đang xử lý"
-                                                    }}
-                                                >
-                                                    <strong style={{ color: 'white' }}>{invoice.status}</strong>
-                                                </Box>
-                                            ) : (
-                                                <Box
-                                                    sx={{
-                                                        display: 'inline-flex',
-                                                        alignItems: 'center',
-                                                        borderRadius: '8px',
-                                                        padding: '4px 10px',
-                                                        backgroundColor: 'gray', // Màu nền cho trạng thái khác
-                                                    }}
-                                                >
-                                                    <strong style={{ color: 'white' }}>{invoice.status}</strong>
-                                                </Box>
-                                            )}
+                                        <Typography variant="body1" color="textSecondary">
+                                            Tổng cộng: <strong>{invoice.total}đ</strong>
                                         </Typography>
-
-
-
+                                        <Typography variant="body1" display="flex" alignItems="center" color="textSecondary">
+                                            Trạng thái:&nbsp;
+                                            <Box sx={{
+                                                display: 'inline-flex',
+                                                alignItems: 'center',
+                                                borderRadius: '8px',
+                                                padding: '4px 10px',
+                                                backgroundColor: invoice.status !== 'Đang xử lý' ? 'green' : 'gray',
+                                            }}>
+                                                <strong style={{ color: 'white' }}>{invoice.status}</strong>
+                                            </Box>
+                                        </Typography>
                                     </Box>
-                                    {/* Nút Hiện/Ẩn chi tiết với icon */}
-                                    <button onClick={() => handleToggleDetails(invoice.id)} style={{
-                                        width: '150px',
-                                    }}>
+                                    <button onClick={() => handleToggleDetails(invoice.id)} style={{ width: '150px' }}>
                                         {visibleDetails[invoice.id] ? 'Ẩn chi tiết' : 'Hiện chi tiết'}
                                     </button>
                                 </Box>
 
-                                {/* Thông tin ẩn */}
-                                <HiddenInfo visible={visibleDetails[invoice.id]} sx={{ padding: '10px 0' }}>
-                                    {/* <Typography variant='body1'>Địa chỉ: {invoice.address}</Typography>
-                                    <Typography variant='body1'>Số điện thoại: {invoice.phone}</Typography> */}
-
+                                <Box sx={{ display: visibleDetails[invoice.id] ? 'block' : 'none', padding: '10px 0' }}>
                                     <Typography variant='subtitle1' mt={2} gutterBottom>Sản phẩm:</Typography>
                                     <Box component="ul" sx={{ paddingLeft: '20px' }}>
                                         {invoice.items.map((item, index) => (
@@ -192,7 +187,34 @@ const Order = () => {
                                             </li>
                                         ))}
                                     </Box>
-                                </HiddenInfo>
+                                </Box>
+
+                                {/* Phần nhập và gửi feedback riêng cho mỗi đơn hàng */}
+                                {!isFeedbackSubmitted[invoice.id] ? (
+                                    <Box mt={2}>
+                                        <TextField
+                                            fullWidth
+                                            multiline
+                                            rows={4}
+                                            variant="outlined"
+                                            placeholder="Nhập phản hồi của bạn tại đây..."
+                                            value={feedbacks[invoice.id] || ''}
+                                            onChange={(e) => handleFeedbackChange(invoice.id, e.target.value)}
+                                        />
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            sx={{ mt: 1 }}
+                                            onClick={() => handleFeedbackSubmit(invoice.id)}
+                                        >
+                                            Gửi phản hồi
+                                        </Button>
+                                    </Box>
+                                ) : (
+                                    <Typography variant="h6" color="green" mt={2}>
+                                        Cảm ơn bạn đã gửi phản hồi!
+                                    </Typography>
+                                )}
                             </StyledPaper>
                         ))}
                     </Box>
