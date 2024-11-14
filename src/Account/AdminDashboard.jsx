@@ -15,6 +15,7 @@ import UserAccountManagement from '../components/UserManagement';
 import BlogAdmin from '../components/BlogAdmin';
 import { getAuth, signOut } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
+import ProductStatistics from '../components/product-statistics';
 
 const AdminDashboard = () => {
     const [expanded, setExpanded] = useState(false);
@@ -58,6 +59,8 @@ const AdminDashboard = () => {
 
     const renderContent = () => {
         switch (selectedPage) {
+            case 'statistics':
+                return <ProductStatistics />;
             case 'products':
                 return <ProductList setSelectedPage={setSelectedPage} />;
             case 'add':
@@ -119,6 +122,20 @@ const AdminDashboard = () => {
                 <Toolbar sx={{ backgroundColor: '#fc7da5' }} />
                 <Box sx={{ width: 240, backgroundColor: '#f195b2', height: '100%' }}>
                     <List>
+                        <Accordion
+                            expande={expanded === 'panel6'}
+                            onChange={handleAccordionChange('panel6')}
+                            sx={{ backgroundColor: '#f195b2', color: 'white' }}>
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon sx={{ color: 'white' }} />}>
+                                <ListItemText primary={<>Thống kê</>} />
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <ListItem button onClick={() => handleListItemClick('statistics')} sx={{ color: 'white' }}>
+                                    <ListItemText primary={<><i className="fa fa-list" aria-hidden="true"></i> Thống kê sản phẩm</>} />
+                                </ListItem>
+                            </AccordionDetails>
+                        </Accordion>
                         <Accordion
                             expanded={expanded === 'panel1'}
                             onChange={handleAccordionChange('panel1')}

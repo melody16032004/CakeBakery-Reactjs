@@ -175,8 +175,9 @@ const InvoiceList = () => {
                                         Mã đơn: <strong>#{invoice.id}</strong>
                                     </Typography>
                                     <Typography variant="body1" color="textDisabled">
-                                        Tổng số tiền: <strong><CurrencyConverter usdAmount={(invoice.total).toFixed(2)} /></strong>
+                                        Tổng số tiền: <strong>{invoice.total.toLocaleString('vi-VN')} VND</strong>
                                     </Typography>
+
                                     <Typography variant="body1" color="textDisabled">
                                         Ngày tạo: <strong>{formatCreatedAt(invoice.createdAt)}</strong>
                                     </Typography>

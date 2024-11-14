@@ -105,11 +105,11 @@ const Contact = () => {
             <section className="contact_form_area p_100" style={contact_form_area}>
                 <div className="container">
                     <div className="main_title text-center">
-                        <h2>Get In Touch</h2>
+                        <h2>Liên hệ</h2>
                         <h5>
-                            Do you have anything in your mind to let us know? Kindly don't delay
-                            to connect to us by means of our contact form.
+                            Nếu bạn có bất kỳ thắc mắc nào, vui lòng điền vào biểu mẫu dưới đây và gửi cho chúng tôi. Xin cảm ơn!
                         </h5>
+
                     </div>
                     <div className="row">
                         <div className="col-lg-7">

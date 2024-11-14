@@ -4,7 +4,7 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, 
 import './card.css';
 import CurrencyConverter from "./CurrencyConverter";
 
-const Card = ({ addToCart, id, name, price, image, image_L, description, quantity }) => {
+const Card = ({ addToCart, id, name, price, image, image_L, description, quantity, categoryId }) => {
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
 
@@ -25,7 +25,8 @@ const Card = ({ addToCart, id, name, price, image, image_L, description, quantit
                 image,
                 image_L,
                 description,
-                quantity
+                quantity,
+                categoryId
             }
         });
     };
@@ -36,6 +37,7 @@ const Card = ({ addToCart, id, name, price, image, image_L, description, quantit
         image,
         image_L,
         description,
+        categoryId
     };
     const styles = {
 
@@ -95,7 +97,16 @@ const Card = ({ addToCart, id, name, price, image, image_L, description, quantit
                         {/* ${price} */}
                         <CurrencyConverter usdAmount={price} />
                     </h4>
-                    <h3>
+                    <h3 style={{
+                        fontSize: 17,
+                        color: "#f195b2",
+                        maxWidth: 270,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        textAlign: "center",
+                        margin: "0 20px 30px 20px",
+                    }}>
                         <strong>
                             {name}
                         </strong>

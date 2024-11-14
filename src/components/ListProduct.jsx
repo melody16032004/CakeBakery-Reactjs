@@ -11,7 +11,7 @@ import EditProduct from './EditProduct'; // Import component sửa sản phẩm
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThList, faTh, faEdit, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons'; // Thêm icon Edit và Trash
 import { Link, useNavigate } from 'react-router-dom';
-import { scales } from 'chart.js';
+// import { scales } from 'chart.js';
 import CurrencyConverter from './CurrencyConverter';
 
 const ProductList = ({ setSelectedPage }) => {
@@ -186,7 +186,7 @@ const ProductList = ({ setSelectedPage }) => {
                                             image={product.imageUrl}
                                             alt={product.name}
                                         />
-                                        <a style={{
+                                        {/* <a style={{
                                             position: 'absolute',
                                             bottom: '60px',
                                             right: '10px',
@@ -201,7 +201,7 @@ const ProductList = ({ setSelectedPage }) => {
                                             cursor: 'pointer',
                                         }}>
                                             <i class="fa fa-plus-circle" aria-hidden="true" style={{ scale: '2' }}></i>
-                                        </a>
+                                        </a> */}
                                     </Box>
                                     {/* Dialog nhập số lượng */}
                                     <Dialog open={openDialogQty} onClose={handleCloseDialogQty}>
@@ -224,7 +224,16 @@ const ProductList = ({ setSelectedPage }) => {
                                         </DialogActions>
                                     </Dialog>
 
-                                    <Typography variant="h8"><strong>{product.name}</strong></Typography>
+                                    <Typography variant="h8">
+                                        <strong style={{
+                                            fontSize: 14,
+                                            overflow: "hidden",         // Ẩn phần nội dung vượt quá chiều rộng
+                                            textOverflow: "ellipsis",
+                                            color: '#fc7da5',
+                                        }}>
+                                            {product.name}
+                                        </strong>
+                                    </Typography>
                                     <Typography variant="body1" color='primary'
                                         sx={{
                                             display: 'flex',

@@ -7,7 +7,7 @@ import { TextField, Button, Box, Typography, FormControl, InputLabel, Select, Me
 const AddProduct = () => {
     const [productName, setProductName] = useState('');
     const [productDescription, setProductDescription] = useState('');
-    const [productPrice, setProductPrice] = useState(100); // Giá sản phẩm (slider + input)
+    const [productPrice, setProductPrice] = useState(0); // Giá sản phẩm (slider + input)
     const [productQuantity, setProductQuantity] = useState(10); // Số lượng sản phẩm (slider + input)
     const [productImage, setProductImage] = useState(null);
     const [successMessage, setSuccessMessage] = useState('');
@@ -119,7 +119,7 @@ const AddProduct = () => {
             // Reset các trường đã nhập
             setProductName('');
             setProductDescription('');
-            setProductPrice(1000); // Reset thanh kéo giá
+            setProductPrice(0); // Reset thanh kéo giá
             setProductQuantity(10); // Reset thanh kéo số lượng
             setProductImage(null); // Reset ảnh
             setSelectedCategory(''); // Reset danh mục
@@ -222,8 +222,8 @@ const AddProduct = () => {
                             onChange={handlePriceInputChange}
                             onBlur={() => {
                                 // Nếu người dùng xóa hoặc nhập giá trị nhỏ hơn 10, đặt lại giá trị mặc định là 10
-                                if (!productPrice || productPrice < 10) {
-                                    setProductPrice(10); // Giá trị mặc định là 10
+                                if (!productPrice || productPrice < 0) {
+                                    setProductPrice(0); // Giá trị mặc định là 10
                                 }
                             }}
                             fullWidth
@@ -237,7 +237,7 @@ const AddProduct = () => {
                                     },
                                 },
                                 inputProps: {
-                                    min: 10 // Giới hạn giá trị nhỏ nhất là 10
+                                    min: 0 // Giới hạn giá trị nhỏ nhất là 10
                                 }
                             }}
                         />

@@ -151,16 +151,26 @@ const Order = () => {
                 ) : (
                     <Box>
                         {invoices.map((invoice) => (
-                            <StyledPaper elevation={3} key={invoice.id}>
+                            <StyledPaper elevation={3} key={invoice.id} sx={{
+                                margin: "20px 250px",
+                            }}>
                                 <Box display="flex" alignItems="center">
                                     <Box flexGrow={1}>
                                         <Typography variant="h6" gutterBottom>
-                                            ID Đơn hàng: {invoice.id}
+                                            Mã đơn hàng: #{invoice.id}
                                         </Typography>
-                                        <Typography variant="body1" color="textSecondary">
-                                            Tổng cộng: <strong>{invoice.total}đ</strong>
+                                        <Typography variant="body1" color="textDisabled" sx={{
+                                            '&:hover': {
+                                                textDecoration: 'none',
+                                            }
+                                        }}>
+                                            Tổng cộng: <strong>{invoice.total.toLocaleString('vi-VN')} đ</strong>
                                         </Typography>
-                                        <Typography variant="body1" display="flex" alignItems="center" color="textSecondary">
+                                        <Typography variant="body1" display="flex" alignItems="center" color="textSecondary" sx={{
+                                            '&:hover': {
+                                                textDecoration: 'none',
+                                            }
+                                        }}>
                                             Trạng thái:&nbsp;
                                             <Box sx={{
                                                 display: 'inline-flex',
@@ -172,9 +182,26 @@ const Order = () => {
                                                 <strong style={{ color: 'white' }}>{invoice.status}</strong>
                                             </Box>
                                         </Typography>
+                                        {invoice.status === "Đang vận chuyển" && (
+                                            <Typography variant="body2" color="#f195b2" sx={{
+                                                textDecoration: 'none',
+                                                color: '#f195b2',
+                                                '&:hover': {
+                                                    textDecoration: 'none',
+                                                    color: '#f195b2',
+                                                },
+                                                paddingTop: 3,
+                                            }}>
+                                                <strong>*Sản phẩm của bạn dự kiến sẽ được giao trong ngày.<br />
+                                                    Xin cảm ơn! (^.^)</strong>
+                                            </Typography>
+                                        )}
                                     </Box>
-                                    <button onClick={() => handleToggleDetails(invoice.id)} style={{ width: '150px' }}>
-                                        {visibleDetails[invoice.id] ? 'Ẩn chi tiết' : 'Hiện chi tiết'}
+                                    <button onClick={() => handleToggleDetails(invoice.id)} style={{ width: '50px' }}>
+                                        {visibleDetails[invoice.id]
+                                            ? <i className="fa fa-chevron-up" aria-hidden="true" style={{ marginLeft: -3, }}></i>
+                                            : <i className="fa fa-chevron-down" aria-hidden="true" style={{ marginLeft: -3, }}></i>
+                                        }
                                     </button>
                                 </Box>
 

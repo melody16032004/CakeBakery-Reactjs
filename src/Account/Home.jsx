@@ -122,7 +122,6 @@ function Home() {
             name={product.name}
             price={product.price}
             image_L={product.imageUrl}
-            // addToCart={addToCart}
             description={product.description}
             quantity={product.quantity}
         />
@@ -424,8 +423,7 @@ function Home() {
             <section className="welcome_bakery_area cake_feature_main p_100">
                 <div className="container">
                     <div className="main_title">
-                        <h2>Our Featured Cakes</h2>
-                        <h5> Seldolor sit amet consect etur</h5>
+                        <h2>Bánh nổi bật</h2>
                     </div>
                     <div className="cake_feature_row row">
                         {/* {productList} */}
@@ -444,7 +442,14 @@ function Home() {
                                         {/* <h4>
                                             <CurrencyConverter usdAmount={product.price} />
                                         </h4> */}
-                                        <h3>
+                                        <h3 style={{
+                                            maxWidth: 270,
+                                            overflow: "hidden",
+                                            textOverflow: "ellipsis",
+                                            whiteSpace: "nowrap",
+                                            textAlign: "center",
+                                            margin: "0 20px 30px 20px",
+                                        }}>
                                             <strong>
                                                 {product.name}
                                             </strong>
@@ -518,7 +523,7 @@ function Home() {
             <section className="service_we_offer_area p_100">
                 <div className="container">
                     <div className="single_w_title">
-                        <h2>Services We offer</h2>
+                        <h2>Các dịch vụ của chúng tôi</h2>
                     </div>
                     <div className="row we_offer_inner">
                         <div className="col-lg-4">
@@ -647,7 +652,7 @@ function Home() {
                 </div>
             </section>
 
-            <section className="discover_menu_area menu_d_two">
+            {/* <section className="discover_menu_area menu_d_two">
                 <div className="discover_menu_inner">
                     <div className="container">
                         <div className="single_pest_title">
@@ -726,7 +731,7 @@ function Home() {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section> */}
 
             <section className="our_chef_area p_100">
                 <div className="container">
@@ -735,11 +740,19 @@ function Home() {
                             <div className="chef_text_item">
                                 <div className="main_title">
                                     <h2>Our Chefs</h2>
-                                    <p>
-                                        Lorem ipsum dolor sit amet, cons ectetur elit. Vestibulum nec
-                                        odios Suspe ndisse cursus mal suada faci lisis. Lorem ipsum
-                                        dolor sit ametion.
-                                    </p>
+                                    <Typography sx={{
+                                        textAlign: 'justify',
+                                        '&:hover': {
+                                            textDecoration: 'none',
+                                        }
+                                    }}>
+                                        Đội ngũ đầu bếp tài năng của chúng tôi mang đến sự sáng tạo và niềm
+                                        đam mê trong từng món ăn. Với nhiều năm kinh nghiệm và tình yêu dành
+                                        cho nghệ thuật ẩm thực, họ chế biến hương vị độc đáo và trình bày mỗi
+                                        món ăn với sự chăm chút đặc biệt. Từ những món truyền thống đến những
+                                        món sáng tạo, các đầu bếp của chúng tôi cam kết mang lại trải nghiệm
+                                        ẩm thực khó quên trong từng miếng ăn.
+                                    </Typography>
                                 </div>
                             </div>
                         </div>
@@ -773,7 +786,7 @@ function Home() {
                                 <a href="#">
                                     <h4>Michale Joe</h4>
                                 </a>
-                                <h5>Expert in Cake Making</h5>
+                                <h5>Chuyên gia về làm bánh</h5>
                             </div>
                         </div>
                         <div className="col-lg-3 col-6">
@@ -806,7 +819,7 @@ function Home() {
                                 <a href="#">
                                     <h4>Michale Joe</h4>
                                 </a>
-                                <h5>Expert in Cake Making</h5>
+                                <h5>Chuyên gia về làm bánh</h5>
                             </div>
                         </div>
                         <div className="col-lg-3 col-6">
@@ -839,7 +852,7 @@ function Home() {
                                 <a href="#">
                                     <h4>Michale Joe</h4>
                                 </a>
-                                <h5>Expert in Cake Making</h5>
+                                <h5>Chuyên gia về làm bánh</h5>
                             </div>
                         </div>
                     </div>
@@ -939,8 +952,7 @@ function Home() {
             <section className="latest_news_area gray_bg p_100">
                 <div className="container">
                     <div className="main_title">
-                        <h2>Latest Blog</h2>
-                        <h5>an turn into your instructor your helper, your </h5>
+                        <h2>Bài viết gần đây</h2>
                     </div>
                     <div className="row latest_news_inner">
                         <div className="col-lg-4 col-md-6">

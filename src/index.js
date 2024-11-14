@@ -15,7 +15,7 @@ import Checkout from './Account/Checkout';
 import Menu from './Account/Menu';
 import About from './Account/AboutUs';
 import Contact from './Account/Contact';
-import Dashboard from './components/Dashboard';
+// import Dashboard from './components/Dashboard';
 import ProductList from './components/ListProduct';
 import AddProduct from './components/AddProduct';
 import CreateCategory from './components/CreateCategory';
@@ -24,14 +24,14 @@ import UserAccountManagement from './components/UserManagement';
 import AdminDashboard from './Account/AdminDashboard';
 import Login from './Account/Login';
 import NavigateLogin from './components/navigate-login';
-import HomeMusic from './Music/home';
-import Guitar from './Music/guitar';
-import Piano from './Music/piano';
-import Violin from './Music/violin';
-import Accessory from './Music/accessory';
+// import HomeMusic from './Music/home';
+// import Guitar from './Music/guitar';
+// import Piano from './Music/piano';
+// import Violin from './Music/violin';
+// import Accessory from './Music/accessory';
 import MoMoPayment from './components/momo-payment';
 import Order from './Account/your-order';
-import Admin from './Music/admin';
+// import Admin from './Music/admin';
 import Feedback from './Account/Feedback';
 import MemoryGame from './components/Game';
 
@@ -40,6 +40,7 @@ import PaypalButton from './components/PaypalButton';
 import AddPost from './components/AddPost';
 import BlogPost from './components/BlogPost';
 import BlogDetail from './components/BlogDetail';
+import ProductStatistics from './components/product-statistics';
 // import { BrowserRouter } from "react-router-dom";
 
 const router = createBrowserRouter([
@@ -51,10 +52,10 @@ const router = createBrowserRouter([
     path: "navigation",
     element: <NavigateLogin />,
   },
-  {
-    path: "dashboard",
-    element: <Dashboard />,
-  },
+  // {
+  //   path: "dashboard",
+  //   element: <Dashboard />,
+  // },
   {
     path: "home",
     element: <Home />,
@@ -108,6 +109,10 @@ const router = createBrowserRouter([
     element: <AddProduct />,
   },
   {
+    path: "statistics",
+    element: <ProductStatistics />,
+  },
+  {
     path: "addcategory",
     element: <CreateCategory />,
   },
@@ -127,30 +132,30 @@ const router = createBrowserRouter([
     path: "admin",
     element: <AdminDashboard />,
   },
-  {
-    path: "musical-instrument",
-    element: <HomeMusic />,
-  },
-  {
-    path: "guitar",
-    element: <Guitar />
-  },
-  {
-    path: "piano",
-    element: <Piano />
-  },
-  {
-    path: "violin",
-    element: <Violin />
-  },
-  {
-    path: "accessory",
-    element: <Accessory />
-  },
-  {
-    path: "dashboard",
-    element: <Admin />
-  },
+  // {
+  //   path: "musical-instrument",
+  //   element: <HomeMusic />,
+  // },
+  // {
+  //   path: "guitar",
+  //   element: <Guitar />
+  // },
+  // {
+  //   path: "piano",
+  //   element: <Piano />
+  // },
+  // {
+  //   path: "violin",
+  //   element: <Violin />
+  // },
+  // {
+  //   path: "accessory",
+  //   element: <Accessory />
+  // },
+  // {
+  //   path: "dashboard",
+  //   element: <Admin />
+  // },
   {
     path: "/addpost",
     element: <AddPost />, // Thêm route cho AddPost

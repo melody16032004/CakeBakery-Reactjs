@@ -10,6 +10,7 @@ import axios from 'axios';
 import SelectLocation from '../components/SelectLocation';
 import PaypalButton from '../components/PaypalButton';
 import CurrencyConverter from '../components/CurrencyConverter';
+import { CurrencyExchange } from '@mui/icons-material';
 
 
 
@@ -48,6 +49,15 @@ const Checkout = () => {
         phone: '',
         orderNotes: '',
     });
+
+    // Lấy email từ localStorage khi component được mount
+    useEffect(() => {
+        const savedEmail = localStorage.getItem('savedEmail');
+        if (savedEmail) {
+            setFormData(prevData => ({ ...prevData, email: savedEmail }));
+        }
+    }, []);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -106,42 +116,25 @@ const Checkout = () => {
     }, []);
 
     // useEffect(() => {
-    //     let interval;
-    //     if (isTimerActive && timeLeft > 0) {
-    //         interval = setInterval(() => {
-    //             setTimeLeft(prevTime => {
-    //                 if (prevTime <= 1) {
-    //                     clearInterval(interval);
-    //                     handleConfirmOrder();
-    //                     return 0;
-    //                 }
-    //                 return prevTime - 1;
-    //             });
-    //         }, 1000);
-    //     }
+    //     // Start timer immediately on component mount
+    //     setIsTimerActive(true);
 
-    //     return () => clearInterval(interval); 
-    // }, [isTimerActive, timeLeft]);
-    useEffect(() => {
-        // Start timer immediately on component mount
-        setIsTimerActive(true);
+    //     const interval = setInterval(() => {
+    //         setTimeLeft((prevTime) => {
+    //             if (prevTime == 0) {
+    //                 clearInterval(interval);
+    //                 resetTimer();
+    //                 navigate('/cart'); // Redirect to CartPage
+    //                 alert('Thời gian đã hết! Bạn sẽ được chuyển hướng về trang giỏ hàng.');
+    //                 return 0; // Set time left to 0
+    //             }
+    //             return prevTime - 1;
+    //         });
+    //     }, 1000);
 
-        const interval = setInterval(() => {
-            setTimeLeft((prevTime) => {
-                if (prevTime == 0) {
-                    clearInterval(interval);
-                    resetTimer();
-                    navigate('/cart'); // Redirect to CartPage
-                    alert('Thời gian đã hết! Bạn sẽ được chuyển hướng về trang giỏ hàng.');
-                    return 0; // Set time left to 0
-                }
-                return prevTime - 1;
-            });
-        }, 1000);
-
-        // Cleanup interval on component unmount
-        return () => clearInterval(interval);
-    }, []);
+    //     // Cleanup interval on component unmount
+    //     return () => clearInterval(interval);
+    // }, []);
     const resetTimer = () => {
         setTimeLeft(300); // Reset timer to 300 seconds
         localStorage.removeItem('timerStart'); // Optionally remove timer start from local storage
@@ -193,7 +186,7 @@ const Checkout = () => {
 
         // Tính phí ship
         let shippingCost = 0;
-        if (totalVND <= 100000) {
+        if (totalVND <= 300000) {
             shippingCost = totalVND * 0.1;
         } else if (totalVND <= 500000) {
             shippingCost = totalVND * 0.05;
@@ -352,6 +345,7 @@ const Checkout = () => {
                                         <div className="form-group col-md-6">
                                             <label htmlFor="first">Tên *</label>
                                             <input
+                                                color='#575757'
                                                 type="text"
                                                 className="form-control"
                                                 id="first"
@@ -365,6 +359,7 @@ const Checkout = () => {
                                         <div className="form-group col-md-6">
                                             <label htmlFor="last">Họ *</label>
                                             <input
+                                                color='#575757'
                                                 type="text"
                                                 className="form-control"
                                                 id="last"
@@ -378,6 +373,7 @@ const Checkout = () => {
                                         <div className="form-group col-md-12">
                                             <label htmlFor="company">Tên công ty</label>
                                             <input
+                                                color='#575757'
                                                 type="text"
                                                 className="form-control"
                                                 id="company"
@@ -404,6 +400,7 @@ const Checkout = () => {
 
                                         <div className="form-group col-md-4">
                                             <input
+                                                color='#575757'
                                                 type='text'
                                                 className='form-control'
                                                 id='address'
@@ -429,6 +426,7 @@ const Checkout = () => {
                                         <div className="form-group col-md-6">
                                             <label htmlFor="email">Email Address *</label>
                                             <input
+                                                color='#575757'
                                                 type="email"
                                                 className="form-control"
                                                 id="email"
@@ -442,6 +440,7 @@ const Checkout = () => {
                                         <div className="form-group col-md-6">
                                             <label htmlFor="phone">Phone *</label>
                                             <input
+                                                color='#575757'
                                                 type="text"
                                                 className="form-control"
                                                 id="phone"
@@ -453,8 +452,9 @@ const Checkout = () => {
                                             />
                                         </div>
                                         <div className="form-group col-md-12">
-                                            <label htmlFor="phone">Order Notes</label>
+                                            <label htmlFor="phone">Ghi chú</label>
                                             <textarea
+                                                color='#575757'
                                                 className="form-control"
                                                 name="orderNotes"
                                                 id="message"
@@ -480,7 +480,7 @@ const Checkout = () => {
                                     </div>
                                     <div className="payment_list">
                                         <div className="price_single_cost">
-                                            <h5>Product <span>Total</span></h5>
+                                            <h5>Sản phẩm <span>Tổng</span></h5>
                                             {cartItems.map(item => (
                                                 <Typography variant='h5' color='grey' key={item.id}>
                                                     {item.name} x {item.quantity}
@@ -490,33 +490,80 @@ const Checkout = () => {
                                                 </Typography>
                                             ))}
                                             <div style={{ padding: '10px 0' }} />
-                                            <h4>Subtotal <span><CurrencyConverter usdAmount={(total).toFixed(2)} /></span></h4>
-                                            <h5>
-                                                Shipping And Handling
-                                                <span className="text_f">
-                                                    {(() => {
-                                                        const totalVND = total * 25000; // Thay thế bằng tỷ giá thực tế nếu cần thiết
-                                                        const shippingCost =
-                                                            totalVND <= 100000 ? `SHIP 10% tổng đơn hàng` :
-                                                                totalVND <= 500000 ? `SHIP 5% tổng đơn hàng` :
-                                                                    `Free Shipping`;
+                                            <h4>Thành tiền <span><CurrencyConverter usdAmount={(total).toFixed(2)} /></span></h4>
+                                            <div id="accordion" className="accordion_area">
+                                                <div className="card">
+                                                    <div className="card-header" id="headingThree">
+                                                        <h5>
+                                                            <button
+                                                                className="btn btn-link collapsed"
+                                                                data-toggle="collapse"
+                                                                data-target="#collapseThree"
+                                                                aria-expanded="false"
+                                                                aria-controls="collapseThree"
+                                                                display='flex'
+                                                                type='button'
+                                                                style={{
+                                                                    display: 'flex',
+                                                                    justifyContent: 'space-between',
+                                                                }}>
+                                                                <span>Phí vận chuyển</span>
 
-                                                        return shippingCost;
-                                                    })()}
-                                                </span>
-                                            </h5>
+                                                                <span className="text_f">
+                                                                    {(() => {
+                                                                        const totalVND = total * 25000; // Thay thế bằng tỷ giá thực tế nếu cần thiết
+                                                                        const shippingCost =
+                                                                            totalVND <= 300000 ? <CurrencyConverter usdAmount={total * 0.1} /> :
+                                                                                totalVND <= 500000 ? <CurrencyConverter usdAmount={total * 0.05} /> :
+                                                                                    `Free Shipping`;
 
-                                            {/* <h3>Total
-                                                <span>
-                                                    <CurrencyConverter usdAmount={(total).toFixed(2)} />
-                                                </span>
-                                            </h3> */}
+                                                                        return shippingCost;
+                                                                    })()}
+                                                                </span>
+                                                            </button>
+
+                                                        </h5>
+                                                    </div>
+                                                    <div
+                                                        id="collapseThree"
+                                                        className="collapse"
+                                                        aria-labelledby="headingThree"
+                                                        data-parent="#accordion">
+                                                        <div className="card-body">
+                                                            <ul style={{ marginLeft: -30, }}>
+                                                                <li>
+                                                                    <Typography variant='body2' color='textPrimary' sx={{
+                                                                        textAlign: 'justify',
+                                                                    }}>
+                                                                        Đơn hàng dưới 300.000đ sẽ có phí vận chuyển ưu đãi chỉ 10% tổng giá trị đơn hàng.
+                                                                    </Typography>
+                                                                </li>
+                                                                <li>
+                                                                    <Typography variant='body2' color='textPrimary' sx={{
+                                                                        textAlign: 'justify',
+                                                                    }}>
+                                                                        Đối với đơn hàng từ 300.000đ đến 500.000đ, quý khách sẽ được giảm phí vận chuyển xuống còn 5%.
+                                                                    </Typography>
+                                                                </li>
+                                                                <li>
+                                                                    <Typography variant='body2' color='textPrimary' sx={{
+                                                                        textAlign: 'justify',
+                                                                    }}>
+                                                                        Và đặc biệt, đơn hàng trên 500.000đ sẽ được miễn phí vận chuyển hoàn toàn!
+                                                                    </Typography>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
                                             {(() => {
                                                 const totalVND = parseFloat(total.toFixed(2)) * 25000; // Đổi sang VND, thay thế `<tỷ giá USD/VND>` bằng tỷ giá thực tế
 
                                                 // Tính phí ship dựa trên điều kiện
                                                 let shippingCost = 0;
-                                                if (totalVND <= 100000) {
+                                                if (totalVND <= 300000) {
                                                     shippingCost = totalVND * 0.1; // Phí ship 10% tổng đơn hàng
                                                 } else if (totalVND <= 500000) {
                                                     shippingCost = totalVND * 0.05; // Phí ship 5% tổng đơn hàng
@@ -526,7 +573,7 @@ const Checkout = () => {
 
                                                 return (
                                                     <h3>
-                                                        Total
+                                                        Tổng tiền
                                                         <span>
                                                             <CurrencyConverter usdAmount={parseFloat(grandTotal.toFixed(2))} />
                                                         </span>
@@ -566,8 +613,12 @@ const Checkout = () => {
                                                             Pay with MoMo
                                                         </button> */}
                                                         <PaypalButton
-                                                            amount="10.00"          // Giá trị cần thanh toán
-                                                            currency="USD"          // Đơn vị tiền tệ (USD, EUR, etc.)
+                                                            amount={total < 300000
+                                                                ? total * 1.1
+                                                                : total >= 500000
+                                                                    ? total
+                                                                    : total * 1.05}         // Giá trị cần thanh toán
+                                                            currency="VND"          // Đơn vị tiền tệ (USD, EUR, etc.)
                                                             onSuccess={handleSuccess} // Hàm xử lý khi thanh toán thành công
                                                         />
                                                     </div>
@@ -614,11 +665,11 @@ const Checkout = () => {
                                             </div>
 
                                         </div>
-                                        {isTimerActive && (
+                                        {/* {isTimerActive && (
                                             <div style={styles.countDown}>
                                                 <h5>Time left to cancel: {Math.floor(timeLeft / 60)}:{timeLeft % 60 < 10 ? `0${timeLeft % 60}` : timeLeft % 60}</h5>
                                             </div>
-                                        )}
+                                        )} */}
 
 
 

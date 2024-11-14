@@ -1,6 +1,7 @@
 import React from "react";
 import NavBar from "../components/navbar";
 import Footer from "../components/footer";
+import { Typography } from "@mui/material";
 
 const About = () => {
     return (
@@ -25,21 +26,28 @@ const About = () => {
             <section className="our_bakery_area p_100">
                 <div className="container">
                     <div className="our_bakery_text">
-                        <h2>Our Bakery Approach </h2>
-                        <h6>
-                            Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-                            accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae
-                            ab illo inventore veritatis et quasi architecto beatae vitae dicta
-                            sunt explicabo.
+                        <h2>Giới thiệu</h2>
+                        <h6 style={{ textAlign: "justify", }}>
+                            Chào mừng bạn đến với <strong style={{ color: "#f195b2" }}>Cake Bakery</strong> – nơi
+                            chúng tôi biến những chiếc bánh thành tác phẩm nghệ thuật và mỗi chiếc bánh đều mang
+                            đến hương vị khó quên. Được thành lập với tình yêu dành cho ẩm thực và niềm đam mê
+                            bánh ngọt, Cake Bakery luôn tự hào mang đến cho khách hàng những chiếc bánh được làm
+                            từ nguyên liệu tươi ngon nhất và theo công thức hoàn hảo nhất.
                         </h6>
-                        <p>
-                            Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut
-                            fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem
-                            sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor
-                            sit amet, consectetur, adipisci velit, sed quia non numquam eius modi
-                            tempora incidunt ut labore et dolore magnam aliquam quaerat
-                            voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem.
-                        </p>
+                        <Typography variant="body2" sx={{
+                            textAlign: "justify",
+                            '&:hover': {
+                                textDecoration: 'none',
+                                cursor: 'pointer',
+                            }
+                        }}>
+                            Tại <strong style={{ color: "#f195b2" }}>Cake Bakery</strong>, chúng tôi tin rằng mỗi
+                            chiếc bánh đều mang trong mình một câu chuyện. Dù là một chiếc bánh sinh nhật, bánh
+                            cưới hay bất kỳ dịp đặc biệt nào, đội ngũ thợ làm bánh của chúng tôi đều đặt trọn tâm
+                            huyết vào từng chi tiết để đảm bảo bánh không chỉ đẹp mắt mà còn ngon miệng. Sự kết hợp
+                            tinh tế giữa truyền thống và sáng tạo hiện đại giúp mỗi sản phẩm của <strong style={{ color: "#f195b2" }}>Cake Bakery</strong>
+                            trở thành một trải nghiệm vị giác độc đáo.
+                        </Typography>
                     </div>
                     <div className="row our_bakery_image">
                         <div className="col-md-4 col-6">
@@ -52,8 +60,36 @@ const About = () => {
                             <img className="img-fluid" src="img/our-bakery/bakery-3.jpg" alt="" />
                         </div>
                     </div>
+                    <div className="our_bakery_text" style={{ marginTop: 40, }}>
+                        <Typography variant="body2" sx={{
+                            textAlign: "justify",
+                            '&:hover': {
+                                textDecoration: 'none',
+                                cursor: 'pointer',
+                            }
+                        }}>
+                            Chúng tôi cam kết không ngừng cải tiến và sáng tạo để mang
+                            đến cho bạn những hương vị mới lạ và hấp dẫn. Với
+                            <strong style={{ color: "#f195b2" }}> Cake Bakery</strong>,
+                            bạn không chỉ tìm thấy những chiếc bánh ngon mà còn cảm nhận
+                            được sự quan tâm và tận tụy mà chúng tôi đặt vào từng sản phẩm.
+                        </Typography>
+
+                        <Typography variant="body1" sx={{
+                            textAlign: "justify",
+                            '&:hover': {
+                                textDecoration: 'none',
+                                cursor: 'pointer',
+                            }
+                        }}>
+                            <strong>
+                                Hãy để <strong style={{ color: "#f195b2" }}>Cake Bakery</strong> góp phần làm nên những khoảnh khắc ngọt ngào
+                                trong cuộc sống của bạn!
+                            </strong>
+                        </Typography>
+                    </div>
                 </div>
-            </section>
+            </section >
 
             <section className="bakery_video_area">
                 <div className="container">
@@ -83,7 +119,7 @@ const About = () => {
                 </div>
             </section>
 
-            <section className="our_mission_area p_100">
+            {/* <section className="our_mission_area p_100">
                 <div className="container">
                     <div className="row our_mission_inner">
                         <div className="col-lg-3">
@@ -129,9 +165,9 @@ const About = () => {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section> */}
 
-            <section className="client_says_area p_100">
+            {/* <section className="client_says_area p_100">
                 <div className="container">
                     <div className="client_says_inner">
                         <div className="c_says_title">
@@ -193,9 +229,9 @@ const About = () => {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section> */}
 
-            <section className="our_chef_area p_100">
+            {/* <section className="our_chef_area p_100">
                 <div className="container">
                     <div className="row our_chef_inner">
                         <div className="col-lg-3">
@@ -245,9 +281,9 @@ const About = () => {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section> */}
             <Footer />
-        </div>
+        </div >
     );
 }
 

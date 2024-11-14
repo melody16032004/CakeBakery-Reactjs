@@ -11,7 +11,7 @@ import CartSidebar from '../components/CartSidebar';
 import "../index.css";
 import ProductList from './ProductList';
 import { auth, db } from './firebaseConfig';
-import { doc, setDoc, getDoc, getDocs, collection, query, where } from 'firebase/firestore';
+import { doc, setDoc, getDoc, getDocs, collection, query, where, addDoc, deleteDoc } from 'firebase/firestore';
 import "../index.css";
 import NavigateLogin from '../components/navigate-login';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -29,7 +29,9 @@ function Shop() {
     const navigate = useNavigate();
     const [products, setProducts] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
-
+    const [existingCategories, setExistingCategories] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [product, setProduct] = useState([]);
 
     // Lọc sản phẩm dựa trên search query
     const handleSearchChange = (query) => {
@@ -37,6 +39,43 @@ function Shop() {
         setCurrentPage(1);
     };
 
+    // Lấy danh sách danh mục hiện có từ Firestore
+    const fetchCategories = async () => {
+        const querySnapshot = await getDocs(collection(db, 'categories'));
+        const categories = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+        console.log('Danh mục:', categories); // Thêm log để kiểm tra danh mục
+        setExistingCategories(categories);
+    };
+    const fetchProductsByCategory = async (categoryId = null) => {
+        let q;
+        if (categoryId) {
+            // Lấy sản phẩm theo danh mục nếu có categoryId
+            q = query(collection(db, 'products'), where('categoryId', '==', categoryId));
+        } else {
+            // Lấy tất cả sản phẩm nếu không có categoryId
+            q = collection(db, 'products');
+        }
+        const querySnapshot = await getDocs(q);
+        const product = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+        setProducts(product);
+    };
+    useEffect(() => {
+        fetchCategories(); // Gọi hàm fetchCategories khi component được mount
+    }, []);
+    const handleCategoryClick = (categoryId) => {
+        setSelectedCategory(categoryId);
+        fetchProductsByCategory(categoryId); // Lấy sản phẩm theo danh mục khi bấm vào
+    };
+    const handleShowAllClick = () => {
+        setSelectedCategory(null);
+        fetchProductsByCategory(); // Lấy tất cả sản phẩm khi bấm "Hiện tất cả"
+    };
 
     const fetchCartItems = async () => {
         const userEmail = localStorage.getItem('savedEmail');
@@ -296,6 +335,7 @@ function Shop() {
             addToCart={addToCart}
             description={product.description}
             quantity={product.quantity}
+            categoryId={product.categoryId}
         />
     ));
     // 
@@ -432,14 +472,36 @@ function Shop() {
                                     </aside>
                                     <aside className="left_sidebar p_catgories_widget">
                                         <div className="p_w_title">
-                                            <h3>Product Categories</h3>
+                                            <h3>Danh mục sản phẩm</h3>
                                         </div>
                                         <ul className="list_style">
-                                            <li><a href="#">Cupcake (17)</a></li>
-                                            <li><a href="#">Chocolate (15)</a></li>
-                                            <li><a href="#">Celebration (14)</a></li>
-                                            <li><a href="#">Wedding Cake (8)</a></li>
-                                            <li><a href="#">Desserts (11)</a></li>
+                                            {existingCategories.map((category) => (
+                                                <li key={category.id} style={{ cursor: "pointer", }}>
+                                                    <div style={{
+                                                        display: 'flex', justifyContent: 'space-between',
+                                                    }}>
+                                                        <a onClick={() => handleCategoryClick(category.id)}
+                                                            style={{
+                                                                color: category.id === selectedCategory ? "#f195b2" : "black",
+                                                                // textDecoration: category.id === selectedCategory ? "underline" : "none",
+                                                                transition: "color .5s ease-in-out textDecoration .6s ease-out",
+
+                                                            }}>
+                                                            {category.id === selectedCategory ? <i className="lnr lnr-arrow-right" /> : null} {category.name}
+                                                        </a>
+                                                        <a onClick={handleShowAllClick}
+                                                            style={{
+                                                                color: category.id === selectedCategory ? "#f195b2" : "black",
+                                                                display: category.id === selectedCategory ? "block" : "none",
+                                                                transition: "color .5s ease-in-out",
+                                                            }}>
+                                                            <strong>Xóa</strong>
+
+                                                        </a>
+                                                    </div>
+
+                                                </li>
+                                            ))}
                                         </ul>
                                     </aside>
                                 </div>

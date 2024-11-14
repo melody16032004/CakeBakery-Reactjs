@@ -179,7 +179,7 @@ function NavBar() {
                                         <Link to="/menu" >Menu</Link>
                                     </li>
                                     <li className="dropdown submenu">
-                                        <a
+                                        {/* <a
                                             className="dropdown-toggle"
                                             data-toggle="dropdown"
                                             href="#"
@@ -188,8 +188,10 @@ function NavBar() {
                                             aria-expanded="false"
                                         >
                                             Về chúng tôi
-                                        </a>
-                                        <ul className="dropdown-menu">
+                                        </a> */}
+                                        <Link to="/aboutUs">Về chúng tôi</Link>
+
+                                        {/* <ul className="dropdown-menu">
                                             <li>
                                                 <Link to="/aboutUs">About Us</Link>
                                             </li>
@@ -199,7 +201,7 @@ function NavBar() {
                                             <li>
                                                 <a href="#">Testimonials</a>
                                             </li>
-                                        </ul>
+                                        </ul> */}
                                     </li>
                                 </ul>
                                 <ul className="navbar-nav justify-content-end">
@@ -258,7 +260,7 @@ function NavBar() {
                                         </ul>
                                     </li>
                                     <li>
-                                        <Link to='/contact'>Contact Us</Link>
+                                        <Link to='/contact'>Liên hệ</Link>
                                     </li>
                                 </ul>
                             </div>
