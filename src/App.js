@@ -1,6 +1,5 @@
 
 import Shop from "./Account/Shop";
-import Dashboard from "./components/Dashboard";
 import NavigateLogin from "./components/navigate-login";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -10,8 +9,8 @@ import ProductList from "./components/ListProduct";
 import CreateCategory from "./components/CreateCategory";
 import AdminDashboard from "./Account/AdminDashboard";
 import Home from "./Account/Home";
-import HomeMusic from "./Music/home";
-import Admin from "./Music/admin";
+// import HomeMusic from "./Music/home";
+// import Admin from "./Music/admin";
 import MemoryGame from "./components/Game";
 
 const theme = createTheme({

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import '../index.css';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import CurrencyConverter from './CurrencyConverter';
 
 const CartSidebar = ({ cartItems, onClose, isOpen, onRemove, onQuantityChange }) => {
     const [isScrollable, setIsScrollable] = useState(false);
@@ -108,7 +109,7 @@ const CartSidebar = ({ cartItems, onClose, isOpen, onRemove, onQuantityChange })
 
                                             </div>
                                             <div className='subline'>
-                                                <span className='pricePro' style={styles.price}>Price: ${item.price * item.quantity}</span>
+                                                <span className='pricePro' style={styles.price}>Price: <CurrencyConverter usdAmount={item.price * item.quantity} /></span>
                                                 <button
                                                     className="remove-btn"
                                                     onClick={() => onRemove(item.id)}>

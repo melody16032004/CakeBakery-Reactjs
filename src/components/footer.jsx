@@ -95,7 +95,7 @@ function Footer() {
             <div className="footer_copyright">
                 <div className="container">
                     <div className="copyright_inner">
-                        <div className="float-left">
+                        {/* <div className="float-left">
                             <h5>
                                 <a target="_blank" href="https://www.templatespoint.net">
                                     Templates Point
@@ -104,7 +104,7 @@ function Footer() {
                         </div>
                         <div className="float-right">
                             <a href="#">Purchase Now</a>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>

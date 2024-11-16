@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const SelectLocation = ({ onCityChange, onProvinceChange, onDistrictChange }) => {
+const SelectLocation = ({ city, province, district, onCityChange, onProvinceChange, onDistrictChange }) => {
     const [tinh, setTinh] = useState([]);
     const [quan, setQuan] = useState([]);
     const [phuong, setPhuong] = useState([]);
@@ -30,6 +30,7 @@ const SelectLocation = ({ onCityChange, onProvinceChange, onDistrictChange }) =>
                         setPhuong([]); // Reset wards
                         const cityName = tinh.find((t) => t.id === selectedTinh)?.full_name;
                         onCityChange && onCityChange(cityName || '');
+                        city = cityName;
                     }
                 })
                 .catch((error) => console.error('Error fetching districts:', error));
@@ -46,6 +47,7 @@ const SelectLocation = ({ onCityChange, onProvinceChange, onDistrictChange }) =>
                         setPhuong(data.data);
                         const districtName = quan.find((q) => q.id === selectedQuan)?.full_name;
                         onProvinceChange && onProvinceChange(districtName || '');
+                        province = districtName;
                     }
                 })
                 .catch((error) => console.error('Error fetching wards:', error));

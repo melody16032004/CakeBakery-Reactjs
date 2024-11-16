@@ -105,11 +105,11 @@ const Contact = () => {
             <section className="contact_form_area p_100" style={contact_form_area}>
                 <div className="container">
                     <div className="main_title text-center">
-                        <h2>Get In Touch</h2>
+                        <h2>Liên hệ</h2>
                         <h5>
-                            Do you have anything in your mind to let us know? Kindly don't delay
-                            to connect to us by means of our contact form.
+                            Nếu bạn có bất kỳ thắc mắc nào, vui lòng điền vào biểu mẫu dưới đây và gửi cho chúng tôi. Xin cảm ơn!
                         </h5>
+
                     </div>
                     <div className="row">
                         <div className="col-lg-7">
@@ -175,16 +175,16 @@ const Contact = () => {
                                 <div className="contact_d_item">
                                     <h3>Address:</h3>
                                     <p>
-                                        54B, Tailstoi Town 5238 <br /> La city, IA 522364
+                                        481/9, khu phố 2, Phường Hiệp Thành, <br /> Quận 12, TP.HCM
                                     </p>
                                 </div>
                                 <div className="contact_d_item">
                                     <h5>
-                                        Phone: <a href="tel:01372466790">01372.466.790</a>
+                                        Phone: <a href="tel:01372466790">035.898.3714</a>
                                     </h5>
                                     <h5>
                                         Email:{" "}
-                                        <a href="mailto:rockybd1995@gmail.com">rockybd1995@gmail.com</a>
+                                        <a href="mailto:rockybd1995@gmail.com">cakebakery@gmail.com</a>
                                     </h5>
                                 </div>
                                 <div className="contact_d_item">

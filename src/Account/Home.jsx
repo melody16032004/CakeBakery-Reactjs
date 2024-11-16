@@ -3,10 +3,129 @@ import NavBar from "../components/navbar";
 import Footer from "../components/footer";
 import "../index.css";
 import ImageSlider from '../Music/imageSlide';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Input } from '@mui/material';
+
+import { auth, db } from './firebaseConfig';
+import { doc, setDoc, getDoc, getDocs, collection, query, where } from 'firebase/firestore';
+import Card from '../components/card';
+import CurrencyConverter from '../components/CurrencyConverter';
 
 function Home() {
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [open, setOpen] = useState(false);
+    const navigate = useNavigate();
 
+    const handleClickOpen = () => {
+        setOpen(true); // Open the dialog
+    };
+
+    const handleClose = () => {
+        setOpen(false); // Close the dialog
+    };
+
+    const handleClick = (id, name, price, image, image_L, description, quantity) => {
+        navigate('/product-details', {
+            state: {
+                id,
+                name,
+                price,
+                image,
+                image_L,
+                description,
+                quantity
+            }
+        });
+    };
+
+    useEffect(() => {
+
+        const fetchProducts = async () => {
+            try {
+                setLoading(true);
+
+                const productsCollection = collection(db, 'products'); // 'products' is your collection name
+                const productsSnapshot = await getDocs(productsCollection);
+                const productsList = productsSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                setProducts(productsList);
+
+                setLoading(false);
+            } catch (error) {
+                setLoading(false);
+            }
+
+
+        };
+
+        fetchProducts();
+    }, []);
+
+    // const addToCart = async (product) => {
+    //     const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+    //     if (!isAuthenticated) {
+    //         alert("Vui lòng đăng nhập trước khi mua hàng");
+    //         navigate('/navigation'); // Chuyển hướng nếu không đăng nhập
+    //     } else {
+    //         const userEmail = localStorage.getItem('savedEmail');
+
+    //         setCartItems((prevItems) => {
+    //             const totalQuantity = prevItems.reduce((acc, item) => acc + item.quantity, 0);
+    //             const existingItem = prevItems.find((item) => item.id === product.id);
+
+    //             // Kiểm tra nếu tổng số lượng sản phẩm đã đạt giới hạn
+    //             if (totalQuantity >= MAX_TOTAL_ITEMS) {
+    //                 alert('Bạn chỉ có thể thêm tối đa 20 sản phẩm vào giỏ hàng.');
+    //                 return prevItems;
+    //             }
+
+    //             // Kiểm tra nếu sản phẩm đã tồn tại trong giỏ hàng
+    //             if (existingItem) {
+    //                 // Kiểm tra xem số lượng sản phẩm có vượt quá 5 hay không
+    //                 if (existingItem.quantity >= MAX_ITEMS_PER_PRODUCT) {
+    //                     alert('Số lượng sản phẩm này đã đạt tối đa (5).');
+    //                     return prevItems;
+    //                 }
+
+    //                 // Tăng số lượng sản phẩm nếu chưa đạt tối đa
+    //                 const updatedItems = prevItems.map((item) =>
+    //                     item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+    //                 );
+
+    //                 // Cập nhật Firestore với giỏ hàng đã cập nhật
+    //                 const cartDocRef = doc(db, "carts", userEmail);
+    //                 setDoc(cartDocRef, { items: updatedItems }, { merge: true }); // Cập nhật Firestore
+
+    //                 return updatedItems; // Trả về giỏ hàng đã cập nhật
+    //             } else {
+    //                 // Thêm sản phẩm mới vào giỏ hàng
+    //                 const newItem = { ...product, quantity: 1, userEmail };
+    //                 const updatedItems = [...prevItems, newItem];
+
+    //                 // Cập nhật Firestore với giỏ hàng đã cập nhật
+    //                 const cartDocRef = doc(db, "carts", userEmail);
+    //                 setDoc(cartDocRef, { items: updatedItems }, { merge: true }); // Cập nhật Firestore
+
+    //                 return updatedItems; // Trả về giỏ hàng đã cập nhật
+    //             }
+    //         });
+    //     }
+    // };
+
+    const productList = products.map(product => (
+        <Card
+            id={product.id}
+            image={product.imageUrl}
+            name={product.name}
+            price={product.price}
+            image_L={product.imageUrl}
+            description={product.description}
+            quantity={product.quantity}
+        />
+    ));
     return (
         <div>
             <NavBar />
@@ -304,130 +423,107 @@ function Home() {
             <section className="welcome_bakery_area cake_feature_main p_100">
                 <div className="container">
                     <div className="main_title">
-                        <h2>Our Featured Cakes</h2>
-                        <h5> Seldolor sit amet consect etur</h5>
+                        <h2>Bánh nổi bật</h2>
                     </div>
                     <div className="cake_feature_row row">
-                        <div className="col-lg-3 col-md-4 col-6">
-                            <div className="cake_feature_item">
-                                <div className="cake_img">
-                                    <img src="img/cake-feature/c-feature-1.jpg" alt="" />
+                        {/* {productList} */}
+                        {products.slice(0, 8).map((product, index) => (
+                            <div key={index} className="col-lg-3 col-md-4 col-6">
+                                <div className="cake_feature_item">
+                                    <div className="cake_img">
+                                        <img
+                                            src={product.imageUrl}
+                                            alt=""
+                                            onClick={product.quantity > 0 ? handleClick : undefined}
+                                            style={{ cursor: product.quantity === 0 ? 'not-allowed' : 'pointer' }}
+                                        />
+                                    </div>
+                                    <div className="cake_text">
+                                        {/* <h4>
+                                            <CurrencyConverter usdAmount={product.price} />
+                                        </h4> */}
+                                        <h3 style={{
+                                            maxWidth: 270,
+                                            overflow: "hidden",
+                                            textOverflow: "ellipsis",
+                                            whiteSpace: "nowrap",
+                                            textAlign: "center",
+                                            margin: "0 20px 30px 20px",
+                                        }}>
+                                            <strong>
+                                                {product.name}
+                                            </strong>
+                                        </h3>
+                                        {/* <a className="pest_btn" href="#">
+
+                                            Xem
+                                        </a> */}
+                                        <Link
+                                            to="/product-details"
+                                            className="pest_btn"
+                                            state={{
+                                                id: product.id,
+                                                name: product.name,
+                                                price: product.price,
+                                                image: product.image,
+                                                image_L: product.imageUrl,
+                                                description: product.description,
+                                                quantity: product.quantity
+                                            }}
+                                        >
+                                            Xem
+                                        </Link>
+
+                                    </div>
                                 </div>
-                                <div className="cake_text">
-                                    <h4>$29</h4>
-                                    <h3>Strawberry Cupcakes</h3>
-                                    <a className="pest_btn" href="#">
-                                        Add to cart
-                                    </a>
-                                </div>
+
+                                <Dialog open={open} onClose={handleClose}>
+                                    <DialogTitle>{product.name}</DialogTitle>
+                                    <DialogContent>
+                                        {/* Large Product Image */}
+                                        <img src={product.image_L} alt={product.name} style={{ width: '100%' }} />
+
+                                        {/* Product Price */}
+                                        <Typography variant="body1" color="info" sx={{ display: 'flex', justifyContent: 'center', fontWeight: 'bold' }}>
+                                            Price: ${product.price}
+                                        </Typography>
+
+                                        {/* Product Description Section (Non-editable Input) */}
+                                        <div style={{ marginTop: '16px' }}>
+                                            <Typography variant="h6">Description</Typography>
+                                            <Input
+                                                type="text"
+                                                value={product.description && product.description.length > 115 ? `${product.description.slice(0, 50)}...` : product.description || 'empty'}
+                                                fullWidth
+                                                multiline
+                                                disabled // This disables the input field, making it non-clickable and non-editable
+                                                inputProps={{
+                                                    style: { color: 'black', cursor: 'default' } // Style to ensure it doesn't look 'disabled'
+                                                }}
+                                            />
+                                        </div>
+                                    </DialogContent>
+
+                                    <DialogActions>
+                                        <Button onClick={handleClick}>
+                                            View
+                                            {/* <Link to='/product-details'>
+                            View
+                        </Link> */}
+                                        </Button>
+                                    </DialogActions>
+                                </Dialog>
                             </div>
-                        </div>
-                        <div className="col-lg-3 col-md-4 col-6">
-                            <div className="cake_feature_item">
-                                <div className="cake_img">
-                                    <img src="img/cake-feature/c-feature-2.jpg" alt="" />
-                                </div>
-                                <div className="cake_text">
-                                    <h4>$29</h4>
-                                    <h3>Strawberry Cupcakes</h3>
-                                    <a className="pest_btn" href="#">
-                                        Add to cart
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-lg-3 col-md-4 col-6">
-                            <div className="cake_feature_item">
-                                <div className="cake_img">
-                                    <img src="img/cake-feature/c-feature-3.jpg" alt="" />
-                                </div>
-                                <div className="cake_text">
-                                    <h4>$29</h4>
-                                    <h3>Strawberry Cupcakes</h3>
-                                    <a className="pest_btn" href="#">
-                                        Add to cart
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-lg-3 col-md-4 col-6">
-                            <div className="cake_feature_item">
-                                <div className="cake_img">
-                                    <img src="img/cake-feature/c-feature-4.jpg" alt="" />
-                                </div>
-                                <div className="cake_text">
-                                    <h4>$29</h4>
-                                    <h3>Strawberry Cupcakes</h3>
-                                    <a className="pest_btn" href="#">
-                                        Add to cart
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-lg-3 col-md-4 col-6">
-                            <div className="cake_feature_item">
-                                <div className="cake_img">
-                                    <img src="img/cake-feature/c-feature-1.jpg" alt="" />
-                                </div>
-                                <div className="cake_text">
-                                    <h4>$29</h4>
-                                    <h3>Strawberry Cupcakes</h3>
-                                    <a className="pest_btn" href="#">
-                                        Add to cart
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-lg-3 col-md-4 col-6">
-                            <div className="cake_feature_item">
-                                <div className="cake_img">
-                                    <img src="img/cake-feature/c-feature-2.jpg" alt="" />
-                                </div>
-                                <div className="cake_text">
-                                    <h4>$29</h4>
-                                    <h3>Strawberry Cupcakes</h3>
-                                    <a className="pest_btn" href="#">
-                                        Add to cart
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-lg-3 col-md-4 col-6">
-                            <div className="cake_feature_item">
-                                <div className="cake_img">
-                                    <img src="img/cake-feature/c-feature-3.jpg" alt="" />
-                                </div>
-                                <div className="cake_text">
-                                    <h4>$29</h4>
-                                    <h3>Strawberry Cupcakes</h3>
-                                    <a className="pest_btn" href="#">
-                                        Add to cart
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-lg-3 col-md-4 col-6">
-                            <div className="cake_feature_item">
-                                <div className="cake_img">
-                                    <img src="img/cake-feature/c-feature-4.jpg" alt="" />
-                                </div>
-                                <div className="cake_text">
-                                    <h4>$29</h4>
-                                    <h3>Strawberry Cupcakes</h3>
-                                    <a className="pest_btn" href="#">
-                                        Add to cart
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+                        ))}
                     </div>
+
                 </div>
             </section>
 
             <section className="service_we_offer_area p_100">
                 <div className="container">
                     <div className="single_w_title">
-                        <h2>Services We offer</h2>
+                        <h2>Các dịch vụ của chúng tôi</h2>
                     </div>
                     <div className="row we_offer_inner">
                         <div className="col-lg-4">
@@ -441,8 +537,8 @@ function Home() {
                                             <h4>Cookies Cakes</h4>
                                         </a>
                                         <p>
-                                            Lorem Ipsum is simply my text of the printing and Ipsum is
-                                            simply text of the Ipsum is simply.
+                                            Thưởng thức bộ sưu tập bánh quy và bánh ngọt tuyệt vời của chúng tôi,
+                                            được làm thủ công để mang lại sự ngọt ngào cho từng khoảnh khắc.
                                         </p>
                                     </div>
                                 </div>
@@ -459,8 +555,10 @@ function Home() {
                                             <h4>Tasty Cupcakes</h4>
                                         </a>
                                         <p>
-                                            Lorem Ipsum is simply my text of the printing and Ipsum is
-                                            simply text of the Ipsum is simply.
+                                            Thưởng thức những chiếc bánh cupcake thơm ngon, mềm mịn,
+                                            hoàn hảo cho mọi dịp đặc biệt và ngọt ngào cho từng miếng cắn.
+                                            <br />
+                                            <br />
                                         </p>
                                     </div>
                                 </div>
@@ -477,8 +575,9 @@ function Home() {
                                             <h4>Wedding Cakes</h4>
                                         </a>
                                         <p>
-                                            Lorem Ipsum is simply my text of the printing and Ipsum is
-                                            simply text of the Ipsum is simply.
+                                            Những chiếc bánh cưới tinh tế, được thiết kế hoàn hảo cho ngày trọng đại của bạn,
+                                            mang đến vẻ đẹp sang trọng và hương vị ngọt ngào trong từng lớp bánh.
+                                            <br />
                                         </p>
                                     </div>
                                 </div>
@@ -495,8 +594,11 @@ function Home() {
                                             <h4>Awesome Recipes</h4>
                                         </a>
                                         <p>
-                                            Lorem Ipsum is simply my text of the printing and Ipsum is
-                                            simply text of the Ipsum is simply.
+                                            Khám phá những công thức đơn giản để tạo ra món ăn ngon và hấp dẫn trong tầm tay bạn.
+                                            <br />
+                                            <br />
+                                            <br />
+                                            <br />
                                         </p>
                                     </div>
                                 </div>
@@ -513,9 +615,17 @@ function Home() {
                                             <h4>Menu Planner</h4>
                                         </a>
                                         <p>
-                                            Lorem Ipsum is simply my text of the printing and Ipsum is
-                                            simply text of the Ipsum is simply.
+                                            Công cụ giúp tổ chức và quản lý thực đơn hàng ngày, theo dõi nguyên liệu, và chia sẻ công
+                                            thức nấu ăn, giúp tiết kiệm thời gian và nâng cao trải nghiệm nấu nướng.
+                                            <br />
+                                            <br />
                                         </p>
+                                        {/* <Typography variant='body2' color='textDisabled' >
+                                            Công cụ giúp tổ chức và quản lý thực đơn hàng ngày, theo dõi nguyên liệu, và chia sẻ công
+                                            thức nấu ăn, giúp tiết kiệm thời gian và nâng cao trải nghiệm nấu nướng.
+                                            <br />
+                                            <br />
+                                        </Typography> */}
                                     </div>
                                 </div>
                             </div>
@@ -531,8 +641,8 @@ function Home() {
                                             <h4>Home Delivery</h4>
                                         </a>
                                         <p>
-                                            Lorem Ipsum is simply my text of the printing and Ipsum is
-                                            simply text of the Ipsum is simply.
+                                            Dịch vụ cho phép người dùng đặt hàng và nhận sản phẩm ngay tại nhà, mang lại sự tiện
+                                            lợi và tiết kiệm thời gian cho việc mua sắm thực phẩm, đồ uống, và hàng hóa khác.
                                         </p>
                                     </div>
                                 </div>
@@ -542,7 +652,7 @@ function Home() {
                 </div>
             </section>
 
-            <section className="discover_menu_area menu_d_two">
+            {/* <section className="discover_menu_area menu_d_two">
                 <div className="discover_menu_inner">
                     <div className="container">
                         <div className="single_pest_title">
@@ -621,7 +731,7 @@ function Home() {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section> */}
 
             <section className="our_chef_area p_100">
                 <div className="container">
@@ -630,11 +740,19 @@ function Home() {
                             <div className="chef_text_item">
                                 <div className="main_title">
                                     <h2>Our Chefs</h2>
-                                    <p>
-                                        Lorem ipsum dolor sit amet, cons ectetur elit. Vestibulum nec
-                                        odios Suspe ndisse cursus mal suada faci lisis. Lorem ipsum
-                                        dolor sit ametion.
-                                    </p>
+                                    <Typography sx={{
+                                        textAlign: 'justify',
+                                        '&:hover': {
+                                            textDecoration: 'none',
+                                        }
+                                    }}>
+                                        Đội ngũ đầu bếp tài năng của chúng tôi mang đến sự sáng tạo và niềm
+                                        đam mê trong từng món ăn. Với nhiều năm kinh nghiệm và tình yêu dành
+                                        cho nghệ thuật ẩm thực, họ chế biến hương vị độc đáo và trình bày mỗi
+                                        món ăn với sự chăm chút đặc biệt. Từ những món truyền thống đến những
+                                        món sáng tạo, các đầu bếp của chúng tôi cam kết mang lại trải nghiệm
+                                        ẩm thực khó quên trong từng miếng ăn.
+                                    </Typography>
                                 </div>
                             </div>
                         </div>
@@ -668,7 +786,7 @@ function Home() {
                                 <a href="#">
                                     <h4>Michale Joe</h4>
                                 </a>
-                                <h5>Expert in Cake Making</h5>
+                                <h5>Chuyên gia về làm bánh</h5>
                             </div>
                         </div>
                         <div className="col-lg-3 col-6">
@@ -701,7 +819,7 @@ function Home() {
                                 <a href="#">
                                     <h4>Michale Joe</h4>
                                 </a>
-                                <h5>Expert in Cake Making</h5>
+                                <h5>Chuyên gia về làm bánh</h5>
                             </div>
                         </div>
                         <div className="col-lg-3 col-6">
@@ -734,7 +852,7 @@ function Home() {
                                 <a href="#">
                                     <h4>Michale Joe</h4>
                                 </a>
-                                <h5>Expert in Cake Making</h5>
+                                <h5>Chuyên gia về làm bánh</h5>
                             </div>
                         </div>
                     </div>
@@ -834,8 +952,7 @@ function Home() {
             <section className="latest_news_area gray_bg p_100">
                 <div className="container">
                     <div className="main_title">
-                        <h2>Latest Blog</h2>
-                        <h5>an turn into your instructor your helper, your </h5>
+                        <h2>Bài viết gần đây</h2>
                     </div>
                     <div className="row latest_news_inner">
                         <div className="col-lg-4 col-md-6">

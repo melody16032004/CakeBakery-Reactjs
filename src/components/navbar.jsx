@@ -103,7 +103,7 @@ function NavBar() {
                                 </li>
                             )}
 
-                            {logout || email === 'Khách vãng lai' ? (
+                            {logout || email === '' ? (
                                 <li>
                                     <a href="#" onClick={handleLogin}>
                                         <i class="fa fa-user-circle-o" aria-hidden="true" />
@@ -170,16 +170,16 @@ function NavBar() {
                                             </li>
                                         </ul> */}
                                     </li>
-                                    <li>
+                                    {/* <li>
                                         <a href="#">Our Cakes</a>
-                                        {/* <Link to="/musical-instrument">Music</Link> */}
-                                    </li>
+                                        <Link to="/musical-instrument">Music</Link>
+                                    </li> */}
                                     <li>
                                         {/* <a href="#">Menu</a> */}
                                         <Link to="/menu" >Menu</Link>
                                     </li>
                                     <li className="dropdown submenu">
-                                        <a
+                                        {/* <a
                                             className="dropdown-toggle"
                                             data-toggle="dropdown"
                                             href="#"
@@ -188,8 +188,10 @@ function NavBar() {
                                             aria-expanded="false"
                                         >
                                             Về chúng tôi
-                                        </a>
-                                        <ul className="dropdown-menu">
+                                        </a> */}
+                                        <Link to="/aboutUs">Về chúng tôi</Link>
+
+                                        {/* <ul className="dropdown-menu">
                                             <li>
                                                 <Link to="/aboutUs">About Us</Link>
                                             </li>
@@ -199,12 +201,12 @@ function NavBar() {
                                             <li>
                                                 <a href="#">Testimonials</a>
                                             </li>
-                                        </ul>
+                                        </ul> */}
                                     </li>
                                 </ul>
                                 <ul className="navbar-nav justify-content-end">
                                     <li className="dropdown submenu">
-                                        <a
+                                        {/* <a
                                             className="dropdown-toggle"
                                             data-toggle="dropdown"
                                             href="#"
@@ -213,7 +215,7 @@ function NavBar() {
                                             aria-expanded="false"
                                         >
                                             <Link to='/mini-game'>Mini Game</Link>
-                                        </a>
+                                        </a> */}
                                     </li>
                                     <li className="dropdown submenu">
                                         <a
@@ -258,7 +260,7 @@ function NavBar() {
                                         </ul>
                                     </li>
                                     <li>
-                                        <Link to='/contact'>Contact Us</Link>
+                                        <Link to='/contact'>Liên hệ</Link>
                                     </li>
                                 </ul>
                             </div>

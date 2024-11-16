@@ -8,10 +8,24 @@ import "./Checkout.css";
 import { Typography } from '@mui/material';
 import axios from 'axios';
 import SelectLocation from '../components/SelectLocation';
+import PaypalButton from '../components/PaypalButton';
+import CurrencyConverter from '../components/CurrencyConverter';
+import { CurrencyExchange } from '@mui/icons-material';
 
 
 
 const Checkout = () => {
+    const handleSuccess = (details) => {
+        alert("Thanh toán thành công!");
+        console.log("Thông tin đơn hàng:", details);
+    };
+
+    const handleError = (error) => {
+        alert("Có lỗi xảy ra khi thanh toán.");
+        console.error("Lỗi thanh toán:", error);
+    };
+
+
     const styles = {
         space: {
             height: '150px',
@@ -35,6 +49,15 @@ const Checkout = () => {
         phone: '',
         orderNotes: '',
     });
+
+    // Lấy email từ localStorage khi component được mount
+    useEffect(() => {
+        const savedEmail = localStorage.getItem('savedEmail');
+        if (savedEmail) {
+            setFormData(prevData => ({ ...prevData, email: savedEmail }));
+        }
+    }, []);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -93,42 +116,25 @@ const Checkout = () => {
     }, []);
 
     // useEffect(() => {
-    //     let interval;
-    //     if (isTimerActive && timeLeft > 0) {
-    //         interval = setInterval(() => {
-    //             setTimeLeft(prevTime => {
-    //                 if (prevTime <= 1) {
-    //                     clearInterval(interval);
-    //                     handleConfirmOrder();
-    //                     return 0;
-    //                 }
-    //                 return prevTime - 1;
-    //             });
-    //         }, 1000);
-    //     }
+    //     // Start timer immediately on component mount
+    //     setIsTimerActive(true);
 
-    //     return () => clearInterval(interval); 
-    // }, [isTimerActive, timeLeft]);
-    useEffect(() => {
-        // Start timer immediately on component mount
-        setIsTimerActive(true);
+    //     const interval = setInterval(() => {
+    //         setTimeLeft((prevTime) => {
+    //             if (prevTime == 0) {
+    //                 clearInterval(interval);
+    //                 resetTimer();
+    //                 navigate('/cart'); // Redirect to CartPage
+    //                 alert('Thời gian đã hết! Bạn sẽ được chuyển hướng về trang giỏ hàng.');
+    //                 return 0; // Set time left to 0
+    //             }
+    //             return prevTime - 1;
+    //         });
+    //     }, 1000);
 
-        const interval = setInterval(() => {
-            setTimeLeft((prevTime) => {
-                if (prevTime == 0) {
-                    clearInterval(interval);
-                    resetTimer();
-                    navigate('/cart'); // Redirect to CartPage
-                    alert('Thời gian đã hết! Bạn sẽ được chuyển hướng về trang giỏ hàng.');
-                    return 0; // Set time left to 0
-                }
-                return prevTime - 1;
-            });
-        }, 1000);
-
-        // Cleanup interval on component unmount
-        return () => clearInterval(interval);
-    }, []);
+    //     // Cleanup interval on component unmount
+    //     return () => clearInterval(interval);
+    // }, []);
     const resetTimer = () => {
         setTimeLeft(300); // Reset timer to 300 seconds
         localStorage.removeItem('timerStart'); // Optionally remove timer start from local storage
@@ -165,46 +171,62 @@ const Checkout = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        try {
-            await validateAddressWithPositionstack();
+        console.log('Address is valid, submitting order...');
 
-            if (isAddressValid) {
-                console.log('Address is valid, submitting order...');
+        const documentId = Date.now().toString();
 
-                const documentId = Date.now().toString();
+        const cartItem = cartItems.map(item => ({
+            id: item.id,
+            product: item.name,
+            quantity: item.quantity,
+        }));
 
-                const cartItem = cartItems.map(item => ({
-                    id: item.id,
-                    product: item.name,
-                    quantity: item.quantity,
-                }));
+        const exchangeRate = 25000; // Ví dụ: 23000
+        let totalVND = total * exchangeRate;
 
-                await setDoc(doc(db, 'invoices', documentId), {
-                    ...formData,
-                    items: cartItem, // Danh sách sản phẩm
-                    total: total, // Tổng giá trị hóa đơn
-                    createdAt: new Date(), // Ngày tạo hóa đơn
-                    status: "Đang xử lý",
-                    id: documentId,
-                });
-                const newOrderId = documentId; // Replace this with your actual order creation logic
-                setOrderId(newOrderId);
-                localStorage.setItem('orderId', newOrderId); // Store the order ID in localStorage
-                localStorage.setItem('timerStart', new Date().getTime().toString()); // Save start time in localStorage
-
-                setIsTimerActive(true); // Activate the timer
-                setTimeLeft(300);
-                console.log('Document written with ID: ', documentId);
-                alert('Đơn hàng của bạn đã được giao.\nVui lòng kiểm tra đơn hàng, xin cảm ơn!');
-
-                // await clearUserCart();
-                await deleteDoc(doc(db, 'carts', auth.currentUser.email));
-                navigate('/order');
-            }
-        } catch (error) {
-            console.error('Error adding document: ', error);
-            alert('Error saving invoice');
+        // Tính phí ship
+        let shippingCost = 0;
+        if (totalVND <= 300000) {
+            shippingCost = totalVND * 0.1;
+        } else if (totalVND <= 500000) {
+            shippingCost = totalVND * 0.05;
         }
+
+        // Tổng cộng với phí ship
+        const grandTotalVND = totalVND + shippingCost;
+
+        await setDoc(doc(db, 'invoices', documentId), {
+            ...formData,
+            address: formData.address + '/' + province + '/' + district + '/' + city,
+            items: cartItem, // Danh sách sản phẩm
+            total: grandTotalVND, // Tổng giá trị hóa đơn
+            createdAt: new Date(), // Ngày tạo hóa đơn
+            status: "Đang xử lý",
+            id: documentId,
+        });
+        const newOrderId = documentId; // Replace this with your actual order creation logic
+        setOrderId(newOrderId);
+        localStorage.setItem('orderId', newOrderId); // Store the order ID in localStorage
+        localStorage.setItem('timerStart', new Date().getTime().toString()); // Save start time in localStorage
+
+        setIsTimerActive(true); // Activate the timer
+        setTimeLeft(300);
+        console.log('Document written with ID: ', documentId);
+        alert('Đơn hàng của bạn đã được giao.\nVui lòng kiểm tra đơn hàng, xin cảm ơn!');
+
+        // await clearUserCart();
+        await deleteDoc(doc(db, 'carts', auth.currentUser.email));
+        navigate('/order');
+        // try {
+        //     await validateAddressWithPositionstack();
+
+        //     if (isAddressValid) {
+
+        //     }
+        // } catch (error) {
+        //     console.error('Error adding document: ', error);
+        //     alert('Error saving invoice');
+        // }
     };
 
     // Hàm xóa giỏ hàng của người dùng trong Firestore theo userEmail
@@ -253,7 +275,7 @@ const Checkout = () => {
 
     const handleMomoPayment = () => {
         // Your Momo payment logic here
-        navigate('/momo');
+        navigate('/paypal');
     }
 
     const handleConfirmOrder = async () => {
@@ -323,6 +345,7 @@ const Checkout = () => {
                                         <div className="form-group col-md-6">
                                             <label htmlFor="first">Tên *</label>
                                             <input
+                                                color='#575757'
                                                 type="text"
                                                 className="form-control"
                                                 id="first"
@@ -336,6 +359,7 @@ const Checkout = () => {
                                         <div className="form-group col-md-6">
                                             <label htmlFor="last">Họ *</label>
                                             <input
+                                                color='#575757'
                                                 type="text"
                                                 className="form-control"
                                                 id="last"
@@ -349,6 +373,7 @@ const Checkout = () => {
                                         <div className="form-group col-md-12">
                                             <label htmlFor="company">Tên công ty</label>
                                             <input
+                                                color='#575757'
                                                 type="text"
                                                 className="form-control"
                                                 id="company"
@@ -375,11 +400,12 @@ const Checkout = () => {
 
                                         <div className="form-group col-md-4">
                                             <input
+                                                color='#575757'
                                                 type='text'
                                                 className='form-control'
                                                 id='address'
                                                 name='address'
-                                                placeholder='Street Address'
+                                                placeholder='Số nhà'
                                                 value={formData.address}
                                                 onChange={handleChange}
                                                 required />
@@ -400,6 +426,7 @@ const Checkout = () => {
                                         <div className="form-group col-md-6">
                                             <label htmlFor="email">Email Address *</label>
                                             <input
+                                                color='#575757'
                                                 type="email"
                                                 className="form-control"
                                                 id="email"
@@ -413,6 +440,7 @@ const Checkout = () => {
                                         <div className="form-group col-md-6">
                                             <label htmlFor="phone">Phone *</label>
                                             <input
+                                                color='#575757'
                                                 type="text"
                                                 className="form-control"
                                                 id="phone"
@@ -424,8 +452,9 @@ const Checkout = () => {
                                             />
                                         </div>
                                         <div className="form-group col-md-12">
-                                            <label htmlFor="phone">Order Notes</label>
+                                            <label htmlFor="phone">Ghi chú</label>
                                             <textarea
+                                                color='#575757'
                                                 className="form-control"
                                                 name="orderNotes"
                                                 id="message"
@@ -435,6 +464,11 @@ const Checkout = () => {
                                                 onChange={handleChange}
                                             />
                                         </div>
+                                        {/* <PaypalButton
+                                            amount="20.00" // Giá trị thanh toán
+                                            onSuccess={handleSuccess}
+                                            onError={handleError}
+                                        /> */}
                                     </div>
                                 </div>
                             </div>
@@ -446,19 +480,107 @@ const Checkout = () => {
                                     </div>
                                     <div className="payment_list">
                                         <div className="price_single_cost">
-                                            <h5>Product <span>Total</span></h5>
+                                            <h5>Sản phẩm <span>Tổng</span></h5>
                                             {cartItems.map(item => (
                                                 <Typography variant='h5' color='grey' key={item.id}>
                                                     {item.name} x {item.quantity}
                                                     <span style={{ display: 'flex', justifyContent: 'end' }}>
-                                                        ${(item.price * item.quantity).toFixed(2)}
+                                                        <CurrencyConverter usdAmount={(item.price * item.quantity).toFixed(2)} />
                                                     </span>
                                                 </Typography>
                                             ))}
                                             <div style={{ padding: '10px 0' }} />
-                                            <h4>Subtotal <span>${(total).toFixed(2)}</span></h4>
-                                            <h5>Shipping And Handling <span className="text_f">Free Shipping</span></h5>
-                                            <h3>Total <span>${(total).toFixed(2)}</span></h3>
+                                            <h4>Thành tiền <span><CurrencyConverter usdAmount={(total).toFixed(2)} /></span></h4>
+                                            <div id="accordion" className="accordion_area">
+                                                <div className="card">
+                                                    <div className="card-header" id="headingThree">
+                                                        <h5>
+                                                            <button
+                                                                className="btn btn-link collapsed"
+                                                                data-toggle="collapse"
+                                                                data-target="#collapseThree"
+                                                                aria-expanded="false"
+                                                                aria-controls="collapseThree"
+                                                                display='flex'
+                                                                type='button'
+                                                                style={{
+                                                                    display: 'flex',
+                                                                    justifyContent: 'space-between',
+                                                                }}>
+                                                                <span>Phí vận chuyển</span>
+
+                                                                <span className="text_f">
+                                                                    {(() => {
+                                                                        const totalVND = total * 25000; // Thay thế bằng tỷ giá thực tế nếu cần thiết
+                                                                        const shippingCost =
+                                                                            totalVND <= 300000 ? <CurrencyConverter usdAmount={total * 0.1} /> :
+                                                                                totalVND <= 500000 ? <CurrencyConverter usdAmount={total * 0.05} /> :
+                                                                                    `Free Shipping`;
+
+                                                                        return shippingCost;
+                                                                    })()}
+                                                                </span>
+                                                            </button>
+
+                                                        </h5>
+                                                    </div>
+                                                    <div
+                                                        id="collapseThree"
+                                                        className="collapse"
+                                                        aria-labelledby="headingThree"
+                                                        data-parent="#accordion">
+                                                        <div className="card-body">
+                                                            <ul style={{ marginLeft: -30, }}>
+                                                                <li>
+                                                                    <Typography variant='body2' color='textPrimary' sx={{
+                                                                        textAlign: 'justify',
+                                                                    }}>
+                                                                        Đơn hàng dưới 300.000đ sẽ có phí vận chuyển ưu đãi chỉ 10% tổng giá trị đơn hàng.
+                                                                    </Typography>
+                                                                </li>
+                                                                <li>
+                                                                    <Typography variant='body2' color='textPrimary' sx={{
+                                                                        textAlign: 'justify',
+                                                                    }}>
+                                                                        Đối với đơn hàng từ 300.000đ đến 500.000đ, quý khách sẽ được giảm phí vận chuyển xuống còn 5%.
+                                                                    </Typography>
+                                                                </li>
+                                                                <li>
+                                                                    <Typography variant='body2' color='textPrimary' sx={{
+                                                                        textAlign: 'justify',
+                                                                    }}>
+                                                                        Và đặc biệt, đơn hàng trên 500.000đ sẽ được miễn phí vận chuyển hoàn toàn!
+                                                                    </Typography>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            {(() => {
+                                                const totalVND = parseFloat(total.toFixed(2)) * 25000; // Đổi sang VND, thay thế `<tỷ giá USD/VND>` bằng tỷ giá thực tế
+
+                                                // Tính phí ship dựa trên điều kiện
+                                                let shippingCost = 0;
+                                                if (totalVND <= 300000) {
+                                                    shippingCost = totalVND * 0.1; // Phí ship 10% tổng đơn hàng
+                                                } else if (totalVND <= 500000) {
+                                                    shippingCost = totalVND * 0.05; // Phí ship 5% tổng đơn hàng
+                                                } // Phí ship sẽ là 0 khi tổng trên 500,000 VND
+
+                                                const grandTotal = total + shippingCost / 25000; // Tính tổng cộng bao gồm phí ship và đổi lại USD nếu cần
+
+                                                return (
+                                                    <h3>
+                                                        Tổng tiền
+                                                        <span>
+                                                            <CurrencyConverter usdAmount={parseFloat(grandTotal.toFixed(2))} />
+                                                        </span>
+                                                    </h3>
+                                                );
+                                            })()}
+
                                         </div>
                                         {/* Countdown Timer */}
 
@@ -475,8 +597,8 @@ const Checkout = () => {
                                                             aria-expanded="false"
                                                             aria-controls="collapseOne"
                                                             type='button'>
-                                                            MoMo Payment
-                                                            <img src="img/momo-logo.png" alt="MoMo Logo" style={{ width: '50px', marginLeft: '10px' }} />
+                                                            Paypal Payment
+                                                            <img src="img/paypal-logo.png" alt="MoMo Logo" style={{ width: '50px', marginLeft: '10px' }} />
                                                         </button>
                                                     </h5>
                                                 </div>
@@ -486,10 +608,19 @@ const Checkout = () => {
                                                     aria-labelledby="headingOne"
                                                     data-parent="#accordion">
                                                     <div className="card-body">
-                                                        <Typography variant='body2' color='textPrimary'>Use MoMo to pay for your order.</Typography>
-                                                        <button className="btn pest_btn" onClick={handleMomoPayment}>
+                                                        <Typography variant='body2' color='textPrimary'>Use Paypal to pay for your order.</Typography>
+                                                        {/* <button className="btn pest_btn" onClick={handleMomoPayment}>
                                                             Pay with MoMo
-                                                        </button>
+                                                        </button> */}
+                                                        <PaypalButton
+                                                            amount={total < 300000
+                                                                ? total * 1.1
+                                                                : total >= 500000
+                                                                    ? total
+                                                                    : total * 1.05}         // Giá trị cần thanh toán
+                                                            currency="VND"          // Đơn vị tiền tệ (USD, EUR, etc.)
+                                                            onSuccess={handleSuccess} // Hàm xử lý khi thanh toán thành công
+                                                        />
                                                     </div>
                                                 </div>
                                             </div>
@@ -534,11 +665,11 @@ const Checkout = () => {
                                             </div>
 
                                         </div>
-                                        {isTimerActive && (
+                                        {/* {isTimerActive && (
                                             <div style={styles.countDown}>
                                                 <h5>Time left to cancel: {Math.floor(timeLeft / 60)}:{timeLeft % 60 < 10 ? `0${timeLeft % 60}` : timeLeft % 60}</h5>
                                             </div>
-                                        )}
+                                        )} */}
 
 
 

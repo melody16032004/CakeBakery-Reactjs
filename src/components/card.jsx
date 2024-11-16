@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Input } from '@mui/material';
 import './card.css';
+import CurrencyConverter from "./CurrencyConverter";
 
-const Card = ({ addToCart, id, name, price, image, image_L, description, quantity }) => {
+const Card = ({ addToCart, id, name, price, image, image_L, description, quantity, categoryId }) => {
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
 
@@ -24,7 +25,8 @@ const Card = ({ addToCart, id, name, price, image, image_L, description, quantit
                 image,
                 image_L,
                 description,
-                quantity
+                quantity,
+                categoryId
             }
         });
     };
@@ -35,6 +37,7 @@ const Card = ({ addToCart, id, name, price, image, image_L, description, quantit
         image,
         image_L,
         description,
+        categoryId
     };
     const styles = {
 
@@ -90,8 +93,24 @@ const Card = ({ addToCart, id, name, price, image, image_L, description, quantit
                 </div>
 
                 <div className="cake_text">
-                    <h4>${price}</h4>
-                    <h3>{name}</h3>
+                    <h4>
+                        {/* ${price} */}
+                        <CurrencyConverter usdAmount={price} />
+                    </h4>
+                    <h3 style={{
+                        fontSize: 17,
+                        color: "#f195b2",
+                        maxWidth: 270,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        textAlign: "center",
+                        margin: "0 20px 30px 20px",
+                    }}>
+                        <strong>
+                            {name}
+                        </strong>
+                    </h3>
                     <a
                         className={`pest_btn ${quantity === 0 ? 'disabled' : ''}`}
                         href="#"
@@ -117,9 +136,9 @@ const Card = ({ addToCart, id, name, price, image, image_L, description, quantit
                     <img src={image_L} alt={name} style={{ width: '100%' }} />
 
                     {/* Product Price */}
-                    <Typography variant="body1" color="info" sx={{ display: 'flex', justifyContent: 'center', fontWeight: 'bold' }}>
-                        Price: ${price}
-                    </Typography>
+                    {/* <Typography variant="body1" color="info" sx={{ display: 'flex', justifyContent: 'center', fontWeight: 'bold' }}>
+                        Price: <CurrencyConverter usdAmount={price} />
+                    </Typography> */}
 
                     {/* Product Description Section (Non-editable Input) */}
                     <div style={{ marginTop: '16px' }}>
