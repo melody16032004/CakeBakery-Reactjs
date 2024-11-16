@@ -36,7 +36,7 @@ import Feedback from './Account/Feedback';
 import MemoryGame from './components/Game';
 import AddPost from './components/AddPost';
 import BlogPost from './components/BlogPost';
-import BlogDetail from './components/BlogDetails';
+import BlogDetail from './components/BlogDetail';
 // import { BrowserRouter } from "react-router-dom";
 
 const router = createBrowserRouter([
