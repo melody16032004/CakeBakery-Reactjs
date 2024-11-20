@@ -3,7 +3,7 @@ import NavBar from "../components/navbar";
 import Footer from "../components/footer";
 import { Link, useNavigate } from "react-router-dom";
 import { auth, db } from './firebaseConfig';
-import { doc, addDoc, setDoc, getDoc, getDocs, collection, query, where, deleteDoc, writeBatch } from 'firebase/firestore';
+import { doc, addDoc, updateDoc, setDoc, getDoc, getDocs, collection, query, where, deleteDoc, writeBatch } from 'firebase/firestore';
 import "./Checkout.css";
 import { Typography } from '@mui/material';
 import axios from 'axios';
@@ -172,7 +172,6 @@ const Checkout = () => {
         e.preventDefault();
 
         console.log('Address is valid, submitting order...');
-
         const documentId = Date.now().toString();
 
         const cartItem = cartItems.map(item => ({
@@ -181,10 +180,9 @@ const Checkout = () => {
             quantity: item.quantity,
         }));
 
-        const exchangeRate = 25000; // Ví dụ: 23000
+        const exchangeRate = 25000;
         let totalVND = total * exchangeRate;
 
-        // Tính phí ship
         let shippingCost = 0;
         if (totalVND <= 300000) {
             shippingCost = totalVND * 0.1;
@@ -192,42 +190,53 @@ const Checkout = () => {
             shippingCost = totalVND * 0.05;
         }
 
-        // Tổng cộng với phí ship
         const grandTotalVND = totalVND + shippingCost;
 
         await setDoc(doc(db, 'invoices', documentId), {
             ...formData,
             address: formData.address + '/' + province + '/' + district + '/' + city,
-            items: cartItem, // Danh sách sản phẩm
-            total: grandTotalVND, // Tổng giá trị hóa đơn
-            createdAt: new Date(), // Ngày tạo hóa đơn
+            items: cartItem,
+            total: grandTotalVND,
+            createdAt: new Date(),
             status: "Đang xử lý",
             id: documentId,
         });
-        const newOrderId = documentId; // Replace this with your actual order creation logic
-        setOrderId(newOrderId);
-        localStorage.setItem('orderId', newOrderId); // Store the order ID in localStorage
-        localStorage.setItem('timerStart', new Date().getTime().toString()); // Save start time in localStorage
 
-        setIsTimerActive(true); // Activate the timer
+        // Cập nhật số lượng tồn kho sản phẩm
+        for (const item of cartItem) {
+            const productRef = doc(db, 'products', item.id);
+            const productSnapshot = await getDoc(productRef);
+
+            if (productSnapshot.exists()) {
+                const productData = productSnapshot.data();
+                const updatedQuantity = (productData.quantity || 0) - item.quantity;
+
+                if (updatedQuantity < 0) {
+                    console.warn(`Sản phẩm ${item.product} không đủ số lượng.`);
+                    alert(`Sản phẩm ${item.product} không đủ số lượng. Đơn hàng không thể hoàn tất.`);
+                    return;
+                }
+
+                await updateDoc(productRef, { quantity: updatedQuantity });
+            } else {
+                console.error(`Sản phẩm với ID ${item.id} không tồn tại trong hệ thống.`);
+            }
+        }
+
+        const newOrderId = documentId;
+        setOrderId(newOrderId);
+        localStorage.setItem('orderId', newOrderId);
+        localStorage.setItem('timerStart', new Date().getTime().toString());
+
+        setIsTimerActive(true);
         setTimeLeft(300);
         console.log('Document written with ID: ', documentId);
         alert('Đơn hàng của bạn đã được giao.\nVui lòng kiểm tra đơn hàng, xin cảm ơn!');
 
-        // await clearUserCart();
         await deleteDoc(doc(db, 'carts', auth.currentUser.email));
         navigate('/order');
-        // try {
-        //     await validateAddressWithPositionstack();
-
-        //     if (isAddressValid) {
-
-        //     }
-        // } catch (error) {
-        //     console.error('Error adding document: ', error);
-        //     alert('Error saving invoice');
-        // }
     };
+
 
     // Hàm xóa giỏ hàng của người dùng trong Firestore theo userEmail
     const clearUserCart = async () => {
@@ -434,7 +443,11 @@ const Checkout = () => {
                                                 placeholder="Email Address"
                                                 value={formData.email}
                                                 onChange={handleChange}
+                                                disabled
                                                 required
+                                                style={{
+                                                    color: '#999999',
+                                                }}
                                             />
                                         </div>
                                         <div className="form-group col-md-6">
@@ -535,21 +548,21 @@ const Checkout = () => {
                                                                     <Typography variant='body2' color='textPrimary' sx={{
                                                                         textAlign: 'justify',
                                                                     }}>
-                                                                        Đơn hàng dưới 300.000đ sẽ có phí vận chuyển ưu đãi chỉ 10% tổng giá trị đơn hàng.
+                                                                        Đơn hàng <strong>dưới 300.000đ</strong> sẽ có phí vận chuyển ưu đãi chỉ <strong>10%</strong> tổng giá trị đơn hàng.
                                                                     </Typography>
                                                                 </li>
                                                                 <li>
                                                                     <Typography variant='body2' color='textPrimary' sx={{
                                                                         textAlign: 'justify',
                                                                     }}>
-                                                                        Đối với đơn hàng từ 300.000đ đến 500.000đ, quý khách sẽ được giảm phí vận chuyển xuống còn 5%.
+                                                                        Đối với đơn hàng <strong>từ 300.000đ đến 500.000đ</strong> , quý khách sẽ được giảm phí vận chuyển xuống còn <strong>5%</strong>.
                                                                     </Typography>
                                                                 </li>
                                                                 <li>
                                                                     <Typography variant='body2' color='textPrimary' sx={{
                                                                         textAlign: 'justify',
                                                                     }}>
-                                                                        Và đặc biệt, đơn hàng trên 500.000đ sẽ được miễn phí vận chuyển hoàn toàn!
+                                                                        Và đặc biệt, đơn hàng <strong>trên 500.000đ</strong> sẽ được <strong>miễn phí vận chuyển</strong> hoàn toàn!
                                                                     </Typography>
                                                                 </li>
                                                             </ul>

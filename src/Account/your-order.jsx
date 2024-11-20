@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { db } from './firebaseConfig';
-import { collection, getDocs, addDoc, doc, updateDoc } from 'firebase/firestore';
+import { collection, getDocs, addDoc, doc, updateDoc, query, orderBy } from 'firebase/firestore';
 import NavBar from "../components/navbar";
 import Footer from "../components/footer";
 import { Box, Typography, Paper, Container, CircularProgress, TextField, Button } from '@mui/material';
@@ -63,11 +63,17 @@ const Order = () => {
         const fetchInvoices = async () => {
             setLoading(true);
             try {
-                const querySnapshot = await getDocs(collection(db, 'invoices'));
+                const invoicesQuery = query(
+                    collection(db, 'invoices'),
+                    orderBy('createdAt', 'desc') // Sắp xếp từ mới nhất đến cũ nhất
+                );
+                const querySnapshot = await getDocs(invoicesQuery);
+
                 const invoicesData = querySnapshot.docs.map(doc => ({
                     id: doc.id,
                     ...doc.data(),
                 }));
+
                 const filteredInvoices = invoicesData.filter(invoice => invoice.email === customerEmail);
                 setInvoices(filteredInvoices);
             } catch (err) {
@@ -81,6 +87,7 @@ const Order = () => {
             fetchInvoices();
         }
     }, [customerEmail]);
+
 
     const handleToggleDetails = (id) => {
         setVisibleDetails((prev) => ({
