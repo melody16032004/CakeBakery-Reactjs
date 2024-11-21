@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { db } from '../Account/firebaseConfig'; // Đường dẫn đến cấu hình Firebase của bạn
 import { collection, query, where, addDoc, getDocs } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { TextField, Button, Box, Typography, FormControl, InputLabel, Select, MenuItem, Slider, Grid, CircularProgress } from '@mui/material';
+import { TextField, Button, Box, Typography, FormControl, InputLabel, Select, MenuItem, Slider, Grid, CircularProgress, Grid2 } from '@mui/material';
 
 const AddProduct = () => {
     const [productName, setProductName] = useState('');
@@ -215,7 +215,7 @@ const AddProduct = () => {
                     {/* <Grid sx={{ width: '10px' }}></Grid> */}
 
                     {/* Cột Giá sản phẩm */}
-                    <Grid item xs={6}>
+                    <Grid item xs={5}>
                         <TextField
                             label="Giá sản phẩm ($)"
                             value={productPrice}
@@ -242,9 +242,9 @@ const AddProduct = () => {
                             }}
                         />
                     </Grid>
-
+                    <Grid2 />
                     {/* Cột Số lượng sản phẩm */}
-                    <Grid item xs={6}>
+                    <Grid item xs={5}>
                         <TextField
                             label="Số lượng sản phẩm"
                             value={productQuantity}
