@@ -25,13 +25,14 @@ import {
     LineElement,
     Title,
     Tooltip,
-    Legend
+    Legend,
+    BarElement,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import { styled } from "@mui/material/styles";
 import { Line } from "react-chartjs-2";
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, BarElement);
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     fontWeight: "bold", // Làm đậm chữ tiêu đề
