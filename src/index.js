@@ -41,6 +41,8 @@ import AddPost from './components/AddPost';
 import BlogPost from './components/BlogPost';
 import BlogDetail from './components/BlogDetail';
 import ProductStatistics from './components/product-statistics';
+import BlogList from './Account/BlogList';
+import BlogDetails from './Account/BlogDetail';
 // import { BrowserRouter } from "react-router-dom";
 
 const router = createBrowserRouter([
@@ -167,6 +169,14 @@ const router = createBrowserRouter([
   {
     path: "/blog/:id",
     element: <BlogDetail />,  // Route để hiển thị chi tiết bài viết
+  },
+  {
+    path: "/bloglist",
+    element: <BlogList />,
+  },
+  {
+    path: "/blogdetail",
+    element: <BlogDetails />,
   },
 
 ]);

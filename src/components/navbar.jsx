@@ -203,6 +203,9 @@ function NavBar() {
                                             </li>
                                         </ul> */}
                                     </li>
+                                    {/* <li>
+                                        <Link to="/bloglist">Blog</Link>
+                                    </li> */}
                                 </ul>
                                 <ul className="navbar-nav justify-content-end">
                                     <li className="dropdown submenu">

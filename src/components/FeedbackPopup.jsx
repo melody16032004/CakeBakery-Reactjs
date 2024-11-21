@@ -100,18 +100,6 @@ const FeedbackPopup = ({ onSubmitFeedback, userEmail }) => {
                 >
                     <h2 id="feedback-modal-title">Phản hồi</h2>
 
-                    {/* TextField cho tên người dùng */}
-                    {/* <TextField
-                        id="username-input"
-                        // label="Tên người dùng"
-                        disabled
-                        variant="outlined"
-                        fullWidth
-                        value={userEmail}
-                        onChange={(e) => setUsername(e.target.value)}
-                        sx={{ marginBottom: 2 }}
-                    /> */}
-
                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 1, padding: '5px 0' }}>
                         {[1, 2, 3, 4, 5].map((value) => (
                             <span

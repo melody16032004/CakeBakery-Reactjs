@@ -1,0 +1,43 @@
+.blog-layout-grid {
+    display: grid;
+    grid-template-columns: 3fr 1fr; /* CONTENT chiếm 3 phần, SIDEBAR chiếm 1 phần */
+    gap: 20px; /* Khoảng cách giữa CONTENT và SIDEBAR */
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+.content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.blog-card {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 15px;
+}
+
+.blog-image {
+    max-width: 100%;
+    border-radius: 8px;
+    margin: 10px 0;
+}
+
+h1, h2 {
+    margin: 0 0 15px;
+    color: #333;
+}
+
+p {
+    margin: 0 0 10px;
+    color: #555;
+}

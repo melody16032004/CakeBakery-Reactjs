@@ -3,7 +3,12 @@ import { db } from './firebaseConfig';
 import { collection, getDocs, addDoc, doc, updateDoc, query, orderBy } from 'firebase/firestore';
 import NavBar from "../components/navbar";
 import Footer from "../components/footer";
-import { Box, Typography, Paper, Container, CircularProgress, TextField, Button } from '@mui/material';
+import { Box, Typography, Paper, Container, CircularProgress, TextField, Button, Fab } from '@mui/material';
+import { Modal, Autocomplete } from '@mui/material';
+import ChatIcon from '@mui/icons-material/Chat';
+import { Avatar } from '@mui/material';
+import StarIcon from '@mui/icons-material/Star';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
 import { styled } from '@mui/system';
 import { Link } from 'react-router-dom';
 
@@ -42,8 +47,18 @@ const Order = () => {
     const [feedback, setFeedback] = useState(''); // State để lưu feedback của người dùng
     const [feedbacks, setFeedbacks] = useState({});
     const [isFeedbackSubmitted, setIsFeedbackSubmitted] = useState({}); // Kiểm tra feedback đã được gửi chưa
-
     const [visibleDetails, setVisibleDetails] = useState({});
+
+
+    const [open, setOpen] = useState(false);
+    // const [feedback, setFeedback] = useState('');
+    // const [username, setUsername] = useState('');
+    const [tags, setTags] = useState([]);
+    const [availableTags, setAvailableTags] = useState([]);
+    const [rating, setRating] = useState(0);
+
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
 
     useEffect(() => {
@@ -89,6 +104,7 @@ const Order = () => {
     }, [customerEmail]);
 
 
+
     const handleToggleDetails = (id) => {
         setVisibleDetails((prev) => ({
             ...prev,
@@ -107,9 +123,10 @@ const Order = () => {
     // Hàm gửi feedback cho từng đơn hàng
     const handleFeedbackSubmit = async (id) => {
         const feedback = feedbacks[id];
-        if (feedback) {
+        if (feedback && rating) {
             try {
                 await updateDoc(doc(db, 'invoices', id), { feedback });
+                await updateDoc(doc(db, 'invoices', id), { rating });
                 alert('Feedback đã được gửi thành công!');
 
                 // Cập nhật trạng thái feedback đã gửi
@@ -118,9 +135,13 @@ const Order = () => {
 
                 // Lưu trạng thái feedback vào localStorage
                 localStorage.setItem('feedbackStatus', JSON.stringify(newFeedbackStatus));
+                handleClose();
+                setRating(0);
             } catch (error) {
                 console.error('Lỗi khi cập nhật feedback:', error);
             }
+        } else {
+            alert('Vui lòng nhập feedback và đánh giá trước khi gửi!');
         }
     };
 
@@ -226,6 +247,18 @@ const Order = () => {
                                 {/* Phần nhập và gửi feedback riêng cho mỗi đơn hàng */}
                                 {!isFeedbackSubmitted[invoice.id] ? (
                                     <Box mt={2}>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 1, padding: '5px 0' }}>
+                                            {[1, 2, 3, 4, 5].map((value) => (
+                                                <span
+                                                    key={value}
+                                                    onClick={() => setRating(value)}
+                                                    style={{ cursor: 'pointer', color: value <= rating ? 'gold' : 'gray' }} // Đổi màu ngôi sao
+                                                    value={rating[invoice.id] || ''}
+                                                >
+                                                    {value <= rating ? <StarIcon /> : <StarBorderIcon />}
+                                                </span>
+                                            ))}
+                                        </Box>
                                         <TextField
                                             fullWidth
                                             multiline
@@ -241,8 +274,11 @@ const Order = () => {
                                             sx={{ mt: 1 }}
                                             onClick={() => handleFeedbackSubmit(invoice.id)}
                                         >
-                                            Gửi phản hồi
+                                            <ChatIcon /> Gửi phản hồi
                                         </Button>
+
+                                        {/* -------------------------------------------------------- */}
+
                                     </Box>
                                 ) : (
                                     <Typography variant="h6" color="green" mt={2}>
