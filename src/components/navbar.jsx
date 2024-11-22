@@ -238,6 +238,17 @@ function NavBar() {
                                             href="#"
                                             role="button"
                                             aria-haspopup="true"
+                                            aria-expanded="false">
+                                            <Link to="/blogs">Blog</Link>
+                                        </a>
+                                    </li>
+                                    <li className="dropdown submenu">
+                                        <a
+                                            className="dropdown-toggle"
+                                            data-toggle="dropdown"
+                                            href="#"
+                                            role="button"
+                                            aria-haspopup="true"
                                             aria-expanded="false"
                                         >
                                             Cửa hàng
@@ -257,9 +268,6 @@ function NavBar() {
                                                     </li>
                                                 </div>
                                             )}
-
-
-
                                         </ul>
                                     </li>
                                     <li>
@@ -268,10 +276,6 @@ function NavBar() {
                                 </ul>
                             </div>
                         </nav>
-
-
-
-
                     </div>
                 </nav>
             </div>

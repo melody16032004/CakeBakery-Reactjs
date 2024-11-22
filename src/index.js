@@ -34,9 +34,7 @@ import Order from './Account/your-order';
 // import Admin from './Music/admin';
 import Feedback from './Account/Feedback';
 import MemoryGame from './components/Game';
-
 import PaypalButton from './components/PaypalButton';
-
 import AddPost from './components/AddPost';
 import BlogPost from './components/BlogPost';
 import BlogDetail from './components/BlogDetail';
@@ -171,6 +169,10 @@ const router = createBrowserRouter([
     element: <BlogDetail />,  // Route để hiển thị chi tiết bài viết
   },
   {
+    path: "/addpost/:id",
+    element: <AddPost />
+  }
+{
     path: "/bloglist",
     element: <BlogList />,
   },

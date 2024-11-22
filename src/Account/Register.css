@@ -106,12 +106,10 @@ button:hover {
 p {
     margin: 20px 5% 0 0;
     cursor: pointer;
-    color: white;
     text-decoration: none;
-    font-size: 14px;
+    font-size: 18px;
     text-align: left;
     font-style: italic;
-    
     transition: color ease .5s;
 }
 P:hover{
@@ -128,6 +126,17 @@ h2{
     text-decoration: none;
     font-weight: bold;
     margin-top: 10px;
+}
+
+.login{
+    margin: 20px 5% 0 0;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 18px;
+    text-align: left;
+    font-style: italic;
+    transition: color ease .5s;
+    color: #ffffff;
 }
 
 /* ------------------------------- */

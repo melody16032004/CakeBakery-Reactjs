@@ -1,0 +1,20 @@
+.sign_up{
+    margin: 20px 5% 0 0;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 18px;
+    text-align: left;
+    font-style: italic;
+    transition: color ease .5s;
+    color: #ffffff;
+}
+.forgot_pass{
+    margin: 20px 5% 0 0;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 18px;
+    text-align: left;
+    font-style: italic;
+    transition: color ease .5s;
+    color: #ffffff;
+}
