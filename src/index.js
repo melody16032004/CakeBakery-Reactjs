@@ -171,8 +171,8 @@ const router = createBrowserRouter([
   {
     path: "/addpost/:id",
     element: <AddPost />
-  }
-{
+  },
+  {
     path: "/bloglist",
     element: <BlogList />,
   },
