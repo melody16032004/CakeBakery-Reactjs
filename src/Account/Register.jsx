@@ -60,7 +60,7 @@ const Register = ({ setShowLogin, navigate }) => {
                 />
                 <button type="submit">Đăng ký</button>
                 {/* {error && <p className="error-message">{error}</p>} */}
-                <p onClick={setShowLogin}>Đã có tài khoản? Đăng nhập</p>
+                <div className='login' onClick={setShowLogin}>Đã có tài khoản? Đăng nhập</div>
             </form>
 
         </div>

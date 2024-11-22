@@ -3,6 +3,7 @@ import { auth } from './firebaseConfig';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { Link, useNavigate } from 'react-router-dom';
 import { hover } from '@testing-library/user-event/dist/hover';
+import './Login.css'
 
 const Login = ({ setShowLogin, setShowForget, setCartItems }) => {
     const [email, setEmail] = useState('');
@@ -89,8 +90,8 @@ const Login = ({ setShowLogin, setShowForget, setCartItems }) => {
                 <button type="submit">Đăng nhập</button>
 
                 <div className='subLogin' style={styles.subLogin}>
-                    <p onClick={setShowLogin}>Chưa có tài khoản? Đăng ký</p>
-                    <p onClick={setShowForget}>Quên mật khẩu?</p>
+                    <div className='sign_up' onClick={setShowLogin}>Chưa có tài khoản? Đăng ký</div>
+                    <div className='forgot_pass' onClick={setShowForget}>Quên mật khẩu?</div>
                 </div>
                 <button style={styles.withoutAccount}
                     onClick={handleAlert}>

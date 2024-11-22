@@ -1,0 +1,64 @@
+/* blog-detail.css */
+
+/* Container chính của blog */
+.blog-detail {
+    max-width: 800px; /* Giới hạn chiều rộng của bài viết */
+    margin: 0 auto; /* Căn giữa nội dung */
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+}
+
+/* Tiêu đề bài viết */
+.blog-title {
+    font-size: 2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Thông tin tác giả và thể loại */
+.blog-author, .blog-category {
+    font-size: 1em;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+/* Ảnh bài viết */
+.blog-image {
+    width: 100%;  /* Đảm bảo ảnh chiếm toàn bộ chiều rộng của container */
+    max-width: 700px;  /* Giới hạn chiều rộng tối đa của ảnh */
+    height: auto;  /* Giữ tỷ lệ ảnh */
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* Đảm bảo rằng ảnh không phá layout khi quá lớn */
+@media (max-width: 768px) {
+    .blog-detail {
+        padding: 10px;
+    }
+    .blog-title {
+        font-size: 1.5em;
+    }
+    .blog-author, .blog-category {
+        font-size: 0.9em;
+    }
+    .blog-image {
+        max-width: 100%;
+    }
+}
+
+/* blog-detail.css */
+
+.blog-content {
+    padding: 10px;
+    color: #555;
+    border-radius: 5px;
+    line-height: 1.5;
+    z-index: 1; /* Đảm bảo nội dung luôn ở trên */
+    font-size: 50px;
+}
+
+.blog-content:hover {
+    /* Nếu không có hiệu ứng gì khi hover thì không cần thêm gì ở đây */
+}

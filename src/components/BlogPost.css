@@ -1,0 +1,103 @@
+/* Toàn bộ màn hình */
+.bg-gray {
+    background-color: #f3f4f6; /* Thay thế bg-gray-100 */
+    min-height: 10vh; /* Thay thế min-h-screen */
+}
+
+/* Container chính */
+.container {
+    max-width: 1200px; /* Thay thế container mx-auto */
+    margin: 0 auto;
+}
+
+/* Tiêu đề */
+.title {
+    font-size: 2rem; /* Thay thế text-3xl */
+    font-weight: bold; /* Thay thế font-bold */
+    text-align: center;
+    color: #2d3748; /* Thay thế text-gray-800 */
+    margin-bottom: 1.5rem; /* Thay thế mb-6 */
+    margin-top: 13.5rem; /* Thay thế mt-12 */
+}
+
+/* Danh sách blog */
+.blog-list {
+    display: grid;
+    grid-template-columns: 1fr; /* Thay thế grid-cols-1 */
+    gap: 1.5rem; /* Thay thế gap-6 */
+}
+
+@media (min-width: 768px) {
+    .blog-list {
+        grid-template-columns: repeat(2, 1fr); /* Thay thế md:grid-cols-2 */
+    }
+}
+
+@media (min-width: 1024px) {
+    .blog-list {
+        grid-template-columns: repeat(3, 1fr); /* Thay thế lg:grid-cols-3 */
+    }
+}
+
+/* Card Blog */
+.blog-card {
+    background-color: #ffffff; /* Thay thế bg-white */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Thay thế shadow-md */
+    border-radius: 0.5rem; /* Thay thế rounded-lg */
+    padding: 1rem; /* Thay thế p-4 */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: box-shadow 0.3s ease; /* Thay thế transition-shadow duration-300 */
+}
+
+.blog-card:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Thay thế hover:shadow-lg */
+}
+
+/* Ảnh Blog */
+.blog-image {
+    width: 100%; /* Thay thế w-full */
+    height: 20rem; /* Thay thế h-82 */
+    object-fit: cover; /* Thay thế object-cover */
+    border-radius: 0.5rem 0.5rem 0 0; /* Thay thế rounded-t-lg */
+    margin-bottom: 0.5rem; /* Thay thế mb-2 */
+}
+
+/* Tiêu đề bài viết */
+.blog-title {
+    font-size: 1.25rem; /* Thay thế text-xl */
+    font-weight: 600; /* Thay thế font-semibold */
+    color: #2d3748; /* Thay thế text-gray-800 */
+    margin-bottom: 0.5rem; /* Thay thế mb-2 */
+}
+
+/* Mô tả bài viết */
+.blog-description {
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Số dòng hiển thị */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    color: #000000; /* Thay thế text-gray-600 */
+    margin-bottom: 1rem; /* Thay thế mb-4 */
+}
+
+/* Link bài viết */
+.blog-link {
+    margin-top: auto; /* Thay thế mt-auto */
+    display: inline-block;
+    background-color: #3b82f6; /* Thay thế bg-blue-500 */
+    color: #ffffff; /* Thay thế text-white */
+    padding: 0.5rem 1rem; /* Thay thế px-4 py-2 */
+    border-radius: 0.5rem; /* Thay thế rounded-lg */
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s ease; /* Thay thế transition-colors duration-300 */
+}
+
+.blog-link:hover {
+    background-color: #f886c9; /* Thay thế hover:bg-blue-600 */
+    color: #000000;
+}
