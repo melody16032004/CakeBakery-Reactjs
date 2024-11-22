@@ -202,7 +202,7 @@ const Checkout = () => {
             id: documentId,
         });
 
-        // Cập nhật số lượng tồn kho sản phẩm
+        // Cập nhật số lượng tồn kho và trường "sold" của sản phẩm
         for (const item of cartItem) {
             const productRef = doc(db, 'products', item.id);
             const productSnapshot = await getDoc(productRef);
@@ -217,7 +217,12 @@ const Checkout = () => {
                     return;
                 }
 
-                await updateDoc(productRef, { quantity: updatedQuantity });
+                const updatedSold = (productData.sold || 0) + item.quantity;
+
+                await updateDoc(productRef, {
+                    quantity: updatedQuantity,
+                    sold: updatedSold
+                });
             } else {
                 console.error(`Sản phẩm với ID ${item.id} không tồn tại trong hệ thống.`);
             }
@@ -236,6 +241,7 @@ const Checkout = () => {
         await deleteDoc(doc(db, 'carts', auth.currentUser.email));
         navigate('/order');
     };
+
 
 
     // Hàm xóa giỏ hàng của người dùng trong Firestore theo userEmail

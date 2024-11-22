@@ -426,7 +426,7 @@ function Home() {
             <section className="welcome_bakery_area cake_feature_main p_100">
                 <div className="container">
                     <div className="main_title">
-                        <h2>Bánh nổi bật</h2>
+                        <h2>Sản phẩm bán nhiều nhất</h2>
                     </div>
                     <div className="cake_feature_row row">
                         {/* {productList} */}

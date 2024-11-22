@@ -204,12 +204,12 @@ const OrderStatistics = () => {
 
     return (
         <Box p={3}>
-            <Typography variant="h4" gutterBottom>
+            <Typography variant="h4" gutterBottom sx={{ display: 'flex', justifyContent: 'center', marginBottom: '50px', }}>
                 Thống Kê Đơn Hàng
             </Typography>
 
             {/* Biểu đồ */}
-            <Box mt={5}>
+            <Box mt={5} sx={{ maxWidth: "800px", margin: "auto" }}>
                 <Typography variant="h5" gutterBottom>
                     Biểu đồ Thống Kê
                 </Typography>
@@ -263,12 +263,13 @@ const OrderStatistics = () => {
                 sx={{
                     display: "flex",
                     justifyContent: "center",
-                    gap: 2,
+                    gap: 1, // Giảm khoảng cách giữa các nút
                     mt: 2,
                     backgroundColor: "#f0f0f0",
                     borderRadius: "8px",
-                    padding: "8px 16px",
+                    padding: "4px 8px", // Giảm padding tổng thể
                     boxShadow: 3,
+                    margin: "40px 15%",
                 }}
             >
                 <ToggleButton
@@ -276,9 +277,11 @@ const OrderStatistics = () => {
                     aria-label="line chart"
                     disableRipple
                     sx={{
-                        backgroundColor: chartType === "line" ? "#3e95cd" : "#e0e0e0", // Màu nền khi chọn
-                        color: chartType === "line" ? "#fff" : "#3e95cd", // Màu chữ khi chọn
+                        backgroundColor: chartType === "line" ? "#3e95cd" : "#e0e0e0",
+                        color: chartType === "line" ? "#fff" : "#3e95cd",
                         borderRadius: "4px",
+                        padding: "4px 8px", // Giảm padding của nút
+                        fontSize: "0.875rem", // Giảm kích thước chữ
                         "&:hover": {
                             backgroundColor: "#3e95cd",
                             color: "#fff",
@@ -286,7 +289,7 @@ const OrderStatistics = () => {
                         transition: "background-color 0.3s, color 0.3s",
                     }}
                 >
-                    <ShowChart sx={{ mr: 1 }} />
+                    <ShowChart sx={{ fontSize: "18px", mr: 0.5 }} /> {/* Giảm kích thước icon */}
                     Biểu Đồ Đơn Hàng
                 </ToggleButton>
                 <ToggleButton
@@ -294,9 +297,11 @@ const OrderStatistics = () => {
                     aria-label="bar chart"
                     disableRipple
                     sx={{
-                        backgroundColor: chartType === "bar" ? "#3e95cd" : "#e0e0e0", // Màu nền khi chọn
-                        color: chartType === "bar" ? "#fff" : "#3e95cd", // Màu chữ khi chọn
+                        backgroundColor: chartType === "bar" ? "#3e95cd" : "#e0e0e0",
+                        color: chartType === "bar" ? "#fff" : "#3e95cd",
                         borderRadius: "4px",
+                        padding: "4px 8px", // Giảm padding của nút
+                        fontSize: "0.875rem", // Giảm kích thước chữ
                         "&:hover": {
                             backgroundColor: "#3e95cd",
                             color: "#fff",
@@ -304,10 +309,11 @@ const OrderStatistics = () => {
                         transition: "background-color 0.3s, color 0.3s",
                     }}
                 >
-                    <BarChart sx={{ mr: 1 }} />
+                    <BarChart sx={{ fontSize: "18px", mr: 0.5 }} /> {/* Giảm kích thước icon */}
                     Biểu Đồ Sản Phẩm
                 </ToggleButton>
             </ToggleButtonGroup>
+
 
             <Table>
                 <TableHead>

@@ -102,6 +102,8 @@ const Contact = () => {
                 </div>
             </section>
 
+
+
             <section className="contact_form_area p_100" style={contact_form_area}>
                 <div className="container">
                     <div className="main_title text-center">
@@ -235,6 +237,7 @@ const Contact = () => {
                     <i className="fa fa-map-marker" aria-hidden="true" style={{ fontSize: '24px', color: '#007BFF' }}></i>
                 </button>
             </section>
+
             <Footer />
         </div>
     );
