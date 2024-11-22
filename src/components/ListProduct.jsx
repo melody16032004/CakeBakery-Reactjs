@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../Account/firebaseConfig'; // Đường dẫn đến cấu hình Firebase của bạn
-import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, deleteDoc, doc, query, orderBy } from 'firebase/firestore';
 import {
     IconButton, Box, Typography, Card, CardContent, CardMedia,
     Button, Dialog, DialogTitle, DialogContent, DialogActions,
@@ -35,7 +35,11 @@ const ProductList = ({ setSelectedPage }) => {
 
     // Lấy danh sách sản phẩm từ Firestore
     const fetchProducts = async () => {
-        const querySnapshot = await getDocs(collection(db, 'products'));
+        const q = query(
+            collection(db, 'products'),
+            orderBy('sold', 'desc') // Sắp xếp theo createdAt giảm dần
+        );
+        const querySnapshot = await getDocs(q);
         const productsData = querySnapshot.docs.map(doc => ({
             id: doc.id,
             ...doc.data(),

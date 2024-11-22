@@ -285,9 +285,10 @@ const InvoiceList = () => {
                                 <Typography color='textDisabled' variant="body1">Địa chỉ: <strong>{selectedInvoice.address}</strong></Typography>
                                 <Typography color='textDisabled' variant="body1">Số điện thoại: <strong>{selectedInvoice.phone}</strong></Typography>
                                 <Typography color="textDisabled" variant="body1" > Ngày tạo: <strong>{formatCreatedAt(selectedInvoice.createdAt)}</strong></Typography>
-                                <Typography color='textDisabled' variant="body1">Tổng số tiền: <strong> <CurrencyConverter usdAmount={(selectedInvoice.total).toFixed(2)} /></strong></Typography>
+                                <Typography color='textDisabled' variant="body1">Tổng số tiền: <strong>{selectedInvoice.total}đ</strong></Typography>
                                 <Typography color={selectedInvoice.status === "Đã giao" ? "green" : selectedInvoice.status === "Đang xử lý" ? "red" : "orange"} variant="body1"> <strong>Trạng thái: {selectedInvoice.status}</strong></Typography>
                                 <TextField
+                                    disabled
                                     label='Lời nhắn của khách'
                                     maxWidth
                                     value={selectedInvoice.orderNotes}

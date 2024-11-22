@@ -7,7 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Input } from '@mui/material';
 
 import { auth, db } from './firebaseConfig';
-import { doc, setDoc, getDoc, getDocs, collection, query, where } from 'firebase/firestore';
+import { doc, setDoc, getDoc, getDocs, collection, query, where, orderBy } from 'firebase/firestore';
 import Card from '../components/card';
 import CurrencyConverter from '../components/CurrencyConverter';
 
@@ -40,25 +40,28 @@ function Home() {
     };
 
     useEffect(() => {
-
         const fetchProducts = async () => {
             try {
                 setLoading(true);
 
-                const productsCollection = collection(db, 'products'); // 'products' is your collection name
-                const productsSnapshot = await getDocs(productsCollection);
+                // Tạo truy vấn sắp xếp theo thời gian giảm dần
+                const productsQuery = query(
+                    collection(db, 'products'), // 'products' là tên collection
+                    orderBy('sold', 'desc') // Sắp xếp theo trường createdAt giảm dần
+                );
+
+                const productsSnapshot = await getDocs(productsQuery);
                 const productsList = productsSnapshot.docs.map(doc => ({
                     id: doc.id,
-                    ...doc.data()
+                    ...doc.data(),
                 }));
-                setProducts(productsList);
 
-                setLoading(false);
+                setProducts(productsList);
             } catch (error) {
+                console.error('Lỗi khi fetch products:', error);
+            } finally {
                 setLoading(false);
             }
-
-
         };
 
         fetchProducts();
