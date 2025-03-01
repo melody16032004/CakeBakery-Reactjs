@@ -12,14 +12,14 @@ import { Typography } from "@mui/material";
 import SimilarProducts from "./similar-product";
 import CartIcon from "../components/CartIcon";
 import CartSidebar from "../components/CartSidebar";
-import { auth, db } from './firebaseConfig';
+import firebaseInstance from './Firebase Singleton Pattern/firebaseConfig';
 import { doc, setDoc, getDoc, getDocs, collection, query, where, addDoc, deleteDoc } from 'firebase/firestore';
 import FacebookComments from './facebook-comments';
 
 const Product = () => {
     const [cartItems, setCartItems] = useState([]);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const [products, setProducts] = useState([]);
+    // const [products, setProducts] = useState([]);
     const navigate = useNavigate();
     const MAX_ITEMS_PER_PRODUCT = 9999;
     const MAX_TOTAL_ITEMS = 9999;
@@ -60,7 +60,7 @@ const Product = () => {
                     );
 
                     // Cập nhật Firestore với giỏ hàng đã cập nhật
-                    const cartDocRef = doc(db, "carts", userEmail);
+                    const cartDocRef = doc(firebaseInstance.db, "carts", userEmail);
                     setDoc(cartDocRef, { items: updatedItems }, { merge: true }); // Cập nhật Firestore
 
                     return updatedItems; // Trả về giỏ hàng đã cập nhật
@@ -70,7 +70,7 @@ const Product = () => {
                     const updatedItems = [...prevItems, newItem];
 
                     // Cập nhật Firestore với giỏ hàng đã cập nhật
-                    const cartDocRef = doc(db, "carts", userEmail);
+                    const cartDocRef = doc(firebaseInstance.db, "carts", userEmail);
                     setDoc(cartDocRef, { items: updatedItems }, { merge: true }); // Cập nhật Firestore
 
                     return updatedItems; // Trả về giỏ hàng đã cập nhật
@@ -83,7 +83,7 @@ const Product = () => {
             const updatedItems = prevItems.filter((item) => item.id !== id);
 
             const userEmail = localStorage.getItem('savedEmail');
-            const cartDocRef = doc(db, "carts", userEmail);
+            const cartDocRef = doc(firebaseInstance.db, "carts", userEmail);
             setDoc(cartDocRef, { items: updatedItems }, { merge: true });
 
             return updatedItems;
@@ -102,7 +102,7 @@ const Product = () => {
                 );
 
                 // Cập nhật giỏ hàng vào Firestore
-                const cartDocRef = doc(db, "carts", userEmail);
+                const cartDocRef = doc(firebaseInstance.db, "carts", userEmail);
                 setDoc(cartDocRef, { items: updatedItems }, { merge: true }); // Cập nhật Firestore
 
                 return updatedItems; // Trả về giỏ hàng đã cập nhật
@@ -111,16 +111,16 @@ const Product = () => {
     };
 
     const location = useLocation();
-    const { id, name, price, image, image_L, description, categoryId } = location.state || {};
-    const prd = {
-        id,
-        name,
-        price,
-        image,
-        image_L,
-        description,
-        categoryId,
-    }
+    const product = location.state || {};
+    // const prd = {
+    //     id,
+    //     name,
+    //     price,
+    //     image,
+    //     image_L,
+    //     description,
+    //     categoryId,
+    // }
     return (
         <div>
             <ScrollToTop />
@@ -149,7 +149,7 @@ const Product = () => {
                                 <div className="product_img">
                                     <img
                                         className="img-fluid"
-                                        src={image_L}
+                                        src={product.imageUrl}
                                         alt=""
                                         style={{ scale: '1.5', marginLeft: '70px', marginTop: '70px', borderRadius: '5px' }}
                                     />
@@ -157,10 +157,10 @@ const Product = () => {
                             </div>
                             <div className="col-lg-6">
                                 <div className="product_details_text">
-                                    <h4>{name}</h4>
+                                    <h4>{product.name}</h4>
                                     <h5>
                                         Giá : <span>
-                                            <strong><CurrencyConverter usdAmount={price} /></strong>
+                                            <strong><CurrencyConverter usdAmount={product.price} /></strong>
                                         </span>
                                     </h5>
                                     <div className="quantity_box">
@@ -169,7 +169,7 @@ const Product = () => {
                                     </div>
                                     <a className="pink_more" href="" onClick={(e) => {
                                         e.preventDefault();
-                                        addToCart(prd);
+                                        // addToCart(product);
                                     }}>
                                         Thêm vào giỏ hàng
                                     </a>
@@ -230,7 +230,7 @@ const Product = () => {
                                             textDecoration: 'none'
                                         }
                                     }}>
-                                        {description.split('\n').map((line, index) => (
+                                        {product.description.split('\n').map((line, index) => (
                                             <React.Fragment key={index}>
                                                 {line}
                                                 <br />
@@ -255,16 +255,9 @@ const Product = () => {
                     </div>
                 </section>
 
-                <SimilarProducts currentProductId={id} currentCategoryId={categoryId} />
+                <SimilarProducts currentProductId={product.id} currentCategoryId={product.categoryId} />
 
-
-                {/* <Newsletter></Newsletter> */}
             </div>
-
-            {/* <h1>{name}</h1>
-            <img src={image} alt={name} />
-            <p>Price: ${price}</p> */}
-            {/* Thêm thông tin khác về sản phẩm nếu cần */}
             <Footer></Footer>
         </div>
     );

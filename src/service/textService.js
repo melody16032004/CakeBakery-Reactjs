@@ -1,5 +1,5 @@
 // textService.js
-import { db } from '../Account/firebaseConfig';
+import firebaseInstance from '../Account/Firebase Singleton Pattern/firebaseConfig';
 import { doc, setDoc } from 'firebase/firestore';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -11,7 +11,7 @@ const addText = async (text) => {
         try {
             const uid = uuidv4();
             // Add the text to Firestore
-            await setDoc(doc(db, 'subscribe', uid), {
+            await setDoc(doc(firebaseInstance.firebaseInstance.db, 'subscribe', uid), {
                 uid: uid,
                 text: text,
                 createdAt: new Date(),

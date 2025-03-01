@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from './firebaseConfig';
+import firebaseInstance from './Firebase Singleton Pattern/firebaseConfig';
 // import { useNavigate } from 'react-router-dom';
 
 const Register = ({ setShowLogin, navigate }) => {
@@ -21,7 +21,7 @@ const Register = ({ setShowLogin, navigate }) => {
             alert('Mật khẩu phải ít nhất 6 kí tự');
         } else {
             // Gọi Firebase hoặc API đăng ký tại đây
-            await createUserWithEmailAndPassword(auth, email, password);
+            await createUserWithEmailAndPassword(firebaseInstance.auth, email, password);
             localStorage.setItem("isAuthenticated", true);
             alert('Đăng ký thành công!');
             setEmail('');

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { Link } from "react-router-dom";
-import { db } from "./firebaseConfig";
+import firebaseInstance from "./Firebase Singleton Pattern/firebaseConfig";
 import "./BlogList.css";
 import Footer from "../components/footer";
 import NavBar from "../components/navbar";
@@ -13,7 +13,7 @@ const BlogList = () => {
     useEffect(() => {
         const fetchBlogs = async () => {
             try {
-                const querySnapshot = await getDocs(collection(db, "blogs"));
+                const querySnapshot = await getDocs(collection(firebaseInstance.db, "blogs"));
                 const blogsData = querySnapshot.docs.map(doc => ({
                     id: doc.id,
                     ...doc.data(),

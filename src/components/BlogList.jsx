@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { db } from '../Account/firebaseConfig';
+import firebaseInstance from '../Account/Firebase Singleton Pattern/firebaseConfig';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { Table, TableBody, TableCell, TableHead, TableRow, Button, IconButton } from '@mui/material';
 import BlogItem from './BlogItem';  // Import BlogItem component
@@ -9,7 +9,7 @@ const BlogList = ({ onEdit }) => {
 
     useEffect(() => {
         const fetchBlogs = async () => {
-            const blogCollection = collection(db, 'blogs');
+            const blogCollection = collection(firebaseInstance.db, 'blogs');
             const blogSnapshot = await getDocs(blogCollection);
             setBlogs(blogSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
         };
@@ -17,7 +17,7 @@ const BlogList = ({ onEdit }) => {
     }, []);
 
     const handleDelete = async (id) => {
-        await deleteDoc(doc(db, 'blogs', id));
+        await deleteDoc(doc(firebaseInstance.db, 'blogs', id));
         setBlogs(blogs.filter(blog => blog.id !== id));
     };
 
@@ -33,11 +33,11 @@ const BlogList = ({ onEdit }) => {
             </TableHead>
             <TableBody>
                 {blogs.map((blog) => (
-                    <BlogItem 
-                        key={blog.id} 
-                        blog={blog} 
-                        onEdit={onEdit} 
-                        onDelete={handleDelete} 
+                    <BlogItem
+                        key={blog.id}
+                        blog={blog}
+                        onEdit={onEdit}
+                        onDelete={handleDelete}
                     />
                 ))}
             </TableBody>

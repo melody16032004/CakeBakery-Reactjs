@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { auth } from './firebaseConfig';
+import firebaseInstance from './Firebase Singleton Pattern/firebaseConfig';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { Link, useNavigate } from 'react-router-dom';
 import { hover } from '@testing-library/user-event/dist/hover';
@@ -49,7 +49,7 @@ const Login = ({ setShowLogin, setShowForget, setCartItems }) => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            await signInWithEmailAndPassword(auth, email, password);
+            await signInWithEmailAndPassword(firebaseInstance.auth, email, password);
 
             localStorage.setItem("isAuthenticated", true);
             localStorage.setItem("savedEmail", email);

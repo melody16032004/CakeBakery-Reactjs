@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { db } from './firebaseConfig';
+import firebaseInstance from './Firebase Singleton Pattern/firebaseConfig';
 import { collection, getDocs, addDoc, doc, updateDoc, query, orderBy } from 'firebase/firestore';
 import NavBar from "../components/navbar";
 import Footer from "../components/footer";
@@ -79,7 +79,7 @@ const Order = () => {
             setLoading(true);
             try {
                 const invoicesQuery = query(
-                    collection(db, 'invoices'),
+                    collection(firebaseInstance.db, 'invoices'),
                     orderBy('createdAt', 'desc') // Sắp xếp từ mới nhất đến cũ nhất
                 );
                 const querySnapshot = await getDocs(invoicesQuery);
@@ -125,8 +125,8 @@ const Order = () => {
         const feedback = feedbacks[id];
         if (feedback && rating) {
             try {
-                await updateDoc(doc(db, 'invoices', id), { feedback });
-                await updateDoc(doc(db, 'invoices', id), { rating });
+                await updateDoc(doc(firebaseInstance.db, 'invoices', id), { feedback });
+                await updateDoc(doc(firebaseInstance.db, 'invoices', id), { rating });
                 alert('Feedback đã được gửi thành công!');
 
                 // Cập nhật trạng thái feedback đã gửi

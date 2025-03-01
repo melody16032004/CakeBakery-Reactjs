@@ -13,7 +13,7 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import NavBar from '../components/navbar';
 import Footer from '../components/footer';
 import { Link } from 'react-router-dom';
-import { auth, db } from './firebaseConfig';
+import firebaseInstance from './Firebase Singleton Pattern/firebaseConfig';
 import {
     collection, addDoc, onSnapshot, Timestamp,
     updateDoc, doc, getDocs
@@ -34,7 +34,7 @@ const Feedback = () => {
     const [selectedTag, setSelectedTag] = useState(null);
 
     useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged((user) => {
+        const unsubscribe = firebaseInstance.auth.onAuthStateChanged((user) => {
             if (user) {
                 setUserEmail(user.email);
                 setIsLoggedIn(true);
@@ -50,7 +50,7 @@ const Feedback = () => {
     useEffect(() => {
         setLoading(true);
 
-        const unsubscribe = onSnapshot(collection(db, 'feedbacks'), (snapshot) => {
+        const unsubscribe = onSnapshot(collection(firebaseInstance.db, 'feedbacks'), (snapshot) => {
             const feedbackData = snapshot.docs.map((doc) => ({
                 id: doc.id,
                 ...doc.data(),
@@ -80,7 +80,7 @@ const Feedback = () => {
         };
 
         try {
-            await addDoc(collection(db, 'feedbacks'), feedbackWithLikes);
+            await addDoc(collection(firebaseInstance.db, 'feedbacks'), feedbackWithLikes);
         } catch (error) {
             console.error("Lỗi khi lưu phản hồi: ", error);
         }
@@ -115,7 +115,7 @@ const Feedback = () => {
         setFeedbacks(updatedFeedbacks);
 
         // Cập nhật Firestore
-        const feedbackRef = doc(db, 'feedbacks', feedback.id);
+        const feedbackRef = doc(firebaseInstance.db, 'feedbacks', feedback.id);
         await updateDoc(feedbackRef, {
             likes: feedback.likes,
             likedBy: feedback.likedBy,
@@ -153,7 +153,7 @@ const Feedback = () => {
         setFeedbacks(updatedFeedbacks);
 
         // Cập nhật Firestore
-        const feedbackRef = doc(db, 'feedbacks', feedback.id);
+        const feedbackRef = doc(firebaseInstance.db, 'feedbacks', feedback.id);
         await updateDoc(feedbackRef, {
             likes: feedback.likes,
             likedBy: feedback.likedBy,
@@ -172,7 +172,7 @@ const Feedback = () => {
 
 
     const refreshFeedbacks = async () => {
-        const snapshot = await getDocs(collection(db, 'feedbacks'));
+        const snapshot = await getDocs(collection(firebaseInstance.db, 'feedbacks'));
         const feedbackData = snapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data()

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { db } from '../Account/firebaseConfig'; // Firestore configuration
+import firebaseInstance from '../Account/Firebase Singleton Pattern/firebaseConfig';
 import { doc, getDoc, setDoc, collection, getDocs } from 'firebase/firestore';
 import { Box, Button, Typography, Grid, Card, CardContent, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, Paper, CircularProgress } from '@mui/material';
 import axios from 'axios';
@@ -46,7 +46,7 @@ const UserAccountManagement = () => {
     // Fetch active users from Firestore
     const fetchActiveUsers = async () => {
         try {
-            const activeUsersCollection = collection(db, 'activeUsers');
+            const activeUsersCollection = collection(firebaseInstance.db, 'activeUsers');
             const activeUsersSnapshot = await getDocs(activeUsersCollection);
             const activeUsersList = activeUsersSnapshot.docs.map(doc => ({ uid: doc.id, ...doc.data() }));
             setActiveUsers(activeUsersList);
@@ -59,7 +59,7 @@ const UserAccountManagement = () => {
     const fetchUserInfo = async (uid) => {
         setLoading(true);
         try {
-            const userRef = doc(db, 'users', uid);
+            const userRef = doc(firebaseInstance.db, 'users', uid);
             const userDoc = await getDoc(userRef);
 
             if (userDoc.exists()) {
@@ -88,7 +88,7 @@ const UserAccountManagement = () => {
 
     // Update user activity in Firestore
     const updateActivityStatus = async (uid) => {
-        await setDoc(doc(db, "activeUsers", uid), {
+        await setDoc(doc(firebaseInstance.db, "activeUsers", uid), {
             isActive: true,
             lastActive: new Date(), // Update last active time
         }, { merge: true }); // Merge to avoid overwriting old data

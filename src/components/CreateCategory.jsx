@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { collection, addDoc, query, where, getDocs, deleteDoc, doc } from 'firebase/firestore';
-import { db } from '../Account/firebaseConfig'; // Đường dẫn đến cấu hình Firebase của bạn
+import firebaseInstance from '../Account/Firebase Singleton Pattern/firebaseConfig';
 import { TextField, Button, Box, Grid, List, ListItem, ListItemText, IconButton, Card, CardContent, Typography, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -16,7 +16,7 @@ const CreateCategory = () => {
 
     // Lấy danh sách danh mục hiện có từ Firestore
     const fetchCategories = async () => {
-        const querySnapshot = await getDocs(collection(db, 'categories'));
+        const querySnapshot = await getDocs(collection(firebaseInstance.db, 'categories'));
         const categories = querySnapshot.docs.map(doc => ({
             id: doc.id,
             ...doc.data(),
@@ -27,7 +27,7 @@ const CreateCategory = () => {
 
     // Lấy danh sách sản phẩm từ Firestore
     const fetchProducts = async () => {
-        const querySnapshot = await getDocs(collection(db, 'products'));
+        const querySnapshot = await getDocs(collection(firebaseInstance.db, 'products'));
         const productsData = querySnapshot.docs.map(doc => ({
             id: doc.id,
             ...doc.data(),
@@ -54,7 +54,7 @@ const CreateCategory = () => {
 
         try {
             // Lấy tất cả danh mục từ Firestore và chuyển chúng về chữ thường
-            const categoriesSnapshot = await getDocs(collection(db, 'categories'));
+            const categoriesSnapshot = await getDocs(collection(firebaseInstance.db, 'categories'));
             const categories = categoriesSnapshot.docs.map(doc => doc.data().name.toLowerCase());
 
             // Chuyển tên danh mục người dùng nhập vào thành chữ thường để so sánh
@@ -67,7 +67,7 @@ const CreateCategory = () => {
             }
 
             // Nếu không tồn tại, thêm danh mục mới vào Firestore (giữ nguyên định dạng nhập)
-            await addDoc(collection(db, 'categories'), { name: categoryName });
+            await addDoc(collection(firebaseInstance.db, 'categories'), { name: categoryName });
             setSuccessMessage('Danh mục đã được tạo thành công');
             setCategoryName(''); // Xóa nội dung sau khi tạo
             fetchCategories(); // Lấy lại danh sách danh mục sau khi thêm mới
@@ -81,7 +81,7 @@ const CreateCategory = () => {
 
     const handleDelete = async (id) => {
         try {
-            await deleteDoc(doc(db, 'categories', id));
+            await deleteDoc(doc(firebaseInstance.db, 'categories', id));
             setSuccessMessage('Danh mục đã được xóa');
             fetchCategories();
         } catch (error) {

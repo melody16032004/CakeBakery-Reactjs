@@ -5,7 +5,7 @@ import { Avatar } from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../Account/firebaseConfig';
+import firebaseInstance from '../Account/Firebase Singleton Pattern/firebaseConfig';
 
 const FeedbackPopup = ({ onSubmitFeedback, userEmail }) => {
     const [open, setOpen] = useState(false);
@@ -46,7 +46,7 @@ const FeedbackPopup = ({ onSubmitFeedback, userEmail }) => {
     useEffect(() => {
         const fetchTags = async () => {
             try {
-                const querySnapshot = await getDocs(collection(db, 'products')); // Đổi 'cakes' thành tên collection của bạn
+                const querySnapshot = await getDocs(collection(firebaseInstance.db, 'products')); // Đổi 'cakes' thành tên collection của bạn
                 const tagsArray = querySnapshot.docs.map(doc => ({
                     name: doc.data().name,
                     imageUrl: doc.data().imageUrl, // Giả định mỗi document có trường 'avatar'

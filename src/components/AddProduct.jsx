@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { db } from '../Account/firebaseConfig'; // Đường dẫn đến cấu hình Firebase của bạn
+import firebaseInstance from '../Account/Firebase Singleton Pattern/firebaseConfig';
 import { collection, query, where, addDoc, getDocs } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { TextField, Button, Box, Typography, FormControl, InputLabel, Select, MenuItem, Slider, Grid, CircularProgress, Grid2 } from '@mui/material';
@@ -19,7 +19,7 @@ const AddProduct = () => {
 
     // Lấy danh sách danh mục từ Firestore
     const fetchCategories = async () => {
-        const querySnapshot = await getDocs(collection(db, 'categories'));
+        const querySnapshot = await getDocs(collection(firebaseInstance.db, 'categories'));
         const categoriesData = querySnapshot.docs.map(doc => ({
             id: doc.id,
             ...doc.data(),
@@ -44,7 +44,7 @@ const AddProduct = () => {
                 return;
             }
 
-            const q = query(collection(db, 'products'), where('name', '==', productName.toLowerCase()));
+            const q = query(collection(firebaseInstance.firebaseInstance.db, 'products'), where('name', '==', productName.toLowerCase()));
             const querySnapshot = await getDocs(q);
 
             if (!querySnapshot.empty) {
@@ -76,7 +76,7 @@ const AddProduct = () => {
 
         try {
             // Kiểm tra xem tên sản phẩm đã tồn tại chưa
-            // const q = query(collection(db, 'products'), where('name', '==', productName.toLowerCase()));
+            // const q = query(collection(firebaseInstance.db, 'products'), where('name', '==', productName.toLowerCase()));
             // const querySnapshot = await getDocs(q);
 
             // if (!querySnapshot.empty) {
@@ -85,7 +85,7 @@ const AddProduct = () => {
             //     return;
             // }
 
-            // const productSnapshot = await getDocs(collection(db, 'products'));
+            // const productSnapshot = await getDocs(collection(firebaseInstance.db, 'products'));
             // const products = productSnapshot.docs.map(doc => doc.data().name.toLowerCase());
             // const lowerCaseProductName = productName.toLowerCase();
             // if (products.includes(lowerCaseProductName)) {
@@ -103,7 +103,7 @@ const AddProduct = () => {
             const imageUrl = await getDownloadURL(imageRef);
 
             // Thêm thông tin sản phẩm vào Firestore
-            await addDoc(collection(db, 'products'), {
+            await addDoc(collection(firebaseInstance.db, 'products'), {
                 name: productName, // Lưu tên sản phẩm dưới dạng viết thường
                 description: productDescription,
                 price: productPrice, // Lưu giá sản phẩm

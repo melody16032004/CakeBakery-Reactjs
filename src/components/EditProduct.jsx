@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { db, storage } from '../Account/firebaseConfig'; // Đường dẫn đến cấu hình Firebase của bạn
+import firebaseInstance from '../Account/Firebase Singleton Pattern/firebaseConfig';
 import { doc, updateDoc, collection, getDocs } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { TextField, Button, Box, Typography, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
@@ -17,7 +17,7 @@ const EditProduct = ({ product, onClose, fetchProducts }) => {
 
     // Lấy danh sách danh mục từ Firestore
     const fetchCategories = async () => {
-        const querySnapshot = await getDocs(collection(db, 'categories'));
+        const querySnapshot = await getDocs(collection(firebaseInstance.db, 'categories'));
         const categoriesData = querySnapshot.docs.map(doc => ({
             id: doc.id,
             ...doc.data(),
@@ -41,13 +41,13 @@ const EditProduct = ({ product, onClose, fetchProducts }) => {
 
             // Nếu có tệp hình ảnh mới, tải lên Firebase Storage
             if (imageFile) {
-                const storageRef = ref(storage, `images/${imageFile.name}`);
+                const storageRef = ref(firebaseInstance.db, `images/${imageFile.name}`);
                 await uploadBytes(storageRef, imageFile);
                 newImageUrl = await getDownloadURL(storageRef); // Lấy URL của hình ảnh đã tải lên
             }
 
             // Cập nhật sản phẩm trong Firestore
-            await updateDoc(doc(db, 'products', product.id), {
+            await updateDoc(doc(firebaseInstance.db, 'products', product.id), {
                 name: productName,
                 description: productDescription,
                 price: productPrice,

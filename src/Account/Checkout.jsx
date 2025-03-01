@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import NavBar from "../components/navbar";
 import Footer from "../components/footer";
 import { Link, useNavigate } from "react-router-dom";
-import { auth, db } from './firebaseConfig';
+import firebaseInstance from './Firebase Singleton Pattern/firebaseConfig';
 import { doc, addDoc, updateDoc, setDoc, getDoc, getDocs, collection, query, where, deleteDoc, writeBatch } from 'firebase/firestore';
 import "./Checkout.css";
 import { Typography } from '@mui/material';
@@ -192,7 +192,7 @@ const Checkout = () => {
 
         const grandTotalVND = totalVND + shippingCost;
 
-        await setDoc(doc(db, 'invoices', documentId), {
+        await setDoc(doc(firebaseInstance.db, 'invoices', documentId), {
             ...formData,
             address: formData.address + '/' + province + '/' + district + '/' + city,
             items: cartItem,
@@ -204,7 +204,7 @@ const Checkout = () => {
 
         // Cập nhật số lượng tồn kho và trường "sold" của sản phẩm
         for (const item of cartItem) {
-            const productRef = doc(db, 'products', item.id);
+            const productRef = doc(firebaseInstance.db, 'products', item.id);
             const productSnapshot = await getDoc(productRef);
 
             if (productSnapshot.exists()) {
@@ -238,7 +238,7 @@ const Checkout = () => {
         console.log('Document written with ID: ', documentId);
         alert('Đơn hàng của bạn đã được giao.\nVui lòng kiểm tra đơn hàng, xin cảm ơn!');
 
-        await deleteDoc(doc(db, 'carts', auth.currentUser.email));
+        await deleteDoc(doc(firebaseInstance.db, 'carts', firebaseInstance.auth.currentUser.email));
         navigate('/order');
     };
 
@@ -246,17 +246,17 @@ const Checkout = () => {
 
     // Hàm xóa giỏ hàng của người dùng trong Firestore theo userEmail
     const clearUserCart = async () => {
-        const currentUser = auth.currentUser; // Lấy thông tin người dùng hiện tại
+        const currentUser = firebaseInstance.auth.currentUser; // Lấy thông tin người dùng hiện tại
         if (!currentUser) {
             console.error('User not logged in');
             return;
         }
 
-        const cartRef = collection(db, 'carts');
+        const cartRef = collection(firebaseInstance.db, 'carts');
         const q = query(cartRef, where('userEmail', '==', currentUser.email)); // Truy vấn theo email của người dùng
 
         const querySnapshot = await getDocs(q);
-        const batch = writeBatch(db); // Sử dụng batch để xóa nhiều tài liệu cùng lúc
+        const batch = writeBatch(firebaseInstance.db); // Sử dụng batch để xóa nhiều tài liệu cùng lúc
 
         querySnapshot.forEach((doc) => {
             batch.delete(doc.ref); // Xóa từng tài liệu trong cart của người dùng
@@ -273,7 +273,7 @@ const Checkout = () => {
         }
 
         try {
-            await deleteDoc(doc(db, 'invoices', orderId)); // Delete the order document from Firestore
+            await deleteDoc(doc(firebaseInstance.db, 'invoices', orderId)); // Delete the order document from Firestore
             setIsTimerActive(false); // Stop the timer
             setOrderId(null); // Reset the order ID
             setTimeLeft(300); // Reset the timer
@@ -311,8 +311,8 @@ const Checkout = () => {
     };
 
     const deleteCartItems = async () => {
-        const cartItemsRef = collection(db, 'carts');
-        const q = query(cartItemsRef, where('userEmail', '==', auth.email)); // Assuming you filter by user ID
+        const cartItemsRef = collection(firebaseInstance.db, 'carts');
+        const q = query(cartItemsRef, where('userEmail', '==', firebaseInstance.auth.email)); // Assuming you filter by user ID
 
         const querySnapshot = await getDoc(q);
         const deletePromises = querySnapshot.docs.map(doc => deleteDoc(doc.ref)); // Prepare delete promises

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs, deleteDoc, updateDoc, doc } from 'firebase/firestore';
-import { db } from '../Account/firebaseConfig';
+import firebaseInstance from '../Account/Firebase Singleton Pattern/firebaseConfig';
 import { TextField, MenuItem, Select, InputLabel, FormControl } from '@mui/material'; // Thêm thành phần Select
 import { format } from 'date-fns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -34,7 +34,7 @@ const InvoiceList = () => {
     const [statusFilter, setStatusFilter] = useState('Tất cả');
 
     const fetchInvoices = async () => {
-        const querySnapshot = await getDocs(collection(db, 'invoices'));
+        const querySnapshot = await getDocs(collection(firebaseInstance.firebaseInstance.db, 'invoices'));
         const invoicesData = querySnapshot.docs.map(doc => ({
             id: doc.id,
             ...doc.data(),
@@ -48,7 +48,7 @@ const InvoiceList = () => {
 
     const handleDelete = async (id) => {
         try {
-            await deleteDoc(doc(db, 'invoices', id));
+            await deleteDoc(doc(firebaseInstance.firebaseInstance.db, 'invoices', id));
             alert('Đơn hàng đã được xóa thành công!');
             fetchInvoices();
         } catch (error) {
@@ -85,7 +85,7 @@ const InvoiceList = () => {
     // Thêm hàm cập nhật trạng thái đơn hàng
     const handleConfirmShipping = async (invoiceId) => {
         try {
-            const invoiceRef = doc(db, 'invoices', invoiceId); // Lấy tham chiếu đến tài liệu hóa đơn
+            const invoiceRef = doc(firebaseInstance.db, 'invoices', invoiceId); // Lấy tham chiếu đến tài liệu hóa đơn
             await updateDoc(invoiceRef, { status: 'Đang vận chuyển' }); // Cập nhật trạng thái thành "Đang vận chuyển"
             alert('Trạng thái đơn hàng đã được chuyển sang "Đang vận chuyển"');
             fetchInvoices(); // Tải lại danh sách đơn hàng sau khi cập nhật

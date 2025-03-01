@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { auth } from './firebaseConfig';
+import firebaseInstance from './Firebase Singleton Pattern/firebaseConfig';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 
@@ -16,7 +16,7 @@ const ForgetPassword = ({ setShowForget }) => {
         try {
             alert('Email đặt lại mật khẩu đã được gửi.');
 
-            await sendPasswordResetEmail(auth, email);
+            await sendPasswordResetEmail(firebaseInstance.auth, email);
             setMessage('Email đặt lại mật khẩu đã được gửi. Vui lòng kiểm tra hộp thư của bạn.');
             setEmail('');
 

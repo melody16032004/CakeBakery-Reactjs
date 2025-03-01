@@ -73,7 +73,7 @@ function NavBar() {
                         <a href="mainto:info@cakebakery.com">
                             <i className="fa fa-envelope-o" aria-hidden="true" />
                             {/* info@cakebakery.com */}
-                            hoangdoan103@gmail.com
+                            cakebakery@gmail.com
                         </a>
                     </div>
                     <div className="float-right">

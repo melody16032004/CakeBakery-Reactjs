@@ -5,7 +5,7 @@ import NavBar from "../components/navbar";
 import { Link } from "react-router-dom";
 import Footer from "../components/footer";
 import Newsletter from "../components/newsletter";
-import { auth, db } from './firebaseConfig';
+import firebaseInstance from "./Firebase Singleton Pattern/firebaseConfig";
 import { doc, setDoc, getDoc, collection, query, where } from 'firebase/firestore';
 import CurrencyConverter from "../components/CurrencyConverter";
 
@@ -22,7 +22,7 @@ const CartPage = () => {
     const fetchCartItems = async () => {
         const userEmail = localStorage.getItem('savedEmail');
         if (userEmail) {
-            const cartDocRef = doc(db, "carts", userEmail);
+            const cartDocRef = doc(firebaseInstance.db, "carts", userEmail);
             const cartSnapshot = await getDoc(cartDocRef);
             if (cartSnapshot.exists()) {
                 const data = cartSnapshot.data();
@@ -77,7 +77,7 @@ const CartPage = () => {
                 );
 
                 // Cập nhật giỏ hàng vào Firestore
-                const cartDocRef = doc(db, "carts", userEmail);
+                const cartDocRef = doc(firebaseInstance.db, "carts", userEmail);
                 setDoc(cartDocRef, { items: updatedItems }, { merge: true }); // Cập nhật Firestore
 
                 return updatedItems; // Trả về giỏ hàng đã cập nhật
@@ -90,7 +90,7 @@ const CartPage = () => {
             const updatedItems = prevItems.filter((item) => item.id !== id);
 
             const userEmail = localStorage.getItem('savedEmail');
-            const cartDocRef = doc(db, "carts", userEmail);
+            const cartDocRef = doc(firebaseInstance.db, "carts", userEmail);
             setDoc(cartDocRef, { items: updatedItems }, { merge: true }); // Cập nhật Firestore
 
             return updatedItems;

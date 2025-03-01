@@ -10,11 +10,12 @@ import CartIcon from '../components/CartIcon';
 import CartSidebar from '../components/CartSidebar';
 import "../index.css";
 import ProductList from './ProductList';
-import { auth, db } from './firebaseConfig';
+import firebaseInstance from './Firebase Singleton Pattern/firebaseConfig';
 import { doc, setDoc, getDoc, getDocs, collection, query, where, addDoc, deleteDoc } from 'firebase/firestore';
 import "../index.css";
 import NavigateLogin from '../components/navigate-login';
 import CircularProgress from '@mui/material/CircularProgress';
+import { debounce } from "lodash";
 
 function Shop() {
     const MAX_TOTAL_ITEMS = 20;
@@ -41,7 +42,7 @@ function Shop() {
 
     // Lấy danh sách danh mục hiện có từ Firestore
     const fetchCategories = async () => {
-        const querySnapshot = await getDocs(collection(db, 'categories'));
+        const querySnapshot = await getDocs(collection(firebaseInstance.db, 'categories'));
         const categories = querySnapshot.docs.map(doc => ({
             id: doc.id,
             ...doc.data(),
@@ -49,20 +50,27 @@ function Shop() {
         console.log('Danh mục:', categories); // Thêm log để kiểm tra danh mục
         setExistingCategories(categories);
     };
+
+    //Factory Pattern
+    class ProductFactory {
+        static createProduct(doc) {
+            return {
+                id: doc.id,
+                ...doc.data(),
+            };
+        }
+    }
     const fetchProductsByCategory = async (categoryId = null) => {
         let q;
         if (categoryId) {
             // Lấy sản phẩm theo danh mục nếu có categoryId
-            q = query(collection(db, 'products'), where('categoryId', '==', categoryId));
+            q = query(collection(firebaseInstance.db, 'products'), where('categoryId', '==', categoryId));
         } else {
             // Lấy tất cả sản phẩm nếu không có categoryId
-            q = collection(db, 'products');
+            q = collection(firebaseInstance.db, 'products');
         }
         const querySnapshot = await getDocs(q);
-        const product = querySnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-        }));
+        const product = querySnapshot.docs.map(ProductFactory.createProduct);
         setProducts(product);
     };
     useEffect(() => {
@@ -80,7 +88,7 @@ function Shop() {
     const fetchCartItems = async () => {
         const userEmail = localStorage.getItem('savedEmail');
         if (userEmail) {
-            const cartDocRef = doc(db, "carts", userEmail);
+            const cartDocRef = doc(firebaseInstance.db, "carts", userEmail);
             const cartSnapshot = await getDoc(cartDocRef);
             if (cartSnapshot.exists()) {
                 const data = cartSnapshot.data();
@@ -103,7 +111,7 @@ function Shop() {
             try {
                 setLoading(true);
 
-                const productsCollection = collection(db, 'products'); // 'products' is your collection name
+                const productsCollection = collection(firebaseInstance.db, 'products'); // 'products' is your collection name
                 const productsSnapshot = await getDocs(productsCollection);
                 const productsList = productsSnapshot.docs.map(doc => ({
                     id: doc.id,
@@ -168,7 +176,7 @@ function Shop() {
                     );
 
                     // Cập nhật Firestore với giỏ hàng đã cập nhật
-                    const cartDocRef = doc(db, "carts", userEmail);
+                    const cartDocRef = doc(firebaseInstance.db, "carts", userEmail);
                     setDoc(cartDocRef, { items: updatedItems }, { merge: true }); // Cập nhật Firestore
 
                     return updatedItems; // Trả về giỏ hàng đã cập nhật
@@ -178,7 +186,7 @@ function Shop() {
                     const updatedItems = [...prevItems, newItem];
 
                     // Cập nhật Firestore với giỏ hàng đã cập nhật
-                    const cartDocRef = doc(db, "carts", userEmail);
+                    const cartDocRef = doc(firebaseInstance.db, "carts", userEmail);
                     setDoc(cartDocRef, { items: updatedItems }, { merge: true }); // Cập nhật Firestore
 
                     return updatedItems; // Trả về giỏ hàng đã cập nhật
@@ -193,7 +201,7 @@ function Shop() {
             const updatedItems = prevItems.filter((item) => item.id !== id);
 
             const userEmail = localStorage.getItem('savedEmail');
-            const cartDocRef = doc(db, "carts", userEmail);
+            const cartDocRef = doc(firebaseInstance.db, "carts", userEmail);
             setDoc(cartDocRef, { items: updatedItems }, { merge: true });
 
             return updatedItems;
@@ -213,7 +221,7 @@ function Shop() {
                 );
 
                 // Cập nhật giỏ hàng vào Firestore
-                const cartDocRef = doc(db, "carts", userEmail);
+                const cartDocRef = doc(firebaseInstance.db, "carts", userEmail);
                 setDoc(cartDocRef, { items: updatedItems }, { merge: true }); // Cập nhật Firestore
 
                 return updatedItems; // Trả về giỏ hàng đã cập nhật

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { TextField, Button, Typography, Box, Paper, IconButton, MenuItem } from '@mui/material';
 import { Editor } from '@tinymce/tinymce-react';
-import { collection, addDoc,doc, getDoc, updateDoc } from 'firebase/firestore';
+import { collection, addDoc, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { db, storage } from '../Account/firebaseConfig'; // Cấu hình Firebase của bạn
+import firebaseInstance from '../Account/Firebase Singleton Pattern/firebaseConfig';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -19,11 +19,11 @@ const AddPost = () => {
     const navigate = useNavigate();
 
     const categories = ['Bánh Mousse', 'Bánh Sinh Nhật', 'Bánh xu kem', 'Cookie'];
-    
+
     useEffect(() => {
         if (id) {
             const fetchBlog = async () => {
-                const docRef = doc(db, 'blogs', id);
+                const docRef = doc(firebaseInstance.db, 'blogs', id);
                 const docSnap = await getDoc(docRef);
                 if (docSnap.exists()) {
                     const data = docSnap.data();
@@ -45,16 +45,16 @@ const AddPost = () => {
     const handleImageUpload = (event) => {
         if (event.target.files[0]) {
             const file = event.target.files[0];
-            const storageRef = ref(storage, `images/${file.name}`);
-            
+            const storageRef = ref(firebaseInstance.storage, `images/${file.name}`);
+
             // Xóa ảnh cũ trên Firebase nếu cần (tùy chọn)
             if (imageUrl) {
-                const oldImageRef = ref(storage, imageUrl.replace(/.*\/o\/(.*?)\?.*/, '$1')); // Lấy ref ảnh cũ
+                const oldImageRef = ref(firebaseInstance.storage, imageUrl.replace(/.*\/o\/(.*?)\?.*/, '$1')); // Lấy ref ảnh cũ
                 deleteObject(oldImageRef).catch((error) => {
                     console.error("Lỗi khi xóa ảnh cũ: ", error);
                 });
             }
-            
+
             uploadBytes(storageRef, file).then((snapshot) => {
                 getDownloadURL(snapshot.ref).then((url) => {
                     setImageUrl(url); // Cập nhật URL ảnh mới
@@ -63,13 +63,13 @@ const AddPost = () => {
             setImage(file); // Cập nhật file ảnh mới
         }
     };
-    
+
 
     const handleSubmit = async () => {
         try {
             if (id) {
                 // Cập nhật bài viết
-                const docRef = doc(db, 'blogs', id);
+                const docRef = doc(firebaseInstance.db, 'blogs', id);
                 await updateDoc(docRef, {
                     title,
                     description,
@@ -81,7 +81,7 @@ const AddPost = () => {
                 alert('Bài viết đã được cập nhật thành công!');
             } else {
                 // Thêm bài viết mới
-                await addDoc(collection(db, 'blogs'), {
+                await addDoc(collection(firebaseInstance.db, 'blogs'), {
                     title,
                     description,
                     category,
@@ -102,7 +102,7 @@ const AddPost = () => {
     return (
         <Box sx={{ maxWidth: 800, margin: 'auto', padding: 2 }}>
             <Paper sx={{ padding: 3 }}>
-            <Typography variant="h4" gutterBottom>
+                <Typography variant="h4" gutterBottom>
                     {id ? 'Chỉnh sửa bài viết' : 'Thêm bài viết mới'}
                 </Typography>
 
@@ -166,21 +166,21 @@ const AddPost = () => {
 
                 {/* Upload ảnh */}
                 <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
-    {imageUrl ? (
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <img src={imageUrl} alt="Preview" style={{ width: '150px', marginBottom: '10px' }} />
-            <Button variant="contained" component="label" startIcon={<PhotoCamera />}>
-                Thay đổi ảnh
-                <input type="file" hidden onChange={handleImageUpload} />
-            </Button>
-        </Box>
-    ) : (
-        <Button variant="contained" component="label" startIcon={<PhotoCamera />}>
-            Tải ảnh lên
-            <input type="file" hidden onChange={handleImageUpload} />
-        </Button>
-    )}
-</Box>
+                    {imageUrl ? (
+                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                            <img src={imageUrl} alt="Preview" style={{ width: '150px', marginBottom: '10px' }} />
+                            <Button variant="contained" component="label" startIcon={<PhotoCamera />}>
+                                Thay đổi ảnh
+                                <input type="file" hidden onChange={handleImageUpload} />
+                            </Button>
+                        </Box>
+                    ) : (
+                        <Button variant="contained" component="label" startIcon={<PhotoCamera />}>
+                            Tải ảnh lên
+                            <input type="file" hidden onChange={handleImageUpload} />
+                        </Button>
+                    )}
+                </Box>
 
                 {/* Nút đăng bài */}
                 <Button

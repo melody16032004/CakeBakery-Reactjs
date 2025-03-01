@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
-import { db } from "./firebaseConfig";
+import firebaseInstance from "./Firebase Singleton Pattern/firebaseConfig";
 
 const BlogDetails = () => {
     const { id } = useParams();
@@ -16,7 +16,7 @@ const BlogDetails = () => {
 
         const fetchBlog = async () => {
             try {
-                const docRef = doc(db, "blogs", id); // Kiểm tra nếu `id` hợp lệ
+                const docRef = doc(firebaseInstance.db, "blogs", id); // Kiểm tra nếu `id` hợp lệ
                 const docSnap = await getDoc(docRef);
 
                 if (docSnap.exists()) {

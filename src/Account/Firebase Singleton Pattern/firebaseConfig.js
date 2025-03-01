@@ -12,9 +12,17 @@ const firebaseConfig = {
     appId: "1:35934640622:web:b474ea1ec199f2731d56ff"
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const storage = getStorage(app);
-
-export { auth, db, storage };
+class Firebase {
+    constructor() {
+        if (!Firebase.instance) {
+            this.app = initializeApp(firebaseConfig);
+            this.db = getFirestore(this.app);
+            this.auth = getAuth(this.app);
+            this.storage = getStorage(this.app);
+            Firebase.instance = this;
+        }
+        return Firebase.instance;
+    }
+}
+const firebaseInstance = new Firebase();
+export default firebaseInstance;

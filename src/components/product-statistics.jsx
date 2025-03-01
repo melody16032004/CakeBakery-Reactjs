@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
-import { db } from "../Account/firebaseConfig";
+import firebaseInstance from '../Account/Firebase Singleton Pattern/firebaseConfig';
 import {
     Box,
     Typography,
@@ -88,7 +88,7 @@ const OrderStatistics = () => {
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const querySnapshot = await getDocs(collection(db, "invoices"));
+                const querySnapshot = await getDocs(collection(firebaseInstance.db, "invoices"));
                 const productStats = {};
                 const dailyStats = {};
                 const dailyOrderCount = {}; // Thống kê số lượng đơn hàng theo ngày

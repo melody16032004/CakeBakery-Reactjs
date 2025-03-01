@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { db } from '../Account/firebaseConfig'; // Đường dẫn đến cấu hình Firebase của bạn
+import firebaseInstance from '../Account/Firebase Singleton Pattern/firebaseConfig';
 import { collection, getDocs, deleteDoc, doc, query, orderBy } from 'firebase/firestore';
 import {
     IconButton, Box, Typography, Card, CardContent, CardMedia,
@@ -36,7 +36,7 @@ const ProductList = ({ setSelectedPage }) => {
     // Lấy danh sách sản phẩm từ Firestore
     const fetchProducts = async () => {
         const q = query(
-            collection(db, 'products'),
+            collection(firebaseInstance.db, 'products'),
             orderBy('sold', 'desc') // Sắp xếp theo createdAt giảm dần
         );
         const querySnapshot = await getDocs(q);
@@ -55,7 +55,7 @@ const ProductList = ({ setSelectedPage }) => {
     // Xóa sản phẩm
     const handleDelete = async (id) => {
         try {
-            await deleteDoc(doc(db, 'products', id));
+            await deleteDoc(doc(firebaseInstance.db, 'products', id));
             alert('Sản phẩm đã được xóa thành công!');
             fetchProducts(); // Cập nhật danh sách sản phẩm sau khi xóa
         } catch (error) {
@@ -68,7 +68,7 @@ const ProductList = ({ setSelectedPage }) => {
     const handleDeleteSelected = async () => {
         try {
             for (const id of selectedProducts) {
-                await deleteDoc(doc(db, 'products', id));
+                await deleteDoc(doc(firebaseInstance.db, 'products', id));
             }
             alert('Các sản phẩm đã được xóa thành công!');
             setSelectedProducts([]); // Reset danh sách đã chọn

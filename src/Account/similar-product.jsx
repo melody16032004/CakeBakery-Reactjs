@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { collection, getDocs, query, where } from 'firebase/firestore';
-import { db } from './firebaseConfig';
+import firebaseInstance from './Firebase Singleton Pattern/firebaseConfig';
 import { Link, useNavigate } from 'react-router-dom';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Input } from '@mui/material';
 
@@ -24,7 +24,7 @@ const SimilarProducts = ({ currentProductId, currentCategoryId }) => {
 
         // Lấy tất cả sản phẩm có categoryId giống với sản phẩm hiện tại
         const q = query(
-            collection(db, 'products'),
+            collection(firebaseInstance.db, 'products'),
             where('categoryId', '==', currentCategoryId)
         );
 
