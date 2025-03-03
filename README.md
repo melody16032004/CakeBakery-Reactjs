@@ -4,7 +4,7 @@
 
 ### Pass: CAKE
 
-### Amin account
+### Admin account
 
 - email: <admin@gmail.com>
 - pass: 123456
