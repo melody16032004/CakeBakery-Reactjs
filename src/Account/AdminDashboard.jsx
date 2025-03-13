@@ -7,7 +7,7 @@ import {
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MenuIcon from '@mui/icons-material/Menu';
-import AddProduct from '../components/AddProduct';
+import AddProduct from '../components/AddProduct/Page/AddProduct';
 import ProductList from '../components/ListProduct';
 import CreateCategory from '../components/CreateCategory';
 import InvoiceList from '../components/InvoiceList';

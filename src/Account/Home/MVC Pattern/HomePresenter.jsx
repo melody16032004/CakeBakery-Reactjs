@@ -187,35 +187,21 @@ const HomePresenter = ({ products, loading }) => {
                                     </div>
                                 </div>
                             </div>
+                            {/* <div style={{ display: "flex", width: "900px" }}> */}
                             <div className="col-lg-3 col-6">
                                 <div className="chef_item">
                                     <div className="chef_img">
                                         <img className="img-fluid" src="img/chef/chef-1.jpg" alt="" />
                                         <ul className="list_style">
                                             <li>
-                                                <a href="#">
-                                                    <i className="fa fa-twitter" />
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#">
-                                                    <i className="fa fa-linkedin-square" />
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#">
+                                                <a href="https://www.facebook.com/hoangchung.1603">
                                                     <i className="fa fa-facebook-square" />
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#">
-                                                    <i className="fa fa-skype" />
                                                 </a>
                                             </li>
                                         </ul>
                                     </div>
                                     <a href="#">
-                                        <h4>Michale Joe</h4>
+                                        <h4>Doãn Trung Hoàng</h4>
                                     </a>
                                     <h5>Chuyên gia về làm bánh</h5>
                                 </div>
@@ -286,6 +272,40 @@ const HomePresenter = ({ products, loading }) => {
                                     <h5>Chuyên gia về làm bánh</h5>
                                 </div>
                             </div>
+                            {/* <div className="col-lg-3 col-6">
+                                    <div className="chef_item">
+                                        <div className="chef_img">
+                                            <img className="img-fluid" src="img/chef/chef-3.jpg" alt="" />
+                                            <ul className="list_style">
+                                                <li>
+                                                    <a href="#">
+                                                        <i className="fa fa-twitter" />
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">
+                                                        <i className="fa fa-linkedin-square" />
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">
+                                                        <i className="fa fa-facebook-square" />
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">
+                                                        <i className="fa fa-skype" />
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <a href="#">
+                                            <h4>Michale Joe</h4>
+                                        </a>
+                                        <h5>Chuyên gia về làm bánh</h5>
+                                    </div>
+                                </div> */}
+                            {/* </div> */}
                         </div>
                     </div>
                 </section>

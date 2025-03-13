@@ -17,7 +17,7 @@ import About from './Account/AboutUs';
 import Contact from './Account/Contact';
 // import Dashboard from './components/Dashboard';
 import ProductList from './components/ListProduct';
-import AddProduct from './components/AddProduct';
+import AddProduct from './components/AddProduct/Page/AddProduct';
 import CreateCategory from './components/CreateCategory';
 import InvoiceList from './components/InvoiceList';
 import UserAccountManagement from './components/UserManagement';

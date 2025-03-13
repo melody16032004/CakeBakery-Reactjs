@@ -34,7 +34,7 @@ const InvoiceList = () => {
     const [statusFilter, setStatusFilter] = useState('Tất cả');
 
     const fetchInvoices = async () => {
-        const querySnapshot = await getDocs(collection(firebaseInstance.firebaseInstance.db, 'invoices'));
+        const querySnapshot = await getDocs(collection(firebaseInstance.db, 'invoices'));
         const invoicesData = querySnapshot.docs.map(doc => ({
             id: doc.id,
             ...doc.data(),
@@ -48,7 +48,7 @@ const InvoiceList = () => {
 
     const handleDelete = async (id) => {
         try {
-            await deleteDoc(doc(firebaseInstance.firebaseInstance.db, 'invoices', id));
+            await deleteDoc(doc(firebaseInstance.db, 'invoices', id));
             alert('Đơn hàng đã được xóa thành công!');
             fetchInvoices();
         } catch (error) {
